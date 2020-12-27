@@ -33,29 +33,43 @@ namespace TCSystem.Logging
     internal sealed class AppCenterSink : ILogEventSink
     {
 #region Public
-
         public AppCenterSink(IFormatProvider formatProvider)
         {
             _formatProvider = formatProvider;
         }
 
-        public void Emit(LogEvent logEvent)
+        public async void Emit(LogEvent logEvent)
         {
             if ((logEvent.Level == LogEventLevel.Error || logEvent.Level == LogEventLevel.Fatal) &&
-                Analytics.IsEnabledAsync().GetAwaiter().GetResult())
+                await Analytics.IsEnabledAsync())
             {
-                string message = logEvent.RenderMessage(_formatProvider);
-                Analytics.TrackEvent("LogEntry",
-                    new Dictionary<string, string> {{logEvent.ToString(), message}});
+                var logData = new Dictionary<string, string>
+                {
+                    {"Message", logEvent.RenderMessage(_formatProvider)},
+                    {"TimeStamp", logEvent.Timestamp.ToString()},
+                    {"Level", logEvent.Level.ToString()},
+                };
+
+                if (logEvent.Exception != null)
+                {
+                    logData["Exception"] = logEvent.Exception.ToString();
+                }
+
+                if (logEvent.Properties != null)
+                {
+                    foreach (var keyValuePair in logEvent.Properties)
+                    {
+                        logData[keyValuePair.Key] = keyValuePair.Value.ToString();
+                    }
+                }
+
+                Analytics.TrackEvent("LogEntry", logData);
             }
         }
-
 #endregion
 
 #region Private
-
         private readonly IFormatProvider _formatProvider;
-
 #endregion
     }
 }
