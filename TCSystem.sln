@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Logging", "Logging\TCSystem.Logging.csproj", "{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{6D152A6C-C528-4993-B34C-91FF550D6D40}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		LICENSE = LICENSE
+		README.md = README.md
+		Version.props = Version.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54DE1ACD-AE36-4599-8245-A013203F9814}
+	EndGlobalSection
+EndGlobal
