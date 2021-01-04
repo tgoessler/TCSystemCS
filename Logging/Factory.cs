@@ -36,7 +36,7 @@ namespace TCSystem.Logging
         public enum LoggingOptions
         {
             File = 1,
-            Debug = 2,
+            Debugger = 2,
             Console = 4,
             AppCenter = 8
         }
@@ -98,7 +98,7 @@ namespace TCSystem.Logging
 #endif
 
 #if !DEBUG
-            if ((options & LoggingOptions.Debug) == LoggingOptions.Debug)
+            if ((options & LoggingOptions.Debugger) == LoggingOptions.Debugger)
 #endif
             {
                 loggerConfiguration = loggerConfiguration.WriteTo.Debug(outputTemplate: OutputTemplate);
