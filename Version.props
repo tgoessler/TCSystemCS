@@ -3,10 +3,10 @@
     <PropertyGroup>
         <Company>TCSystem</Company>
         <Authors>Thomas Gößler</Authors>
-        <Version>0.0.0.3</Version>
-        <VersionCode>0003</VersionCode>
+        <Version>0.0.0.4</Version>
+        <VersionCode>0004</VersionCode>
         <NamespaceName>at.tcsystem</NamespaceName>
-        <Copyright>Copyright © Thomas Gößler 2020</Copyright>
+        <Copyright>Copyright © Thomas Gößler 2021</Copyright>
     </PropertyGroup>
 
 </Project>
