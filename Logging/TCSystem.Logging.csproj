@@ -4,6 +4,7 @@
     <AssemblyName>TCSystem.Logging</AssemblyName>
     <RootNamespace>TCSystem.Logging</RootNamespace>
     <PackageTags>C#, Logging Utilities</PackageTags>
+    <Description>Wraps Serilog by an abstract Logger class where debug logging is not compiled into your code when using the provided Logger class. It also integrates direct logging to Microsoft App Center which can be configured at runtime.</Description>
   </PropertyGroup>
 
   <ItemGroup>
