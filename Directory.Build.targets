@@ -1,5 +1,15 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<PropertyGroup>
+		<NuGetPushSource>https://api.nuget.org/v3/index.json</NuGetPushSource>
+	</PropertyGroup>
+
 	<Import Project="Version.props" />
+
+	<Target Name="Push" Condition="'$(Configuration)'=='Release'">
+		<Exec WorkingDirectory="$(OutputPath)"
+		      Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate"
+		/>
+	</Target>
 
 </Project>
