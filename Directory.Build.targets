@@ -6,7 +6,8 @@
 
 	<Import Project="Version.props" />
 
-	<Target Name="Push" Condition="'$(Configuration)'=='Release'">
+	<Target Name="NugetPush" Condition="'$(Configuration)'=='Release'"
+	        DependsOnTargets="Rebuild">
 		<Exec WorkingDirectory="$(OutputPath)"
 		      Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate"
 		/>
