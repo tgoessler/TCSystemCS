@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>TCSystem.Thread</AssemblyName>
+    <RootNamespace>TCSystem.Thread</RootNamespace>
+    <PackageTags>C#, Thread Utilities</PackageTags>
+    <Description>Thread helper classes, Worker Thread which runs commands added to his queue</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Logging\TCSystem.Logging.csproj" />
+  </ItemGroup>
+
+</Project>

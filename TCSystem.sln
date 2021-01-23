@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{70
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Thread", "Thread\TCSystem.Thread.csproj", "{DDEEFF2E-9211-4D10-8C65-C8057B744684}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDEEFF2E-9211-4D10-8C65-C8057B744684}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDEEFF2E-9211-4D10-8C65-C8057B744684}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDEEFF2E-9211-4D10-8C65-C8057B744684}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDEEFF2E-9211-4D10-8C65-C8057B744684}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
