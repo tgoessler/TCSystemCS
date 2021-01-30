@@ -32,11 +32,13 @@ namespace TCSystem.Thread
 #region Public
 
         void ExecuteCommand(Action action);
-        Task ExecuteCommandAsync(Action action);
         void ExecuteCommand(Action action, string message);
-        Task ExecuteCommandAsync(Action action, string message);
         void ClearOpenCommands();
+
+        Task ExecuteCommandAsync(Action action);
+        Task ExecuteCommandAsync(Action action, string message);
         Task ClearOpenCommandsAsync();
+
         void StopThread();
         bool IsBusy { get; }
 

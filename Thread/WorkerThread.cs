@@ -49,23 +49,9 @@ namespace TCSystem.Thread
             ExecuteCommand(action, null);
         }
 
-        public async Task ExecuteCommandAsync(Action action)
-        {
-            await ExecuteCommandAsync(action, null);
-        }
-
         public void ExecuteCommand(Action action, string message)
         {
             using (_semaphoreSlim.Lock())
-            {
-                _workerActions.Enqueue((action, message));
-                _event.Set();
-            }
-        }
-
-        public async Task ExecuteCommandAsync(Action action, string message)
-        {
-            using (await _semaphoreSlim.LockAsync())
             {
                 _workerActions.Enqueue((action, message));
                 _event.Set();
@@ -77,6 +63,20 @@ namespace TCSystem.Thread
             using (_semaphoreSlim.Lock())
             {
                 _workerActions.Clear();
+            }
+        }
+
+        public async Task ExecuteCommandAsync(Action action)
+        {
+            await ExecuteCommandAsync(action, null);
+        }
+
+        public async Task ExecuteCommandAsync(Action action, string message)
+        {
+            using (await _semaphoreSlim.LockAsync())
+            {
+                _workerActions.Enqueue((action, message));
+                _event.Set();
             }
         }
 

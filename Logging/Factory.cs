@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2020 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -88,6 +88,26 @@ namespace TCSystem.Logging
                 return true;
             }
 
+            LoggerConfiguration loggerConfiguration = CreateDefaultLoggerConfiguration();
+            loggerConfiguration = AddDebuggerLoggerConfiguration(options, loggerConfiguration);
+            loggerConfiguration = AddConsoleLoggerConfiguration(options, loggerConfiguration);
+            loggerConfiguration = AddFileLoggerConfiguration(options, loggingFile, maxFiles, maxFileSizeKb, loggerConfiguration);
+            loggerConfiguration = AddAppCenterLoggerConfiguration(options, loggerConfiguration);
+
+            configure?.Invoke(loggerConfiguration);
+
+            Serilog.Log.Logger = loggerConfiguration.CreateLogger();
+
+            IsLoggingInitialized = true;
+            LoggingInitialized?.Invoke();
+            LoggingInitialized = null;
+
+            Log.Instance.Info("Logging started");
+            return true;
+        }
+
+        private static LoggerConfiguration CreateDefaultLoggerConfiguration()
+        {
             LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
                 .Enrich.WithThreadId()
                 .Enrich.FromLogContext()
@@ -96,19 +116,22 @@ namespace TCSystem.Logging
 #else
                 .MinimumLevel.Information();
 #endif
+            return loggerConfiguration;
+        }
 
-#if !DEBUG
-            if ((options & LoggingOptions.Debugger) == LoggingOptions.Debugger)
-#endif
+        private static LoggerConfiguration AddAppCenterLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
+        {
+            if ((options & LoggingOptions.AppCenter) == LoggingOptions.AppCenter)
             {
-                loggerConfiguration = loggerConfiguration.WriteTo.Debug(outputTemplate: OutputTemplate);
+                loggerConfiguration = loggerConfiguration.WriteTo.Async(a => { a.AppCenterSink(); });
             }
 
-            if ((options & LoggingOptions.Console) == LoggingOptions.Console)
-            {
-                loggerConfiguration = loggerConfiguration.WriteTo.Console(outputTemplate: OutputTemplate, theme: AnsiConsoleTheme.Literate);
-            }
+            return loggerConfiguration;
+        }
 
+        private static LoggerConfiguration AddFileLoggerConfiguration(LoggingOptions options, string loggingFile, int maxFiles, int maxFileSizeKb,
+                                                                      LoggerConfiguration loggerConfiguration)
+        {
             if ((options & LoggingOptions.File) == LoggingOptions.File)
             {
                 loggerConfiguration = loggerConfiguration.WriteTo.Async(a =>
@@ -121,21 +144,29 @@ namespace TCSystem.Logging
                 });
             }
 
-            if ((options & LoggingOptions.AppCenter) == LoggingOptions.AppCenter)
+            return loggerConfiguration;
+        }
+
+        private static LoggerConfiguration AddConsoleLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
+        {
+            if ((options & LoggingOptions.Console) == LoggingOptions.Console)
             {
-                loggerConfiguration = loggerConfiguration.WriteTo.Async(a => { a.AppCenterSink(); });
+                loggerConfiguration = loggerConfiguration.WriteTo.Console(outputTemplate: OutputTemplate, theme: AnsiConsoleTheme.Literate);
             }
 
-            configure?.Invoke(loggerConfiguration);
+            return loggerConfiguration;
+        }
 
-            Serilog.Log.Logger = loggerConfiguration.CreateLogger();
+        private static LoggerConfiguration AddDebuggerLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
+        {
+#if !DEBUG
+            if ((options & LoggingOptions.Debugger) == LoggingOptions.Debugger)
+#endif
+            {
+                loggerConfiguration = loggerConfiguration.WriteTo.Debug(outputTemplate: OutputTemplate);
+            }
 
-            IsLoggingInitialized = true;
-            LoggingInitialized?.Invoke();
-            LoggingInitialized = null;
-
-            Log.Instance.Info("Logging started");
-            return true;
+            return loggerConfiguration;
         }
 
         private static int _initCount;
