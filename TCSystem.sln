@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{6D152A6C
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		LICENSE = LICENSE
+		Packaging.props = Packaging.props
 		README.md = README.md
 		Version.props = Version.props
 	EndProjectSection
@@ -19,9 +20,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{70
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\analyze.yml = .github\workflows\analyze.yml
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		License.props = License.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Thread", "Thread\TCSystem.Thread.csproj", "{DDEEFF2E-9211-4D10-8C65-C8057B744684}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.MetaData", "MetaData\TCSystem.MetaData.csproj", "{1DE4EBE3-34A1-4A90-90CC-24E5FA269037}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.MetaDataDB", "MetaDataDB\TCSystem.MetaDataDB.csproj", "{34ABFE86-D4BA-4672-B323-AE0AF186AFE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{6CE560F4-9704-4980-8C99-023B7FC95801}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Tools.DBConverter", "Tools\DBConverter\TCSystem.Tools.DBConverter.csproj", "{DEBDD0BE-D427-4174-81FA-FD91DD11FACB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,12 +47,25 @@ Global
 		{DDEEFF2E-9211-4D10-8C65-C8057B744684}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDEEFF2E-9211-4D10-8C65-C8057B744684}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDEEFF2E-9211-4D10-8C65-C8057B744684}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DE4EBE3-34A1-4A90-90CC-24E5FA269037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DE4EBE3-34A1-4A90-90CC-24E5FA269037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DE4EBE3-34A1-4A90-90CC-24E5FA269037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DE4EBE3-34A1-4A90-90CC-24E5FA269037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34ABFE86-D4BA-4672-B323-AE0AF186AFE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34ABFE86-D4BA-4672-B323-AE0AF186AFE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34ABFE86-D4BA-4672-B323-AE0AF186AFE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34ABFE86-D4BA-4672-B323-AE0AF186AFE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBDD0BE-D427-4174-81FA-FD91DD11FACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBDD0BE-D427-4174-81FA-FD91DD11FACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBDD0BE-D427-4174-81FA-FD91DD11FACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBDD0BE-D427-4174-81FA-FD91DD11FACB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{708DBACE-DA93-4E19-8CA2-70C8F260527C} = {6D152A6C-C528-4993-B34C-91FF550D6D40}
+		{DEBDD0BE-D427-4174-81FA-FD91DD11FACB} = {6CE560F4-9704-4980-8C99-023B7FC95801}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54DE1ACD-AE36-4599-8245-A013203F9814}

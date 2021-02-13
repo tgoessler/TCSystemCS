@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>TCSystem.MetaDataDB</AssemblyName>
+    <RootNamespace>TCSystem.MetaDataDB</RootNamespace>
+    <PackageTags>C#, Image Meta Data, SQLite Database</PackageTags>
+    <Description>SQLite Database abstraction for storing, filtering Image Meta Data</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Logging\TCSystem.Logging.csproj" />
+    <ProjectReference Include="..\MetaData\TCSystem.MetaData.csproj" />
+    <ProjectReference Include="..\Thread\TCSystem.Thread.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\Packaging.props"></Import>
+</Project>

@@ -17,11 +17,6 @@
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+  <Import Project="..\Packaging.props"></Import>
 
 </Project>

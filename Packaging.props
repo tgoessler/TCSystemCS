@@ -1,0 +1,26 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/ThE-TiGeR/TCSystemCS</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ThE-TiGeR/TCSystemCS</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <NuGetPushSource>https://api.nuget.org/v3/index.json</NuGetPushSource>
+  </PropertyGroup>
+
+  <ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+  <Target Name="NugetPush" Condition="'$(Configuration)'=='Release'"
+          DependsOnTargets="Rebuild">
+    <Exec WorkingDirectory="$(OutputPath)"
+          Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate"
+    />
+  </Target>
+
+</Project>

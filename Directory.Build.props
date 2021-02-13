@@ -6,13 +6,6 @@
 		<TargetFramework Condition="'$(TargetFramework)'==''">netstandard2.0</TargetFramework>
 		<LangVersion Condition="'$(LangVersion)'==''">9.0</LangVersion>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageProjectUrl>https://github.com/ThE-TiGeR/TCSystemCS</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/ThE-TiGeR/TCSystemCS</RepositoryUrl>
-		<RepositoryType>Git</RepositoryType>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
