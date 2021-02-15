@@ -1,4 +1,4 @@
-name: Analyze
+name: Analyze with Sonar
 on:
   push:
     branches: [ main ]
@@ -54,6 +54,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"ThE-TiGeR_TCSystemCS" /o:"tcsystem" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"ThE-TiGeR_TCSystemCS" /o:"tcsystem" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.projectVersion="1.0.0"
           dotnet build --no-restore
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
