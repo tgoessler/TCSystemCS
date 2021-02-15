@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -84,15 +85,18 @@ namespace TCSystem.MetaData
 
         public static GpsPosition FromString(string val)
         {
-            var list = val.Split('.');
-            if (list.Length == 4)
+            if (!string.IsNullOrWhiteSpace(val))
             {
-                var deg = int.Parse(list[0]);
-                var min = int.Parse(list[1]);
-                var sec = int.Parse(list[2]);
-                var subSec = int.Parse(list[3]);
-                var neg = deg < 0;
-                return new GpsPosition(Math.Abs(deg), min, sec, subSec, neg);
+                var list = val.Split('.');
+                if (list.Length == 4)
+                {
+                    var deg = int.Parse(list[0]);
+                    var min = int.Parse(list[1]);
+                    var sec = int.Parse(list[2]);
+                    var subSec = int.Parse(list[3]);
+                    var neg = deg < 0;
+                    return new GpsPosition(Math.Abs(deg), min, sec, subSec, neg);
+                }
             }
 
             return null;
@@ -159,9 +163,14 @@ namespace TCSystem.MetaData
             return obj;
         }
 
-#endregion
+        internal string ToJsonString()
+        {
+            return ToJson().ToString(Formatting.None);
+        }
 
-#region Private
+        #endregion
+
+        #region Private
 
         private const double SubSecondsUnit = 10000;
 

@@ -159,9 +159,7 @@ namespace TCSystem.Logging
 
         private static LoggerConfiguration AddDebuggerLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
         {
-#if !DEBUG
             if ((options & LoggingOptions.Debugger) == LoggingOptions.Debugger)
-#endif
             {
                 loggerConfiguration = loggerConfiguration.WriteTo.Debug(outputTemplate: OutputTemplate);
             }

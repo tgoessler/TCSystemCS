@@ -24,6 +24,7 @@
 
 #region Usings
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -33,6 +34,11 @@ namespace TCSystem.MetaData
     public sealed class GpsPoint
     {
 #region Public
+
+        public GpsPoint(GpsPosition latitude, GpsPosition longitude, float altitude)
+        :this(latitude, longitude, FixedPoint32.FromFloat(altitude))
+        {
+        }
 
         public GpsPoint(GpsPosition latitude, GpsPosition longitude, FixedPoint32? altitude)
         {
@@ -116,6 +122,11 @@ namespace TCSystem.MetaData
             }
 
             return obj;
+        }
+
+        internal string ToJsonString()
+        {
+            return ToJson().ToString(Formatting.None);
         }
 
 #endregion
