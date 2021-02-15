@@ -112,7 +112,7 @@ namespace TCSystem.MetaDataDB
                 {
                     command.Parameters.AddWithValue($"@{IdFileName}", data.FileName);
                     command.Parameters.AddWithValue($"@{IdDateModified}", dateModified.ToString("s"));
-                    command.Parameters.AddWithValue($"@{IdProcessingInfo}", (long) data.ProcessingInfo);
+                    command.Parameters.AddWithValue($"@{IdProcessingInfo}", (long) data.ProcessingInfos);
                     command.ExecuteNonQuery();
                 }
 
@@ -183,7 +183,7 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IList<(string FileName, ProcessingInfo ProcessingInfo)> GetAllProcessingInformation()
+        public IList<(string FileName, ProcessingInfos ProcessingInfo)> GetAllProcessingInformation()
         {
             using (var command = new SqliteCommand
             {
@@ -195,10 +195,10 @@ namespace TCSystem.MetaDataDB
             {
                 using (var reader = command.ExecuteReader())
                 {
-                    var values = new List<(string FileName, ProcessingInfo ProcessingInfo)>();
+                    var values = new List<(string FileName, ProcessingInfos ProcessingInfo)>();
                     while (reader.HasRows && reader.Read())
                     {
-                        values.Add((reader.GetString(0), (ProcessingInfo) reader.GetInt64(1)));
+                        values.Add((reader.GetString(0), (ProcessingInfos) reader.GetInt64(1)));
                     }
 
                     return values;

@@ -56,7 +56,7 @@ namespace TCSystem.MetaDataDB
                         (
                             fileId,
                             reader.GetString(0),
-                            (ProcessingInfo) reader.GetInt64(1),
+                            (ProcessingInfos) reader.GetInt64(1),
                             reader.GetInt32(2),
                             reader.GetInt32(3),
                             (OrientationMode) reader.GetInt32(4),

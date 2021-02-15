@@ -27,7 +27,7 @@ using System;
 namespace TCSystem.MetaData
 {
     [Flags]
-    public enum ProcessingInfo : long
+    public enum ProcessingInfos : long
     {
         None = 0,
 
@@ -44,30 +44,30 @@ namespace TCSystem.MetaData
     {
 #region Public
 
-        public static bool AreAllFaceDetectionsDone(this ProcessingInfo processingInfo)
+        public static bool AreAllFaceDetectionsDone(this ProcessingInfos processingInfos)
         {
-            return (processingInfo & ProcessingInfo.DlibFrontalFaceDetection2000) != 0 &&
-                   (processingInfo & ProcessingInfo.DlibFrontalFaceDetection3000) != 0 &&
-                   (processingInfo & ProcessingInfo.DlibCnnFaceDetection1000) != 0 &&
-                   (processingInfo & ProcessingInfo.DlibCnnFaceDetection2000) != 0;
+            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 &&
+                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0 &&
+                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection1000) != 0 &&
+                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection2000) != 0;
         }
 
-        public static bool AreAllFrontalFaceDetectionsDone(this ProcessingInfo processingInfo)
+        public static bool AreAllFrontalFaceDetectionsDone(this ProcessingInfos processingInfos)
         {
-            return (processingInfo & ProcessingInfo.DlibFrontalFaceDetection2000) != 0 &&
-                   (processingInfo & ProcessingInfo.DlibFrontalFaceDetection3000) != 0;
+            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 &&
+                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0;
         }
 
-        public static bool IsFrontalFaceDetection(this ProcessingInfo processingInfo)
+        public static bool IsFrontalFaceDetection(this ProcessingInfos processingInfos)
         {
-            return (processingInfo & ProcessingInfo.DlibFrontalFaceDetection2000) != 0 ||
-                   (processingInfo & ProcessingInfo.DlibFrontalFaceDetection3000) != 0;
+            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 ||
+                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0;
         }
 
-        public static bool IsCnnFaceDetection(this ProcessingInfo processingInfo)
+        public static bool IsCnnFaceDetection(this ProcessingInfos processingInfos)
         {
-            return (processingInfo & ProcessingInfo.DlibCnnFaceDetection1000) != 0 ||
-                   (processingInfo & ProcessingInfo.DlibCnnFaceDetection2000) != 0;
+            return (processingInfos & ProcessingInfos.DlibCnnFaceDetection1000) != 0 ||
+                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection2000) != 0;
         }
 
 #endregion

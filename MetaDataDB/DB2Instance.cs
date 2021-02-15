@@ -472,7 +472,7 @@ namespace TCSystem.MetaDataDB
 
                 ExecuteNonQuery($"ALTER TABLE {TableFileFaces} ADD {IdFaceMode} INTEGER DEFAULT {(int) FaceMode.Undefined};",
                     transaction);
-                ExecuteNonQuery($"UPDATE {TableFiles} SET {IdProcessingInfo}={(long) ProcessingInfo.None};",
+                ExecuteNonQuery($"UPDATE {TableFiles} SET {IdProcessingInfo}={(long) ProcessingInfos.None};",
                     transaction);
 
                 UpdateDbVersion(transaction);

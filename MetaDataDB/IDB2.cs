@@ -45,7 +45,7 @@ namespace TCSystem.MetaDataDB
         IList<Address> GetAllLocationsLike(string filter = null);
         IList<string> GetAllPersonNamesLike(string filter = null);
         IList<DateTimeOffset> GetAllYears();
-        IList<(string FileName, ProcessingInfo ProcessingInfo)> GetAllProcessingInformation();
+        IList<(string FileName, ProcessingInfos ProcessingInfo)> GetAllProcessingInformation();
         IDictionary<string, DateTimeOffset> GetAllFileAndModifiedDates();
         IList<FaceInfo> GetAllFaceInfos();
 

@@ -26,5 +26,15 @@ namespace TCSystem.MetaDataDB
         {
             return new DB2(fileName);
         }
+
+        public static void Destroy(ref IDB2 db)
+        {
+            if (db is DB2 db2)
+            {
+                db2.Close();
+            }
+
+            db = null;
+        }
     }
 }

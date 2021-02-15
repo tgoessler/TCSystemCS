@@ -139,7 +139,7 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IList<(string FileName, ProcessingInfo ProcessingInfo)> GetAllProcessingInformation()
+        public IList<(string FileName, ProcessingInfos ProcessingInfo)> GetAllProcessingInformation()
         {
             using (_lock.Lock())
             {

@@ -34,7 +34,7 @@ namespace TCSystem.MetaData
     {
 #region Public
 
-        public Image(long fileId, string fileName, ProcessingInfo processingInfo,
+        public Image(long fileId, string fileName, ProcessingInfos processingInfos,
                      int width, int height, OrientationMode orientation,
                      DateTimeOffset dateTaken,
                      string title, Location location,
@@ -44,7 +44,7 @@ namespace TCSystem.MetaData
         {
             Id = fileId;
             FileName = fileName;
-            ProcessingInfo = processingInfo;
+            ProcessingInfos = processingInfos;
             Width = width;
             Height = height;
             Orientation = orientation;
@@ -77,7 +77,7 @@ namespace TCSystem.MetaData
 
         public static Image ChangeFileName(Image image, string fileName)
         {
-            return new Image(image.Id, fileName, image.ProcessingInfo,
+            return new Image(image.Id, fileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
                 image._personTags, image._tags);
@@ -85,15 +85,15 @@ namespace TCSystem.MetaData
 
         public static Image ChangeDateTaken(Image image, DateTimeOffset dateTaken)
         {
-            return new Image(image.Id, image.FileName, image.ProcessingInfo,
+            return new Image(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 dateTaken, image.Title, image.Location,
                 image._personTags, image._tags);
         }
 
-        public static Image ChangeProcessingInfo(Image image, ProcessingInfo processingInfo)
+        public static Image ChangeProcessingInfo(Image image, ProcessingInfos processingInfos)
         {
-            return new Image(image.Id, image.FileName, processingInfo,
+            return new Image(image.Id, image.FileName, processingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
                 image._personTags, image._tags);
@@ -101,7 +101,7 @@ namespace TCSystem.MetaData
 
         public static Image ChangeLocation(Image image, Location location)
         {
-            return new Image(image.Id, image.FileName, image.ProcessingInfo,
+            return new Image(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, location,
                 image._personTags, image._tags);
@@ -109,7 +109,7 @@ namespace TCSystem.MetaData
 
         public static Image ChangePersonTags(Image image, IEnumerable<PersonTag> personTags)
         {
-            return new Image(image.Id, image.FileName, image.ProcessingInfo,
+            return new Image(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
                 personTags.ToList(), image._tags);
@@ -119,7 +119,7 @@ namespace TCSystem.MetaData
         {
             var tags = tagsIn.ToList();
 
-            return new Image(image.Id, image.FileName, image.ProcessingInfo,
+            return new Image(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
                 image._personTags, tags.AsReadOnly());
@@ -132,7 +132,7 @@ namespace TCSystem.MetaData
                 var pts = image._personTags.ToList();
                 pts.Add(pt);
 
-                image = new Image(image.Id, image.FileName, image.ProcessingInfo,
+                image = new Image(image.Id, image.FileName, image.ProcessingInfos,
                     image.Width, image.Height, image.Orientation,
                     image.DateTaken, image.Title, image.Location,
                     pts, image._tags);
@@ -148,7 +148,7 @@ namespace TCSystem.MetaData
                 var pts = image._personTags.ToList();
                 pts.Remove(pt);
 
-                image = new Image(image.Id, image.FileName, image.ProcessingInfo,
+                image = new Image(image.Id, image.FileName, image.ProcessingInfos,
                     image.Width, image.Height, image.Orientation,
                     image.DateTaken, image.Title, image.Location,
                     pts.AsReadOnly(), image._tags);
@@ -165,7 +165,7 @@ namespace TCSystem.MetaData
                 var pts = image._personTags.ToList();
                 pts.Remove(person);
 
-                image = new Image(image.Id, image.FileName, image.ProcessingInfo,
+                image = new Image(image.Id, image.FileName, image.ProcessingInfos,
                     image.Width, image.Height, image.Orientation,
                     image.DateTaken, image.Title, image.Location,
                     pts.AsReadOnly(), image._tags);
@@ -181,7 +181,7 @@ namespace TCSystem.MetaData
                 var tags = image._tags.ToList();
                 tags.Add(t);
 
-                image = new Image(image.Id, image.FileName, image.ProcessingInfo,
+                image = new Image(image.Id, image.FileName, image.ProcessingInfos,
                     image.Width, image.Height, image.Orientation,
                     image.DateTaken, image.Title, image.Location,
                     image._personTags, tags.AsReadOnly());
@@ -197,7 +197,7 @@ namespace TCSystem.MetaData
                 var tags = image._tags.ToList();
                 tags.Remove(t);
 
-                image = new Image(image.Id, image.FileName, image.ProcessingInfo,
+                image = new Image(image.Id, image.FileName, image.ProcessingInfos,
                     image.Width, image.Height, image.Orientation,
                     image.DateTaken, image.Title, image.Location,
                     image._personTags, tags.AsReadOnly());
@@ -209,7 +209,7 @@ namespace TCSystem.MetaData
         public static Image InvalidateIds(Image image)
         {
             var personTags = image._personTags.Select(PersonTag.InvalidateIds).ToArray();
-            return new Image(Constants.InvalidId, image.FileName, image.ProcessingInfo,
+            return new Image(Constants.InvalidId, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
                 personTags, image._tags);
@@ -238,7 +238,7 @@ namespace TCSystem.MetaData
                 hashCode = (hashCode * 397) ^ (_tags != null ? _tags.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Id.GetHashCode();
                 hashCode = (hashCode * 397) ^ FileName.GetHashCode();
-                hashCode = (hashCode * 397) ^ ProcessingInfo.GetHashCode();
+                hashCode = (hashCode * 397) ^ ProcessingInfos.GetHashCode();
                 hashCode = (hashCode * 397) ^ Width.GetHashCode();
                 hashCode = (hashCode * 397) ^ Height.GetHashCode();
                 hashCode = (hashCode * 397) ^ Orientation.GetHashCode();
@@ -267,7 +267,7 @@ namespace TCSystem.MetaData
         public long Id { get; }
         public string Name => FileName.Substring(FileName.LastIndexOf("\\", StringComparison.Ordinal) + 1);
         public string FileName { get; }
-        public ProcessingInfo ProcessingInfo { get; }
+        public ProcessingInfos ProcessingInfos { get; }
         public int Width { get; }
         public int Height { get; }
         public OrientationMode Orientation { get; }
@@ -293,7 +293,7 @@ namespace TCSystem.MetaData
             {
                 ["id"] = Id,
                 ["file_name"] = FileName,
-                ["processing_info"] = (long) ProcessingInfo,
+                ["processing_info"] = (long) ProcessingInfos,
                 ["width"] = Width,
                 ["height"] = Height,
                 ["orientation"] = (int) Orientation,
@@ -322,7 +322,7 @@ namespace TCSystem.MetaData
             return new Image(
                 (long) jsonObject["id"],
                 (string) jsonObject["file_name"],
-                (ProcessingInfo) (long) jsonObject["processing_info"],
+                (ProcessingInfos) (long) jsonObject["processing_info"],
                 (int) jsonObject["width"],
                 (int) jsonObject["height"],
                 (OrientationMode) (int) jsonObject["orientation"],
@@ -338,7 +338,7 @@ namespace TCSystem.MetaData
         {
             return Id == other.Id &&
                    string.Equals(FileName, other.FileName) &&
-                   ProcessingInfo == other.ProcessingInfo &&
+                   ProcessingInfos == other.ProcessingInfos &&
                    Width == other.Width &&
                    Height == other.Height &&
                    Orientation == other.Orientation &&
