@@ -33,6 +33,7 @@ namespace TCSystem.Logging
     internal sealed class AppCenterSink : ILogEventSink
     {
 #region Public
+
         public AppCenterSink(IFormatProvider formatProvider)
         {
             _formatProvider = formatProvider;
@@ -66,10 +67,13 @@ namespace TCSystem.Logging
                 Analytics.TrackEvent("LogEntry", logData);
             }
         }
+
 #endregion
 
 #region Private
+
         private readonly IFormatProvider _formatProvider;
+
 #endregion
     }
 }

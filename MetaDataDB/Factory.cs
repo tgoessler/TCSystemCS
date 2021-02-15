@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2020 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -22,6 +22,8 @@ namespace TCSystem.MetaDataDB
 {
     public static class Factory
     {
+#region Public
+
         public static IDB2 Create(string fileName)
         {
             return new DB2(fileName);
@@ -36,5 +38,7 @@ namespace TCSystem.MetaDataDB
 
             db = null;
         }
+
+#endregion
     }
 }

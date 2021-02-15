@@ -10,17 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-	</ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
   <Target Name="NugetPush" Condition="'$(Configuration)'=='Release'"
           DependsOnTargets="Rebuild">
     <Exec WorkingDirectory="$(OutputPath)"
-          Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate"
-    />
+          Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate" />
   </Target>
 
 </Project>

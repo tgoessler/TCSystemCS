@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2020 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -23,8 +23,6 @@ namespace TCSystem.MetaDataDB
     internal class DB2Constants
     {
 #region Protected
-
-        protected DB2Constants() { }
 
         protected const string Version = "1.1";
         protected const string Version10 = "1.0";
@@ -89,6 +87,8 @@ namespace TCSystem.MetaDataDB
         protected const string FilterName = "Name";
         protected const string FilterTag = "Tag";
         protected const string FilterNumPersons = "NumPersons";
+
+        protected DB2Constants() { }
 
         protected static readonly string[] _filters =
         {

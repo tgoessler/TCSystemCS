@@ -1,11 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-    <PropertyGroup>
-        <Company>TCSystem</Company>
-        <Authors>Thomas Gößler</Authors>
-        <Version>1.0.0-beta.3</Version>
-        <NamespaceName>at.tcsystem</NamespaceName>
-        <Copyright>Copyright © Thomas Gößler 2021</Copyright>
-    </PropertyGroup>
+  <PropertyGroup>
+    <Company>TCSystem</Company>
+    <Authors>Thomas Gößler</Authors>
+    <Version>1.0.0-beta.3</Version>
+    <NamespaceName>at.tcsystem</NamespaceName>
+    <Copyright>Copyright © Thomas Gößler 2021</Copyright>
+  </PropertyGroup>
 
 </Project>
