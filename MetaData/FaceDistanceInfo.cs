@@ -76,7 +76,7 @@ namespace TCSystem.MetaData
         {
             if (string.IsNullOrEmpty(jsonString))
             {
-                return null;
+                return Array.Empty<FaceDistanceInfo>();
             }
 
             var array = JArray.Parse(jsonString);

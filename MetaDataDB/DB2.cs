@@ -99,7 +99,7 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IList<string> GetAllFilesLike(string filter)
+        public IList<string> GetAllFilesLike(string filter = null)
         {
             using (_lock.Lock())
             {
@@ -107,7 +107,7 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IList<string> GetAllTagsLike(string filter)
+        public IList<string> GetAllTagsLike(string filter = null)
         {
             using (_lock.Lock())
             {
@@ -115,7 +115,7 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IList<Address> GetAllLocationsLike(string filter)
+        public IList<Address> GetAllLocationsLike(string filter = null)
         {
             using (_lock.Lock())
             {
@@ -123,7 +123,7 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IList<string> GetAllPersonNamesLike(string filter)
+        public IList<string> GetAllPersonNamesLike(string filter = null)
         {
             using (_lock.Lock())
             {
@@ -478,9 +478,7 @@ namespace TCSystem.MetaDataDB
                     // add an empty address first
                     if (_locations.GetNumLocations(transaction) == 0)
                     {
-                        var location = new Location(new Address(),
-                            new GpsPoint(null, null, null));
-                        var id = _locations.AddLocation(location, transaction);
+                        var id = _locations.AddLocation(Location.NoLocation, transaction);
                         if (id != Constants.EmptyLocationId)
                         {
                             Log.Instance.Error($"Empty location id not {Constants.EmptyLocationId}, id ={id}");

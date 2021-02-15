@@ -42,19 +42,19 @@ namespace TCSystem.MetaData
             FaceDescriptor = faceDescriptor.ToArray();
         }
 
-        public override bool Equals(object other)
+        public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, other))
+            if (ReferenceEquals(null, obj))
             {
                 return false;
             }
 
-            if (ReferenceEquals(this, other))
+            if (ReferenceEquals(this, obj))
             {
                 return true;
             }
 
-            return other is Face face && Equals(face);
+            return obj is Face face && Equals(face);
         }
 
         public override int GetHashCode()

@@ -44,14 +44,12 @@ namespace TCSystem.MetaData
                 return 1;
             }
 
-            if (string.IsNullOrWhiteSpace(nameX) &&
-                string.IsNullOrWhiteSpace(nameY))
+            if (string.IsNullOrWhiteSpace(nameX))
             {
                 return 0;
             }
 
-            if (!string.IsNullOrWhiteSpace(nameX) &&
-                string.IsNullOrWhiteSpace(nameY))
+            if (string.IsNullOrWhiteSpace(nameY))
             {
                 return -1;
             }

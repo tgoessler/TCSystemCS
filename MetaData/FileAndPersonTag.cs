@@ -90,7 +90,7 @@ namespace TCSystem.MetaData
         {
             if (string.IsNullOrEmpty(jsonString))
             {
-                return null;
+                return Array.Empty<FileAndPersonTag>();
             }
 
             var array = JArray.Parse(jsonString);

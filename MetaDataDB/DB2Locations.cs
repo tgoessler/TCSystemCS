@@ -119,7 +119,7 @@ namespace TCSystem.MetaDataDB
             {
                 Connection = Instance.Connection,
                 CommandText = $"SELECT DISTINCT {IdCountry}, {IdProvince}, {IdCity}, {IdStreet} " +
-                              $"FROM {TableLocations} {filterCommand}" +
+                              $"FROM {TableLocations} {filterCommand} " +
                               $"ORDER by {IdCountry} ASC, {IdProvince} ASC, {IdCity} ASC, {IdStreet} ASC;"
             })
             {
@@ -184,7 +184,7 @@ namespace TCSystem.MetaDataDB
 
         public long AddLocation(Location location, SqliteTransaction transaction)
         {
-            var locationId = location == null ? 1 : GetLocationId(location.Address, transaction);
+            var locationId = GetLocationId(location.Address, transaction);
             if (locationId == Constants.InvalidId)
             {
                 using (var command = new SqliteCommand
@@ -197,7 +197,6 @@ namespace TCSystem.MetaDataDB
                                   $"(@{IdCountry}, @{IdProvince}, @{IdCity}, @{IdStreet});"
                 })
                 {
-                    // ReSharper disable once PossibleNullReferenceException
                     command.Parameters.AddWithValue($"@{IdCountry}", location.Address.Country);
                     command.Parameters.AddWithValue($"@{IdProvince}", location.Address.Province);
                     command.Parameters.AddWithValue($"@{IdCity}", location.Address.City);

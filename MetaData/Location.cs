@@ -80,6 +80,8 @@ namespace TCSystem.MetaData
         public bool IsAllSet => Point.IsSet && Address.IsSet;
         public bool IsSet => Point.IsSet || Address.IsSet;
 
+        public static Location NoLocation { get; } = new Location(Address.Undefined, new GpsPoint(null, null, null));
+
 #endregion
 
 #region Internal

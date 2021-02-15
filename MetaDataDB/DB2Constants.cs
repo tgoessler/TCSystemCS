@@ -24,6 +24,8 @@ namespace TCSystem.MetaDataDB
     {
 #region Protected
 
+        protected DB2Constants() { }
+
         protected const string Version = "1.1";
         protected const string Version10 = "1.0";
 

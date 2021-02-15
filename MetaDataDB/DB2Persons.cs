@@ -461,11 +461,11 @@ namespace TCSystem.MetaDataDB
         private static Person ReadPerson(int start, SqliteDataReader reader)
         {
             var person = new Person(
-                reader.GetInt32(start + 0), // {{ID_PERSON_ID}}
-                reader.GetString(start + 1), // {ID_NAME}
-                reader.GetString(start + 2), // {ID_EMAIL_DIGEST}
-                reader.GetString(start + 3), // {ID_LIVE_ID}
-                reader.GetString(start + 4) // {ID_SOURCE_ID}
+                reader.GetInt32(start + 0), // ID_PERSON_ID
+                reader.GetString(start + 1), // ID_NAME
+                reader.GetString(start + 2), // ID_EMAIL_DIGEST
+                reader.GetString(start + 3), // ID_LIVE_ID
+                reader.GetString(start + 4) // ID_SOURCE_ID
             );
             return person;
         }

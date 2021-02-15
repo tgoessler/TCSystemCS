@@ -240,47 +240,47 @@ namespace TCSystem.MetaDataDB
             {
                 var nextCommand = key switch
                 {
-                    FilterFile => $"SELECT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFiles}\n" +
-                                  $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId}\n" +
-                                  $"WHERE {IdFileName} LIKE '%{value}%' {LikeEscape}\n",
+                    FilterFile => $"SELECT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFiles}\n " +
+                                  $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId}\n " +
+                                  $"WHERE {IdFileName} LIKE '%{value}%' {LikeEscape}\n ",
 
-                    FilterDate => $"SELECT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileData}\n" +
-                                  $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileData}.{IdFileId}\n" +
-                                  $"WHERE {IdDateTaken} LIKE '%{value}%' {LikeEscape}\n",
+                    FilterDate => $"SELECT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileData}\n " +
+                                  $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileData}.{IdFileId}\n " +
+                                  $"WHERE {IdDateTaken} LIKE '%{value}%' {LikeEscape}\n ",
 
-                    FilterLocation => $"SELECT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileLocations}\n" +
-                                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileLocations}.{IdFileId}\n" +
-                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileLocations}.{IdFileId}\n" +
-                                      $"    INNER JOIN {TableLocations} ON {TableLocations}.{IdLocationId}={TableFileLocations}.{IdLocationId}\n" +
-                                      $"WHERE {TableLocations}.{IdCountry} LIKE '%{value}%' {LikeEscape} OR\n" +
-                                      $"      {TableLocations}.{IdProvince} LIKE '%{value}%' {LikeEscape} OR\n" +
-                                      $"      {TableLocations}.{IdCity} LIKE '%{value}%' {LikeEscape} OR\n" +
-                                      $"      {TableLocations}.{IdStreet} LIKE '%{value}%' {LikeEscape}\n",
+                    FilterLocation => $"SELECT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileLocations}\n " +
+                                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileLocations}.{IdFileId}\n " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileLocations}.{IdFileId}\n " +
+                                      $"    INNER JOIN {TableLocations} ON {TableLocations}.{IdLocationId}={TableFileLocations}.{IdLocationId}\n " +
+                                      $"WHERE {TableLocations}.{IdCountry} LIKE '%{value}%' {LikeEscape} OR\n " +
+                                      $"      {TableLocations}.{IdProvince} LIKE '%{value}%' {LikeEscape} OR\n " +
+                                      $"      {TableLocations}.{IdCity} LIKE '%{value}%' {LikeEscape} OR\n " +
+                                      $"      {TableLocations}.{IdStreet} LIKE '%{value}%' {LikeEscape}\n ",
 
-                    FilterName => $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileFaces}\n" +
-                                  $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId}\n" +
-                                  $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId}\n" +
-                                  $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId}\n" +
-                                  $"WHERE {IdName} LIKE '%{value}%' {LikeEscape}\n",
+                    FilterName => $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileFaces}\n " +
+                                  $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId}\n " +
+                                  $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId}\n " +
+                                  $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId}\n " +
+                                  $"WHERE {IdName} LIKE '%{value}%' {LikeEscape}\n ",
 
-                    FilterTag => $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileTags}\n" +
-                                 $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId}\n" +
-                                 $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileTags}.{IdFileId}\n" +
-                                 $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId}\n" +
-                                 $"WHERE {IdTag} LIKE '%{value}%' {LikeEscape}\n",
+                    FilterTag => $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileTags}\n " +
+                                 $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId}\n " +
+                                 $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileTags}.{IdFileId}\n " +
+                                 $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId}\n " +
+                                 $"WHERE {IdTag} LIKE '%{value}%' {LikeEscape}\n ",
 
-                    FilterFaceId => $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileFaces}\n" +
-                                    $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId}\n" +
-                                    $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId}\n" +
-                                    $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId}\n" +
-                                    $"WHERE {IdFaceId}='{value}'\n",
+                    FilterFaceId => $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileFaces}\n " +
+                                    $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId}\n " +
+                                    $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId}\n " +
+                                    $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId}\n " +
+                                    $"WHERE {IdFaceId}='{value}'\n ",
 
                     FilterNumPersons when int.TryParse(value, out var _) =>
-                        $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileFaces}\n" +
-                        $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId}\n" +
-                        $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId}\n" +
-                        $"GROUP BY {IdFileName}\n" +
-                        $"HAVING COUNT(*) == {value}\n",
+                        $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileFaces}\n " +
+                        $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId}\n " +
+                        $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId}\n " +
+                        $"GROUP BY {IdFileName}\n " +
+                        $"HAVING COUNT(*) == {value}\n ",
 
                     _ => null
                 };
@@ -289,7 +289,7 @@ namespace TCSystem.MetaDataDB
                 {
                     if (!string.IsNullOrEmpty(commandText))
                     {
-                        commandText += isAdd ? "INTERSECT\n" : "UNION\n";
+                        commandText += isAdd ? "INTERSECT\n " : "UNION\n ";
                     }
 
                     commandText += nextCommand;
