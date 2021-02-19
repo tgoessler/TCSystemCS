@@ -416,7 +416,7 @@ namespace TCSystem.MetaDataDB
 
         private static PersonTag ReadPersonTag(int start, SqliteDataReader reader)
         {
-            return new PersonTag(ReadPerson(start, reader), ReadFace(start + 5, reader));
+            return new(ReadPerson(start, reader), ReadFace(start + 5, reader));
         }
 
         private static Face ReadFace(int start, SqliteDataReader reader)

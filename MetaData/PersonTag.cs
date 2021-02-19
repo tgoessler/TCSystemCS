@@ -20,14 +20,16 @@
 
 #region Usings
 
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public sealed class PersonTag
+    public sealed class PersonTag : IEquatable<PersonTag>
     {
 #region Public
 
@@ -39,17 +41,12 @@ namespace TCSystem.MetaData
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as PersonTag, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            return obj is PersonTag personTag && Equals(personTag);
+        public bool Equals(PersonTag other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
         }
 
         public override int GetHashCode()
@@ -67,6 +64,11 @@ namespace TCSystem.MetaData
             return ToJson().ToString(Formatting.Indented);
         }
 
+        public string ToJsonString()
+        {
+            return ToJson().ToString(Formatting.None);
+        }
+
         public static PersonTag FromJsonString(string jsonString)
         {
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
@@ -74,7 +76,7 @@ namespace TCSystem.MetaData
 
         public static PersonTag InvalidateIds(PersonTag personTag)
         {
-            return new PersonTag(Person.InvalidateId(personTag.Person),
+            return new(Person.InvalidateId(personTag.Person),
                 Face.InvalidateId(personTag.Face));
         }
 
@@ -87,7 +89,7 @@ namespace TCSystem.MetaData
 
         internal static PersonTag FromJson(JObject jsonObject)
         {
-            return new PersonTag(Person.FromJson((JObject) jsonObject["person"]),
+            return new(Person.FromJson((JObject) jsonObject["person"]),
                 Face.FromJson((JObject) jsonObject["face"])
             );
         }
@@ -107,7 +109,7 @@ namespace TCSystem.MetaData
 
 #region Private
 
-        private bool Equals(PersonTag other)
+        private bool EqualsImp(PersonTag other)
         {
             return Equals(Person, other.Person) &&
                    Equals(Face, other.Face);

@@ -23,12 +23,13 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public sealed class Address
+    public sealed class Address : IEquatable<Address>
     {
 #region Public
 
@@ -43,17 +44,20 @@ namespace TCSystem.MetaData
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as Address, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
+        public bool Equals(Address other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
+        }
 
-            return obj is Address address && Equals(address);
+        private bool EqualsImp(Address other)
+        {
+            return string.Equals(Country, other.Country, StringComparison.InvariantCulture) &&
+                   string.Equals(Province, other.Province, StringComparison.InvariantCulture) &&
+                   string.Equals(City, other.City, StringComparison.InvariantCulture) &&
+                   string.Equals(Street, other.Street, StringComparison.InvariantCulture);
         }
 
         public override int GetHashCode()
@@ -66,6 +70,11 @@ namespace TCSystem.MetaData
                 hashCode = (hashCode * 397) ^ (Street != null ? Street.GetHashCode() : 0);
                 return hashCode;
             }
+        }
+
+        public string ToJsonString()
+        {
+            return ToJson().ToString(Formatting.None);
         }
 
         public override string ToString()
@@ -96,7 +105,7 @@ namespace TCSystem.MetaData
                 if (City.Length != 0)
                 {
                     val += val.Length > 0 ? ", " : "";
-                    val += ConvertCity(City);
+                    val += City;
                 }
 
                 if (Province.Length != 0)
@@ -125,8 +134,8 @@ namespace TCSystem.MetaData
                                 City.Length != 0 &&
                                 Street.Length != 0;
 
-        public static Address Undefined { get; } = new Address();
-        public static Address NotFound { get; } = new Address("", "", "", "NotFound");
+        public static Address Undefined { get; } = new();
+        public static Address NotFound { get; } = new("", "", "", "NotFound");
 
 #endregion
 
@@ -134,7 +143,7 @@ namespace TCSystem.MetaData
 
         internal static Address FromJson(JObject jsonObject)
         {
-            return new Address(
+            return new(
                 (string) jsonObject["country"],
                 (string) jsonObject["province"],
                 (string) jsonObject["city"],
@@ -153,28 +162,6 @@ namespace TCSystem.MetaData
             };
 
             return obj;
-        }
-
-#endregion
-
-#region Private
-
-        private string ConvertCity(string city)
-        {
-            if (city == "Rohrbach-Steinberg")
-            {
-                return "Steinberg Oberberg";
-            }
-
-            return city;
-        }
-
-        private bool Equals(Address other)
-        {
-            return string.Equals(Country, other.Country, StringComparison.InvariantCulture) &&
-                   string.Equals(Province, other.Province, StringComparison.InvariantCulture) &&
-                   string.Equals(City, other.City, StringComparison.InvariantCulture) &&
-                   string.Equals(Street, other.Street, StringComparison.InvariantCulture);
         }
 
 #endregion

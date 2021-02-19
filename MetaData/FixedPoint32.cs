@@ -22,6 +22,7 @@
 
 using System;
 using System.Globalization;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -37,9 +38,9 @@ namespace TCSystem.MetaData
             RawValue = val;
         }
 
-        public static FixedPoint32 FromFloat(float val)
+        public FixedPoint32(float val)
         {
-            return new FixedPoint32((int) (val * (1 << 16)));
+            RawValue = (int)(val * (1 << 16));
         }
 
         public override bool Equals(object obj)
@@ -57,9 +58,19 @@ namespace TCSystem.MetaData
             return RawValue.GetHashCode();
         }
 
+        public string ToJsonString()
+        {
+            return ToJson().ToString(Formatting.None);
+        }
+
         public override string ToString()
         {
             return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static FixedPoint32 FromJsonString(string jsonString)
+        {
+            return FromJson(JToken.Parse(jsonString));
         }
 
         public float Value => RawValue / (float) (1 << 16);
@@ -71,7 +82,7 @@ namespace TCSystem.MetaData
 
         internal static FixedPoint32 FromJson(JToken jsonToken)
         {
-            return new FixedPoint32((int) jsonToken);
+            return new((int) jsonToken);
         }
 
         internal JToken ToJson()

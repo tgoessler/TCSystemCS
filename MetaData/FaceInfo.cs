@@ -20,16 +20,18 @@
 
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public class FaceInfo
+    public class FaceInfo : IEquatable<FaceInfo>
     {
 #region Public
 
@@ -44,17 +46,21 @@ namespace TCSystem.MetaData
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as FaceInfo, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
+        public bool Equals(FaceInfo other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
+        }
 
-            return obj is Face face && Equals(face);
+        private bool EqualsImp(FaceInfo other)
+        {
+            return FileId == other.FileId &&
+                   FaceId == other.FaceId &&
+                   PersonId == other.PersonId &&
+                   FaceMode == other.FaceMode &&
+                   FaceDescriptor.SequenceEqual(other.FaceDescriptor);
         }
 
         public override int GetHashCode()
@@ -75,7 +81,7 @@ namespace TCSystem.MetaData
 
         public string ToJsonString()
         {
-            return ToJson().ToString();
+            return ToJson().ToString(Formatting.None);
         }
 
         public static FaceInfo FromJsonString(string jsonString)
@@ -107,7 +113,7 @@ namespace TCSystem.MetaData
                 (long) jsonObject["face_id"],
                 (long) jsonObject["person_id"],
                 (FaceMode) (long) jsonObject["face_mode"],
-                fdJson != null && fdJson.Count > 0 ? fdJson.Select(v => FixedPoint64.FromDouble((double) v)) : null);
+                fdJson != null && fdJson.Count > 0 ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
         }
 
         private JObject ToJson()

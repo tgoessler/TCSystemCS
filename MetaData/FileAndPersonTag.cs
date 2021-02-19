@@ -25,34 +25,36 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public sealed class FileAndPersonTag
+    public sealed class FileAndPersonTag : IEquatable<FileAndPersonTag>
     {
 #region Public
 
         public FileAndPersonTag(string fileName, PersonTag personTag)
         {
-            FileName = fileName;
+            FileName = fileName ?? string.Empty;
             PersonTag = personTag;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as FileAndPersonTag, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
+        public bool Equals(FileAndPersonTag other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
+        }
 
-            return obj is FileAndPersonTag fileAndPersonTag && Equals(fileAndPersonTag);
+        private bool EqualsImp(FileAndPersonTag other)
+        {
+            return string.Equals(FileName, other.FileName, StringComparison.InvariantCulture) &&
+                   Equals(PersonTag, other.PersonTag);
         }
 
         public override int GetHashCode()
@@ -106,7 +108,7 @@ namespace TCSystem.MetaData
 
         internal static FileAndPersonTag FromJson(JObject jsonObject)
         {
-            return new FileAndPersonTag(
+            return new(
                 (string) jsonObject["file_name"],
                 PersonTag.FromJson((JObject) jsonObject["person_tag"])
             );
@@ -126,12 +128,6 @@ namespace TCSystem.MetaData
 #endregion
 
 #region Private
-
-        private bool Equals(FileAndPersonTag other)
-        {
-            return string.Equals(FileName, other.FileName, StringComparison.InvariantCulture) &&
-                   Equals(PersonTag, other.PersonTag);
-        }
 
 #endregion
     }

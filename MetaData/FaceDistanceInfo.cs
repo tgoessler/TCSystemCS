@@ -33,6 +33,12 @@ namespace TCSystem.MetaData
     public readonly struct FaceDistanceInfo : IEquatable<FaceDistanceInfo>
     {
 #region Public
+        public FaceDistanceInfo(long faceId1, FixedPoint32 distance, long faceId2)
+        {
+            FaceId1 = faceId1;
+            Distance = distance;
+            FaceId2 = faceId2;
+        }
 
         public override bool Equals(object obj)
         {
@@ -91,16 +97,9 @@ namespace TCSystem.MetaData
 
 #region Private
 
-        private FaceDistanceInfo(long faceId1, FixedPoint32 distance, long faceId2)
-        {
-            FaceId1 = faceId1;
-            Distance = distance;
-            FaceId2 = faceId2;
-        }
-
         private static FaceDistanceInfo FromJson(JObject jsonObject)
         {
-            return new FaceDistanceInfo(
+            return new(
                 (long) jsonObject["face_id_1"],
                 FixedPoint32.FromJson(jsonObject["distance"]),
                 (long) jsonObject["face_id_2"]

@@ -17,5 +17,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Util\TCSystem.Util.csproj" />
+  </ItemGroup>
+
   <Import Project="..\Packaging.props"></Import>
 </Project>

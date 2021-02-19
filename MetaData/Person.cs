@@ -23,12 +23,13 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public sealed class Person
+    public sealed class Person : IEquatable<Person>
     {
 #region Public
 
@@ -43,17 +44,12 @@ namespace TCSystem.MetaData
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as Person, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            return obj is Person person && Equals(person);
+        public bool Equals(Person other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
         }
 
         public override int GetHashCode()
@@ -86,7 +82,7 @@ namespace TCSystem.MetaData
 
         public static Person InvalidateId(Person person)
         {
-            return new Person(Constants.InvalidId, person.Name, person.EmailDigest, person.LiveId, person.SourceId);
+            return new(Constants.InvalidId, person.Name, person.EmailDigest, person.LiveId, person.SourceId);
         }
 
         public long Id { get; }
@@ -104,7 +100,7 @@ namespace TCSystem.MetaData
 
         internal static Person FromJson(JObject jsonObject)
         {
-            return new Person((long) jsonObject["id"],
+            return new((long) jsonObject["id"],
                 (string) jsonObject["name"],
                 (string) jsonObject["email_digest"],
                 (string) jsonObject["live_id"],
@@ -130,7 +126,7 @@ namespace TCSystem.MetaData
 
 #region Private
 
-        private bool Equals(Person other)
+        private bool EqualsImp(Person other)
         {
             return Id == other.Id &&
                    string.Equals(Name, other.Name, StringComparison.InvariantCulture) &&

@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>TCSystem.Util</AssemblyName>
+    <RootNamespace>TCSystem.Util</RootNamespace>
+    <PackageTags>C#, Utilities</PackageTags>
+    <Description>Extension functions for conatiners, utilities for implementing equals , ...</Description>
+  </PropertyGroup>
+
+  <Import Project="..\Packaging.props"></Import>
+
+</Project>

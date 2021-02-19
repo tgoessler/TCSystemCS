@@ -23,12 +23,13 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public sealed class GpsPosition
+    public sealed class GpsPosition : IEquatable<GpsPosition>
     {
 #region Public
 
@@ -51,17 +52,21 @@ namespace TCSystem.MetaData
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as GpsPosition, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
+        public bool Equals(GpsPosition other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
+        }
 
-            return obj is GpsPosition location && Equals(location);
+        private bool EqualsImp(GpsPosition other)
+        {
+            return Degrees == other.Degrees &&
+                   Minutes == other.Minutes &&
+                   Seconds == other.Seconds &&
+                   SubSeconds == other.SubSeconds &&
+                   Negative == other.Negative;
         }
 
         public override int GetHashCode()
@@ -173,15 +178,6 @@ namespace TCSystem.MetaData
         #region Private
 
         private const double SubSecondsUnit = 10000;
-
-        private bool Equals(GpsPosition other)
-        {
-            return Degrees == other.Degrees &&
-                   Minutes == other.Minutes &&
-                   Seconds == other.Seconds &&
-                   SubSeconds == other.SubSeconds &&
-                   Negative == other.Negative;
-        }
 
 #endregion
     }

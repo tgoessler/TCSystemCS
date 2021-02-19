@@ -28,43 +28,47 @@ using NUnit.Framework;
 namespace TCSystem.MetaData.Tests
 {
     [TestFixture]
-    public class GpsPointTests
+    public class PersonTagTests
     {
         [Test]
         public void EqualsTest()
         {
-            var point = TestData.PointZero;
-            Assert.That(point.Equals(TestData.PointZero), Is.True);
-            Assert.That(point.Equals(TestData.Point1), Is.False);
-            Assert.That(point.Equals(TestData.Point2), Is.False);
-            Assert.That(point.Equals(null), Is.False);
-            Assert.That(point, Is.Not.EqualTo(TestData.Address1));
+            Assert.Fail();
         }
 
         [Test]
         public void FromJsonStringTest()
         {
-            string ToJson(GpsPoint d) => d.ToJsonString();
-            Func<string, GpsPoint> fromJson = GpsPoint.FromJsonString;
+            string ToJson(PersonTag d) => d.ToJsonString();
+            Func<string, PersonTag> fromJson = PersonTag.FromJsonString;
 
-            TestUtil.FromJsonStringTest(TestData.Point1, ToJson, fromJson);
-            TestUtil.FromJsonStringTest(TestData.Point2, ToJson, fromJson);
-            TestUtil.FromJsonStringTest(TestData.PointZero, ToJson, fromJson);
+            TestUtil.FromJsonStringTest(TestData.PersonTag1, ToJson, fromJson);
+            TestUtil.FromJsonStringTest(TestData.PersonTag2, ToJson, fromJson);
+            TestUtil.FromJsonStringTest(TestData.PersonTagZero, ToJson, fromJson);
         }
 
         [Test]
         public void GetHashCodeTest()
         {
-            Assert.That(TestData.PointZero.GetHashCode(), Is.Not.EqualTo(TestData.Point1.GetHashCode()));
+            Assert.Fail();
+        }
 
-            var point = new GpsPoint(TestData.Point1.Latitude, TestData.Point1.Longitude, TestData.Point1.Altitude);
-            Assert.That(point.GetHashCode(), Is.EqualTo(TestData.Point1.GetHashCode()));
+        [Test]
+        public void InvalidateIdsTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void PersonTagTest()
+        {
+            Assert.Fail();
         }
 
         [Test]
         public void ToStringTest()
         {
-            Assert.That(TestData.PointZero.ToString(), Is.Not.EqualTo(""));
+            Assert.Fail();
         }
     }
 }

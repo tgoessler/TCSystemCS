@@ -93,7 +93,7 @@ namespace TCSystem.MetaData
 
         public static Face Orientate(Face face, OrientationMode mode)
         {
-            return new Face(face.Id, Orientate(face.Rectangle, mode), face.FaceMode, face.FaceDescriptor);
+            return new(face.Id, Orientate(face.Rectangle, mode), face.FaceMode, face.FaceDescriptor);
         }
 
         public static Rectangle OrientateBack(Rectangle rectangle, OrientationMode mode)
@@ -124,7 +124,7 @@ namespace TCSystem.MetaData
 
         public static Face OrientateBack(Face face, OrientationMode mode)
         {
-            return new Face(face.Id, OrientateBack(face.Rectangle, mode), face.FaceMode, face.FaceDescriptor);
+            return new(face.Id, OrientateBack(face.Rectangle, mode), face.FaceMode, face.FaceDescriptor);
         }
 
 #endregion

@@ -20,37 +20,33 @@
 
 #region Usings
 
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public sealed class Location
+    public sealed class Location : IEquatable<Location>
     {
 #region Public
 
         public Location(Address address, GpsPoint point)
         {
-            Address = address;
-            Point = point;
+            Address = address ?? Address.Undefined;
+            Point = point ?? GpsPoint.Undefined;
         }
-
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as Location, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            return obj is Location location && Equals(location);
+        public bool Equals(Location other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
         }
 
         public override int GetHashCode()
@@ -61,6 +57,11 @@ namespace TCSystem.MetaData
                 hashCode = (hashCode * 397) ^ Point.GetHashCode();
                 return hashCode;
             }
+        }
+
+        public string ToJsonString()
+        {
+            return ToJson().ToString(Formatting.None);
         }
 
         public override string ToString()
@@ -80,7 +81,7 @@ namespace TCSystem.MetaData
         public bool IsAllSet => Point.IsSet && Address.IsSet;
         public bool IsSet => Point.IsSet || Address.IsSet;
 
-        public static Location NoLocation { get; } = new Location(Address.Undefined, new GpsPoint(null, null, null));
+        public static Location NoLocation { get; } = new(Address.Undefined, GpsPoint.Undefined);
 
 #endregion
 
@@ -112,7 +113,7 @@ namespace TCSystem.MetaData
 
 #region Private
 
-        private bool Equals(Location other)
+        private bool EqualsImp(Location other)
         {
             return Equals(Point, other.Point) &&
                    Equals(Address, other.Address);

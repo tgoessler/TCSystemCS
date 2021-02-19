@@ -20,27 +20,25 @@
 
 #region Usings
 
-#endregion
-
-#region Usings
-
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public sealed class GpsPoint
+    public sealed class GpsPoint : IEquatable<GpsPoint>
     {
 #region Public
 
         public GpsPoint(GpsPosition latitude, GpsPosition longitude, float altitude)
-        :this(latitude, longitude, FixedPoint32.FromFloat(altitude))
+        :this(latitude, longitude, new FixedPoint32(altitude))
         {
         }
 
-        public GpsPoint(GpsPosition latitude, GpsPosition longitude, FixedPoint32? altitude)
+        public GpsPoint(GpsPosition latitude=null, GpsPosition longitude=null, FixedPoint32? altitude=null)
         {
             Latitude = latitude;
             Longitude = longitude;
@@ -49,26 +47,28 @@ namespace TCSystem.MetaData
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as GpsPoint, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
+        public bool Equals(GpsPoint other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
+        }
 
-            return obj is GpsPoint point && Equals(point);
+        private bool EqualsImp(GpsPoint other)
+        {
+            return Equals(Latitude, other.Latitude) &&
+                   Equals(Longitude, other.Longitude) &&
+                   Equals(Altitude, other.Altitude);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = Latitude.GetHashCode();
-                hashCode = (hashCode * 397) ^ Longitude.GetHashCode();
-                hashCode = (hashCode * 397) ^ (Altitude != null ? Altitude.GetHashCode() : 0);
+                var hashCode = Latitude?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ Longitude?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ Altitude?.GetHashCode() ?? 0;
                 return hashCode;
             }
         }
@@ -88,6 +88,7 @@ namespace TCSystem.MetaData
         public FixedPoint32? Altitude { get; }
         public bool IsSet => Longitude != null && Latitude != null;
 
+        public static GpsPoint Undefined { get; } = new ();
 #endregion
 
 #region Internal
@@ -132,13 +133,6 @@ namespace TCSystem.MetaData
 #endregion
 
 #region Private
-
-        private bool Equals(GpsPoint other)
-        {
-            return Equals(Latitude, other.Latitude) &&
-                   Equals(Longitude, other.Longitude) &&
-                   Equals(Altitude, other.Altitude);
-        }
 
 #endregion
     }

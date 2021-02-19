@@ -328,7 +328,7 @@ namespace TCSystem.MetaDataDB
 
         private Address ReadAddress(SqliteDataReader reader, int startIndex)
         {
-            return new Address(
+            return new(
                 reader.GetString(startIndex + 0),
                 reader.GetString(startIndex + 1),
                 reader.GetString(startIndex + 2),

@@ -41,16 +41,16 @@ namespace TCSystem.MetaData
 
         public static Rectangle FromFloat(float x, float y, float w, float h)
         {
-            return new Rectangle(FixedPoint32.FromFloat(x),
-                FixedPoint32.FromFloat(y),
-                FixedPoint32.FromFloat(w),
-                FixedPoint32.FromFloat(h)
+            return new(new FixedPoint32(x),
+                new FixedPoint32(y),
+                new FixedPoint32(w),
+                new FixedPoint32(h)
             );
         }
 
         public static Rectangle FromRawValues(int x, int y, int w, int h)
         {
-            return new Rectangle(new FixedPoint32(x),
+            return new(new FixedPoint32(x),
                 new FixedPoint32(y),
                 new FixedPoint32(w),
                 new FixedPoint32(h)
@@ -99,8 +99,8 @@ namespace TCSystem.MetaData
 
         public FixedPoint32 Left => X;
         public FixedPoint32 Top => Y;
-        public FixedPoint32 Right => new FixedPoint32(X.RawValue + W.RawValue);
-        public FixedPoint32 Bottom => new FixedPoint32(Y.RawValue + H.RawValue);
+        public FixedPoint32 Right => new(X.RawValue + W.RawValue);
+        public FixedPoint32 Bottom => new(Y.RawValue + H.RawValue);
 
 #endregion
 
@@ -108,7 +108,7 @@ namespace TCSystem.MetaData
 
         internal static Rectangle FromJson(JObject jsonObject)
         {
-            return new Rectangle(
+            return new(
                 FixedPoint32.FromJson(jsonObject["x"]),
                 FixedPoint32.FromJson(jsonObject["y"]),
                 FixedPoint32.FromJson(jsonObject["w"]),

@@ -512,13 +512,13 @@ namespace TCSystem.MetaDataDB
         }
 
 
-        private readonly DB2Instance _instance = new DB2Instance();
-        private readonly DB2Files _files = new DB2Files();
-        private readonly DB2Persons _persons = new DB2Persons();
-        private readonly DB2Tags _tags = new DB2Tags();
-        private readonly DB2Locations _locations = new DB2Locations();
-        private readonly DB2Data _data = new DB2Data();
-        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1);
+        private readonly DB2Instance _instance = new();
+        private readonly DB2Files _files = new();
+        private readonly DB2Persons _persons = new();
+        private readonly DB2Tags _tags = new();
+        private readonly DB2Locations _locations = new();
+        private readonly DB2Data _data = new();
+        private readonly SemaphoreSlim _lock = new(1);
 
 #endregion
     }

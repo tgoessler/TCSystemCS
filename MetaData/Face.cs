@@ -20,23 +20,18 @@
 
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public enum FaceMode
-    {
-        Undefined = 0,
-        DlibFront = 1,
-        DlibCnn = 2
-    }
-
-    public sealed class Face
+    public sealed class Face : IEquatable<Face>
     {
 #region Public
 
@@ -55,17 +50,31 @@ namespace TCSystem.MetaData
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            return EqualsUtil.Equals(this, obj as Face, EqualsImp);
+        }
+
+        public bool Equals(Face other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
+        }
+
+        private bool EqualsImp(Face other)
+        {
+            var equal = false;
+            if (Id == other.Id &&
+                Rectangle.Equals(other.Rectangle))
             {
-                return false;
+                if (_faceDescriptor == null && other._faceDescriptor == null)
+                {
+                    equal = true;
+                }
+                else if (_faceDescriptor != null)
+                {
+                    equal = _faceDescriptor.SequenceEqual(other._faceDescriptor);
+                }
             }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            return obj is Face face && Equals(face);
+            return equal;
         }
 
         public override int GetHashCode()
@@ -77,6 +86,11 @@ namespace TCSystem.MetaData
                 hashCode = (hashCode * 397) ^ FaceMode.GetHashCode();
                 return _faceDescriptor != null ? _faceDescriptor.Aggregate(hashCode, (current, fixedPoint64) => (current * 397) ^ fixedPoint64.GetHashCode()) : hashCode;
             }
+        }
+
+        public string ToJsonString()
+        {
+            return ToJson().ToString(Formatting.None);
         }
 
         public override string ToString()
@@ -91,7 +105,7 @@ namespace TCSystem.MetaData
 
         public static Face InvalidateId(Face face)
         {
-            return new Face(Constants.InvalidId, face.Rectangle, face.FaceMode, face.FaceDescriptor);
+            return new(Constants.InvalidId, face.Rectangle, face.FaceMode, face.FaceDescriptor);
         }
 
         public long Id { get; }
@@ -111,7 +125,7 @@ namespace TCSystem.MetaData
             return new Face((long) jsonObject["id"],
                 Rectangle.FromJson((JObject) jsonObject["rectangle"]),
                 (FaceMode) (int) jsonObject["face_mode"],
-                fdJson != null && fdJson.Count > 0 ? fdJson.Select(v => FixedPoint64.FromDouble((double) v)) : null);
+                fdJson != null && fdJson.Count > 0 ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
         }
 
         internal JObject ToJson()
@@ -132,25 +146,6 @@ namespace TCSystem.MetaData
 #region Private
 
         private const int FaceDescriptorLength = 128;
-
-        private bool Equals(Face other)
-        {
-            var equal = false;
-            if (Id == other.Id &&
-                Rectangle.Equals(other.Rectangle))
-            {
-                if (_faceDescriptor == null && other._faceDescriptor == null)
-                {
-                    equal = true;
-                }
-                else if (_faceDescriptor != null)
-                {
-                    equal = _faceDescriptor.SequenceEqual(other._faceDescriptor);
-                }
-            }
-
-            return equal;
-        }
 
         private readonly FixedPoint64[] _faceDescriptor;
 

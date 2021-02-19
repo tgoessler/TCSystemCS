@@ -25,12 +25,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData
 {
-    public sealed class Image
+    public sealed class Image : IEquatable<Image>
     {
 #region Public
 
@@ -77,7 +78,7 @@ namespace TCSystem.MetaData
 
         public static Image ChangeFileName(Image image, string fileName)
         {
-            return new Image(image.Id, fileName, image.ProcessingInfos,
+            return new(image.Id, fileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
                 image._personTags, image._tags);
@@ -85,7 +86,7 @@ namespace TCSystem.MetaData
 
         public static Image ChangeDateTaken(Image image, DateTimeOffset dateTaken)
         {
-            return new Image(image.Id, image.FileName, image.ProcessingInfos,
+            return new(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 dateTaken, image.Title, image.Location,
                 image._personTags, image._tags);
@@ -93,7 +94,7 @@ namespace TCSystem.MetaData
 
         public static Image ChangeProcessingInfo(Image image, ProcessingInfos processingInfos)
         {
-            return new Image(image.Id, image.FileName, processingInfos,
+            return new(image.Id, image.FileName, processingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
                 image._personTags, image._tags);
@@ -101,7 +102,7 @@ namespace TCSystem.MetaData
 
         public static Image ChangeLocation(Image image, Location location)
         {
-            return new Image(image.Id, image.FileName, image.ProcessingInfos,
+            return new(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, location,
                 image._personTags, image._tags);
@@ -109,7 +110,7 @@ namespace TCSystem.MetaData
 
         public static Image ChangePersonTags(Image image, IEnumerable<PersonTag> personTags)
         {
-            return new Image(image.Id, image.FileName, image.ProcessingInfos,
+            return new(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
                 personTags.ToList(), image._tags);
@@ -217,17 +218,12 @@ namespace TCSystem.MetaData
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            return EqualsUtil.Equals(this, obj as Image, EqualsImp);
+        }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            return obj is Image image && Equals(image);
+        public bool Equals(Image other)
+        {
+            return EqualsUtil.Equals(this, other, EqualsImp);
         }
 
         public override int GetHashCode()
@@ -334,7 +330,7 @@ namespace TCSystem.MetaData
             );
         }
 
-        private bool Equals(Image other)
+        private bool EqualsImp(Image other)
         {
             return Id == other.Id &&
                    string.Equals(FileName, other.FileName) &&
