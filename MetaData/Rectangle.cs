@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -82,14 +83,19 @@ namespace TCSystem.MetaData
             }
         }
 
-        public static Rectangle FromJsonString(string jsonString)
+        public string ToJsonString()
         {
-            return FromJson(JObject.Parse(jsonString));
+            return ToJson().ToString(Formatting.None);
         }
 
         public override string ToString()
         {
             return $"{X}, {Y}, {W}, {H}";
+        }
+
+        public static Rectangle FromJsonString(string jsonString)
+        {
+            return FromJson(JObject.Parse(jsonString));
         }
 
         public FixedPoint32 X { get; }

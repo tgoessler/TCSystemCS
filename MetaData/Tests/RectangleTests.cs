@@ -21,6 +21,7 @@
 #region Usings
 
 using NUnit.Framework;
+using System;
 
 #endregion
 
@@ -32,13 +33,12 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void EqualsTest()
         {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void EqualsTest1()
-        {
-            Assert.Fail();
+            var rectangle = TestData.Rectangle1;
+            Assert.That(rectangle.Equals(TestData.Rectangle1), Is.True);
+            Assert.That(rectangle.Equals(TestData.Rectangle2), Is.True);
+            Assert.That(rectangle.Equals(TestData.RectangleZero), Is.True);
+            Assert.That(rectangle.Equals(null), Is.False);
+            Assert.That(rectangle, Is.Not.EqualTo(string.Empty));
         }
 
         [Test]
@@ -50,7 +50,12 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void FromJsonStringTest()
         {
-            Assert.Fail();
+            string ToJson(Rectangle d) => d.ToJsonString();
+            Func<string, Rectangle> fromJson = Rectangle.FromJsonString;
+
+            TestUtil.FromJsonStringTest(TestData.Rectangle1, ToJson, fromJson);
+            TestUtil.FromJsonStringTest(TestData.Rectangle2, ToJson, fromJson);
+            TestUtil.FromJsonStringTest(TestData.RectangleZero, ToJson, fromJson);
         }
 
         [Test]
@@ -62,7 +67,11 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void GetHashCodeTest()
         {
-            Assert.Fail();
+            var data1 = TestData.Rectangle1;
+            var copyOfData1 = new Rectangle(data1.X, data1.Y, data1.W, data1.H);
+
+            TestUtil.GetHashCodeTest(TestData.RectangleZero, TestData.Rectangle1,
+                TestData.Rectangle2, copyOfData1);
         }
 
         [Test]

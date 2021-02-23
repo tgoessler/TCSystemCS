@@ -33,7 +33,12 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void EqualsTest()
         {
-            Assert.Fail();
+            var person = TestData.Person1;
+            Assert.That(person.Equals(TestData.Person1), Is.True);
+            Assert.That(person.Equals(TestData.Person2), Is.True);
+            Assert.That(person.Equals(TestData.PersonZero), Is.True);
+            Assert.That(person.Equals(null), Is.False);
+            Assert.That(person, Is.Not.EqualTo(string.Empty));
         }
 
         [Test]
@@ -50,7 +55,11 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void GetHashCodeTest()
         {
-            Assert.Fail();
+            var data1 = TestData.Person1;
+            var copyOfData1 = new Person(data1.Id, data1.Name, data1.EmailDigest, data1.LiveId, data1.SourceId);
+
+            TestUtil.GetHashCodeTest(TestData.PersonZero, TestData.Person1,
+                TestData.Person2, copyOfData1);
         }
 
         [Test]

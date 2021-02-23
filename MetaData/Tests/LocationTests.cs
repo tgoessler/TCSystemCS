@@ -34,14 +34,13 @@ namespace TCSystem.MetaData.Tests
         public void EqualsTest()
         {
             var location1 = TestData.Location1;
-            Assert.That(location1.Equals(null), Is.False);
-            Assert.That(location1, Is.Not.EqualTo(TestData.Address1));
             Assert.That(location1.Equals(TestData.Location1), Is.True);
+            Assert.That(location1.Equals(TestData.Location2), Is.True);
+            Assert.That(location1.Equals(TestData.LocationZero), Is.True);
+            Assert.That(location1.Equals(null), Is.False);
+            Assert.That(location1, Is.Not.EqualTo(string.Empty));
 
-            var location2 = TestData.Location2;
-            Assert.That(location1, !Is.EqualTo(location2));
-
-            location2 = new Location(location1.Address, location1.Point);
+            var location2 = new Location(location1.Address, location1.Point);
             Assert.That(location1, Is.EqualTo(location2));
         }
 
@@ -59,10 +58,11 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void GetHashCodeTest()
         {
-            Assert.That(TestData.LocationZero.GetHashCode(), Is.Not.EqualTo(TestData.Location1.GetHashCode()));
+            var data1 = TestData.Location1;
+            var copyOfData1 = new Location(data1.Address, data1.Point);
 
-            var location = new Location(TestData.Location1.Address, TestData.Location1.Point);
-            Assert.That(location.GetHashCode(), Is.EqualTo(TestData.Location1.GetHashCode()));
+            TestUtil.GetHashCodeTest(TestData.LocationZero, TestData.Location1,
+                TestData.Location2, copyOfData1);
         }
 
         [Test]

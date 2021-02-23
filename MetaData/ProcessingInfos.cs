@@ -39,37 +39,4 @@ namespace TCSystem.MetaData
 
         DlibImageClassification600 = 1 << 20
     }
-
-    public static class ProcessingInfoUtil
-    {
-#region Public
-
-        public static bool AreAllFaceDetectionsDone(this ProcessingInfos processingInfos)
-        {
-            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 &&
-                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0 &&
-                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection1000) != 0 &&
-                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection2000) != 0;
-        }
-
-        public static bool AreAllFrontalFaceDetectionsDone(this ProcessingInfos processingInfos)
-        {
-            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 &&
-                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0;
-        }
-
-        public static bool IsFrontalFaceDetection(this ProcessingInfos processingInfos)
-        {
-            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 ||
-                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0;
-        }
-
-        public static bool IsCnnFaceDetection(this ProcessingInfos processingInfos)
-        {
-            return (processingInfos & ProcessingInfos.DlibCnnFaceDetection1000) != 0 ||
-                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection2000) != 0;
-        }
-
-#endregion
-    }
 }

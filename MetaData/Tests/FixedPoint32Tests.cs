@@ -33,13 +33,12 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void EqualsTest()
         {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void EqualsTest1()
-        {
-            Assert.Fail();
+            var fixedPoint32 = TestData.FixedPoint321;
+            Assert.That(fixedPoint32.Equals(TestData.FixedPoint321), Is.True);
+            Assert.That(fixedPoint32.Equals(TestData.FixedPoint322), Is.False);
+            Assert.That(fixedPoint32.Equals(TestData.FixedPoint32Zero), Is.False);
+            Assert.That(fixedPoint32.Equals(null), Is.False);
+            Assert.That(fixedPoint32, Is.Not.EqualTo(string.Empty));
         }
 
         [Test]
@@ -66,7 +65,11 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void GetHashCodeTest()
         {
-            Assert.Fail();
+            var data1 = TestData.FixedPoint321;
+            var copyOfData1 = new FixedPoint32(data1.RawValue);
+
+            TestUtil.GetHashCodeTest(TestData.FixedPoint32Zero, TestData.FixedPoint321,
+                TestData.FixedPoint322, copyOfData1);
         }
 
         [Test]

@@ -33,12 +33,12 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void EqualsTest()
         {
-            var point = TestData.PointZero;
-            Assert.That(point.Equals(TestData.PointZero), Is.True);
-            Assert.That(point.Equals(TestData.Point1), Is.False);
-            Assert.That(point.Equals(TestData.Point2), Is.False);
+            var point = TestData.GpsPointZero;
+            Assert.That(point.Equals(TestData.GpsPointZero), Is.True);
+            Assert.That(point.Equals(TestData.GpsPoint1), Is.False);
+            Assert.That(point.Equals(TestData.GpsPoint2), Is.False);
             Assert.That(point.Equals(null), Is.False);
-            Assert.That(point, Is.Not.EqualTo(TestData.Address1));
+            Assert.That(point, Is.Not.EqualTo(string.Empty));
         }
 
         [Test]
@@ -47,24 +47,25 @@ namespace TCSystem.MetaData.Tests
             string ToJson(GpsPoint d) => d.ToJsonString();
             Func<string, GpsPoint> fromJson = GpsPoint.FromJsonString;
 
-            TestUtil.FromJsonStringTest(TestData.Point1, ToJson, fromJson);
-            TestUtil.FromJsonStringTest(TestData.Point2, ToJson, fromJson);
-            TestUtil.FromJsonStringTest(TestData.PointZero, ToJson, fromJson);
+            TestUtil.FromJsonStringTest(TestData.GpsPoint1, ToJson, fromJson);
+            TestUtil.FromJsonStringTest(TestData.GpsPoint2, ToJson, fromJson);
+            TestUtil.FromJsonStringTest(TestData.GpsPointZero, ToJson, fromJson);
         }
 
         [Test]
         public void GetHashCodeTest()
         {
-            Assert.That(TestData.PointZero.GetHashCode(), Is.Not.EqualTo(TestData.Point1.GetHashCode()));
+            var data1 = TestData.GpsPoint1;
+            var copyOfData1 = new GpsPoint(data1.Latitude, data1.Longitude, data1.Altitude);
 
-            var point = new GpsPoint(TestData.Point1.Latitude, TestData.Point1.Longitude, TestData.Point1.Altitude);
-            Assert.That(point.GetHashCode(), Is.EqualTo(TestData.Point1.GetHashCode()));
+            TestUtil.GetHashCodeTest(TestData.GpsPointZero, TestData.GpsPoint1,
+                TestData.GpsPoint2, copyOfData1);
         }
 
         [Test]
         public void ToStringTest()
         {
-            Assert.That(TestData.PointZero.ToString(), Is.Not.EqualTo(""));
+            Assert.That(TestData.GpsPointZero.ToString(), Is.Not.EqualTo(""));
         }
     }
 }

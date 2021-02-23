@@ -31,5 +31,15 @@ namespace TCSystem.MetaData.Tests
             var jsonData = fromJson(jsonString);
             Assert.That(jsonData, Is.EqualTo(data1));
         }
+
+        public static void GetHashCodeTest<TData>(TData dataZero, TData data1, TData data2, TData copyOfData1)
+        {
+            Assert.That(dataZero.GetHashCode(), !Is.EqualTo(data1.GetHashCode()));
+            Assert.That(dataZero.GetHashCode(), !Is.EqualTo(data2.GetHashCode()));
+            Assert.That(data1.GetHashCode(), !Is.EqualTo(data2.GetHashCode()));
+
+            Assert.That(data1.GetHashCode(), Is.EqualTo(copyOfData1.GetHashCode()));
+        }
+
     }
 }

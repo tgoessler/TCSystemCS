@@ -48,6 +48,8 @@ namespace TCSystem.MetaData.Tests
             var address1 = TestData.Address1;
             Assert.That(address1.Equals(null), Is.False);
             Assert.That(address1.Equals(TestData.Address1), Is.True);
+            Assert.That(address1.Equals(null), Is.False);
+            Assert.That(address1, Is.Not.EqualTo(string.Empty));
 
             var address2 = TestData.Address2;
             Assert.That(address1, !Is.EqualTo(address2));
@@ -84,12 +86,11 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void GetHashCodeTest()
         {
-            var address1 = TestData.Address1;
-            var address2 = TestData.Address2;
-            Assert.That(address1.GetHashCode(), !Is.EqualTo(address2.GetHashCode()));
+            var data1 = TestData.Address1;
+            var copyOfData1 = new Address(data1.Country, data1.Province, data1.City, data1.Street);
 
-            address2 = new Address(address1.Country, address1.Province, address1.City, address1.Street);
-            Assert.That(address1.GetHashCode(), Is.EqualTo(address2.GetHashCode()));
+            TestUtil.GetHashCodeTest(TestData.AddressZero, TestData.Address1,
+                TestData.Address2, copyOfData1);
         }
     }
 }

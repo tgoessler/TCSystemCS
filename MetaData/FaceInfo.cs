@@ -41,7 +41,7 @@ namespace TCSystem.MetaData
             FaceId = faceId;
             PersonId = personId == Constants.EmptyPersonId ? Constants.InvalidId : personId;
             FaceMode = faceMode;
-            FaceDescriptor = faceDescriptor.ToArray();
+            FaceDescriptor = (faceDescriptor ?? Array.Empty<FixedPoint64>()).ToArray();
         }
 
         public override bool Equals(object obj)

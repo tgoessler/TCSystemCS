@@ -26,25 +26,39 @@ namespace TCSystem.MetaData.Tests
     {
 #region Public
 
+        public static readonly FixedPoint32 FixedPoint32Zero = new(0);
+        public static readonly FixedPoint32 FixedPoint321 = new(-123);
+        public static readonly FixedPoint32 FixedPoint322 = new(1234);
+
+        public static readonly FixedPoint64 FixedPoint64Zero = new(0);
+        public static readonly FixedPoint64 FixedPoint641 = new(-123);
+        public static readonly FixedPoint64 FixedPoint642 = new(1234);
+
+        public static readonly Rectangle RectangleZero = new(FixedPoint32Zero, FixedPoint32Zero, FixedPoint32Zero, FixedPoint32Zero);
+        public static readonly Rectangle Rectangle1 = new(FixedPoint321, FixedPoint321, FixedPoint322, FixedPoint321);
+        public static readonly Rectangle Rectangle2 = new(FixedPoint322, FixedPoint321, FixedPoint321, FixedPoint322);
+
         public static readonly Address AddressZero = new();
         public static readonly Address Address1 = new("Austria", "Steiermark", "Graz", "Steinberg 155");
         public static readonly Address Address2 = new("Kroatien", "Dalmatien", "Skradin", "Vadavuca 1");
 
-        public static readonly GpsPosition PositionZero = new(0, 0, 0, 0, false);
-        public static readonly GpsPosition Position1 = new(47, 4, 15, 16, false);
-        public static readonly GpsPosition Position2 = new(47, 4, 15, 16, true);
+        public static readonly GpsPosition GpsPositionZero = new(0, 0, 0, 0, false);
+        public static readonly GpsPosition GpsPosition1 = new(47, 4, 15, 16, false);
+        public static readonly GpsPosition GpsPosition2 = new(47, 4, 15, 16, true);
 
-        public static readonly GpsPoint PointZero = new();
-        public static readonly GpsPoint Point1 = new(PositionZero, Position1, 365);
-        public static readonly GpsPoint Point2 = new(PositionZero, Position2, -365);
+        public static readonly GpsPoint GpsPointZero = new();
+        public static readonly GpsPoint GpsPoint1 = new(GpsPositionZero, GpsPosition1, 365);
+        public static readonly GpsPoint GpsPoint2 = new(GpsPositionZero, GpsPosition2, -365);
 
-        public static readonly Location LocationZero = new(AddressZero, PointZero);
-        public static readonly Location Location1 = new(Address1, Point1);
-        public static readonly Location Location2 = new(Address2, Point2);
+        public static readonly Location LocationZero = new(AddressZero, GpsPointZero);
+        public static readonly Location Location1 = new(Address1, GpsPoint1);
+        public static readonly Location Location2 = new(Address2, GpsPoint2);
 
-        public static readonly FaceDistanceInfo FaceDistanceInfo1 = new(0, new FixedPoint32(10), 1);
-        public static readonly FaceDistanceInfo FaceDistanceInfo2 = new(1, new FixedPoint32(5), 2);
+        public static readonly FaceDistanceInfo FaceDistanceInfoZero = new(0, FixedPoint32Zero, 0);
+        public static readonly FaceDistanceInfo FaceDistanceInfo1 = new(1, new FixedPoint32(10), 1);
+        public static readonly FaceDistanceInfo FaceDistanceInfo2 = new(2, new FixedPoint32(5), 2);
 
+        public static readonly FaceInfo FaceInfoZero = new(Constants.InvalidId, Constants.InvalidId, Constants.InvalidId, FaceMode.DlibCnn, null);
         public static readonly FaceInfo FaceInfo1 = new(1, 2, 3, FaceMode.DlibCnn, new FixedPoint64[0]);
         public static readonly FaceInfo FaceInfo2 = new(2, 3, 4, FaceMode.DlibCnn, 
             Enumerable.Repeat(new FixedPoint64(1), 128));

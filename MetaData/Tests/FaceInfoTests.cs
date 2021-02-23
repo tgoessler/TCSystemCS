@@ -33,7 +33,12 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void EqualsTest()
         {
-            Assert.Fail();
+            var faceInfo = TestData.FaceInfo1;
+            Assert.That(faceInfo.Equals(TestData.FaceInfo1), Is.True);
+            Assert.That(faceInfo.Equals(TestData.FaceInfo2), Is.False);
+            Assert.That(faceInfo.Equals(TestData.FaceInfoZero), Is.False);
+            Assert.That(faceInfo.Equals(null), Is.False);
+            Assert.That(faceInfo, Is.Not.EqualTo(string.Empty));
         }
 
         [Test]
@@ -55,7 +60,12 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void GetHashCodeTest()
         {
-            Assert.Fail();
+            var data1 = TestData.FaceInfo1;
+            var copyOfData1 = new FaceInfo(data1.FileId, data1.FaceId, 
+                data1.PersonId, data1.FaceMode, data1.FaceDescriptor);
+
+            TestUtil.GetHashCodeTest(TestData.FaceInfoZero, TestData.FaceInfo1,
+                TestData.FaceInfo2, copyOfData1);
         }
 
         [Test]
