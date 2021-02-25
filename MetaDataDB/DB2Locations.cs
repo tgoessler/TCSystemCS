@@ -35,46 +35,12 @@ namespace TCSystem.MetaDataDB
 
         public IList<string> GetFilesOfAddress(Address address, bool useProvinceAlsoIfEmpty)
         {
-            var isEmptyAddress = address.Equals(Address.Undefined);
             using (var command = new SqliteCommand
             {
                 Connection = Instance.Connection
             })
             {
-                var commandText = $"SELECT DISTINCT {TableFiles}.{IdFileName} FROM {TableFileLocations} " +
-                                  $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileLocations}.{IdFileId} " +
-                                  $"    INNER JOIN {TableLocations} ON {TableLocations}.{IdLocationId}={TableFileLocations}.{IdLocationId} " +
-                                  $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileLocations}.{IdFileId} " +
-                                  "WHERE ";
-                var whereCommands = new List<string>();
-                if (address.Country.Length > 0 || isEmptyAddress)
-                {
-                    whereCommands.Add($"{TableLocations}.{IdCountry}=@{IdCountry}");
-                    command.Parameters.AddWithValue($"@{IdCountry}", address.Country);
-                }
-
-                if (address.Province.Length > 0 || useProvinceAlsoIfEmpty || isEmptyAddress)
-                {
-                    whereCommands.Add($"{TableLocations}.{IdProvince}=@{IdProvince}");
-                    command.Parameters.AddWithValue($"@{IdProvince}", address.Province);
-                }
-
-                if (address.City.Length > 0 || isEmptyAddress)
-                {
-                    whereCommands.Add($"{TableLocations}.{IdCity}=@{IdCity}");
-                    command.Parameters.AddWithValue($"@{IdCity}", address.City);
-                }
-
-                if (address.Street.Length > 0 || isEmptyAddress)
-                {
-                    whereCommands.Add($"{TableLocations}.{IdStreet}=@{IdStreet}");
-                    command.Parameters.AddWithValue($"@{IdStreet}", address.Street);
-                }
-
-                commandText += string.Join(" AND ", whereCommands);
-                commandText += $" ORDER by {TableFileData}.{IdDateTaken} DESC;";
-                command.CommandText = commandText;
-
+                SetupGetFilesOfAddressCommand(command, address, useProvinceAlsoIfEmpty, false);
                 using (var reader = command.ExecuteReader())
                 {
                     var files = new List<string>();
@@ -237,45 +203,12 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfAddress(Address address, bool useProvinceAlsoIfEmpty)
         {
-            var isEmptyAddress = address.Equals(Address.Undefined);
             using (var command = new SqliteCommand
             {
                 Connection = Instance.Connection
             })
             {
-                var commandText = $"SELECT DISTINCT COUNT({TableFiles}.{IdFileName}) FROM {TableFileLocations} " +
-                                  $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileLocations}.{IdFileId} " +
-                                  $"    INNER JOIN {TableLocations} ON {TableLocations}.{IdLocationId}={TableFileLocations}.{IdLocationId} " +
-                                  $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileLocations}.{IdFileId} " +
-                                  "WHERE ";
-                var whereCommands = new List<string>();
-                if (address.Country.Length > 0 || isEmptyAddress)
-                {
-                    whereCommands.Add($"{TableLocations}.{IdCountry}=@{IdCountry}");
-                    command.Parameters.AddWithValue($"@{IdCountry}", address.Country);
-                }
-
-                if (address.Province.Length > 0 || useProvinceAlsoIfEmpty || isEmptyAddress)
-                {
-                    whereCommands.Add($"{TableLocations}.{IdProvince}=@{IdProvince}");
-                    command.Parameters.AddWithValue($"@{IdProvince}", address.Province);
-                }
-
-                if (address.City.Length > 0 || isEmptyAddress)
-                {
-                    whereCommands.Add($"{TableLocations}.{IdCity}=@{IdCity}");
-                    command.Parameters.AddWithValue($"@{IdCity}", address.City);
-                }
-
-                if (address.Street.Length > 0 || isEmptyAddress)
-                {
-                    whereCommands.Add($"{TableLocations}.{IdStreet}=@{IdStreet}");
-                    command.Parameters.AddWithValue($"@{IdStreet}", address.Street);
-                }
-
-                commandText += string.Join(" AND ", whereCommands);
-                commandText += $" ORDER by {TableFileData}.{IdDateTaken} DESC;";
-                command.CommandText = commandText;
+                SetupGetFilesOfAddressCommand(command, address, useProvinceAlsoIfEmpty, true);
 
                 var result = command.ExecuteScalar();
                 return (long?) result ?? 0;
@@ -305,6 +238,47 @@ namespace TCSystem.MetaDataDB
 #endregion
 
 #region Private
+
+        private static void SetupGetFilesOfAddressCommand(SqliteCommand command, Address address, bool useProvinceAlsoIfEmpty, bool countOnly)
+        {
+            var isEmptyAddress = address.Equals(Address.Undefined);
+
+            command.CommandText = (countOnly
+                ? $"SELECT DISTINCT COUNT({TableFiles}.{IdFileName}) FROM {TableFileLocations} "
+                : $"SELECT DISTINCT {TableFiles}.{IdFileName} FROM {TableFileLocations} ") +
+                  $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileLocations}.{IdFileId} " +
+                  $"    INNER JOIN {TableLocations} ON {TableLocations}.{IdLocationId}={TableFileLocations}.{IdLocationId} " +
+                  $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileLocations}.{IdFileId} " +
+                  "WHERE ";
+
+            var whereCommands = new List<string>();
+            if (address.Country.Length > 0 || isEmptyAddress)
+            {
+                whereCommands.Add($"{TableLocations}.{IdCountry}=@{IdCountry}");
+                command.Parameters.AddWithValue($"@{IdCountry}", address.Country);
+            }
+
+            if (address.Province.Length > 0 || useProvinceAlsoIfEmpty || isEmptyAddress)
+            {
+                whereCommands.Add($"{TableLocations}.{IdProvince}=@{IdProvince}");
+                command.Parameters.AddWithValue($"@{IdProvince}", address.Province);
+            }
+
+            if (address.City.Length > 0 || isEmptyAddress)
+            {
+                whereCommands.Add($"{TableLocations}.{IdCity}=@{IdCity}");
+                command.Parameters.AddWithValue($"@{IdCity}", address.City);
+            }
+
+            if (address.Street.Length > 0 || isEmptyAddress)
+            {
+                whereCommands.Add($"{TableLocations}.{IdStreet}=@{IdStreet}");
+                command.Parameters.AddWithValue($"@{IdStreet}", address.Street);
+            }
+
+            command.CommandText += string.Join(" AND ", whereCommands) + 
+                                   (countOnly ? ";" : $" ORDER by {TableFileData}.{IdDateTaken} DESC;");
+        }
 
         private long GetLocationId(Address address, SqliteTransaction transaction)
         {

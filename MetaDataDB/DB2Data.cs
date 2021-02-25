@@ -130,31 +130,12 @@ namespace TCSystem.MetaDataDB
 
         public IList<string> GetFilesOfYear(DateTimeOffset year)
         {
-            var filter = year == Image.InvalidDateTaken
-                ? $"WHERE {TableFileData}.{IdDateTaken}=@Date "
-                : $"WHERE {TableFileData}.{IdDateTaken} BETWEEN @StartDate AND @EndDate ";
-
             using (var command = new SqliteCommand
             {
                 Connection = Instance.Connection,
-                CommandText = $"SELECT DISTINCT {IdFileName} " +
-                              $"FROM {TableFiles} " +
-                              $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId} " +
-                              filter +
-                              $"ORDER by {TableFileData}.{IdDateTaken} DESC;"
             })
             {
-                if (year == Image.InvalidDateTaken)
-                {
-                    command.Parameters.AddWithValue("@Date", year.ToString("s"));
-                }
-                else
-                {
-                    var startDate = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0));
-                    var endDate = new DateTimeOffset(new DateTime(year.Year, 12, 31, 23, 59, 59));
-                    command.Parameters.AddWithValue("@StartDate", startDate);
-                    command.Parameters.AddWithValue("@EndDate", endDate);
-                }
+                SetupGetFilesOfYearCommand(command, year, false);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -166,6 +147,35 @@ namespace TCSystem.MetaDataDB
 
                     return fileNames;
                 }
+            }
+        }
+
+        private static void SetupGetFilesOfYearCommand(SqliteCommand command, DateTimeOffset year, bool countOnly)
+        {
+            var filter = year == Image.InvalidDateTaken
+                ? $"WHERE {TableFileData}.{IdDateTaken}=@Date "
+                : $"WHERE {TableFileData}.{IdDateTaken} BETWEEN @StartDate AND @EndDate ";
+
+            command.CommandText = countOnly ? 
+                $"SELECT DISTINCT COUNT({IdFileName}) " :
+                $"SELECT DISTINCT {IdFileName} ";
+            command.CommandText += $"FROM {TableFiles} " +
+                                   $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId} " +
+                                   filter;
+            command.CommandText += countOnly ?
+                ";" :
+                $"ORDER by {TableFileData}.{IdDateTaken} DESC;";
+
+            if (year == Image.InvalidDateTaken)
+            {
+                command.Parameters.AddWithValue("@Date", year.ToString("s"));
+            }
+            else
+            {
+                var startDate = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0));
+                var endDate = new DateTimeOffset(new DateTime(year.Year, 12, 31, 23, 59, 59));
+                command.Parameters.AddWithValue("@StartDate", startDate);
+                command.Parameters.AddWithValue("@EndDate", endDate);
             }
         }
 
@@ -194,31 +204,12 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfYear(DateTimeOffset year)
         {
-            var filter = year == Image.InvalidDateTaken
-                ? $"WHERE {TableFileData}.{IdDateTaken}=@Date "
-                : $"WHERE {TableFileData}.{IdDateTaken} BETWEEN @StartDate AND @EndDate ";
-
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
-                CommandText = $"SELECT DISTINCT COUNT({IdFileName}) " +
-                              $"FROM {TableFiles} " +
-                              $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId} " +
-                              filter +
-                              $"ORDER by {TableFileData}.{IdDateTaken} DESC;"
+                Connection = Instance.Connection
             })
             {
-                if (year == Image.InvalidDateTaken)
-                {
-                    command.Parameters.AddWithValue("@Date", year.ToString("s"));
-                }
-                else
-                {
-                    var startDate = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0));
-                    var endDate = new DateTimeOffset(new DateTime(year.Year, 12, 31, 23, 59, 59));
-                    command.Parameters.AddWithValue("@StartDate", startDate);
-                    command.Parameters.AddWithValue("@EndDate", endDate);
-                }
+                SetupGetFilesOfYearCommand(command, year, true);
 
                 var result = command.ExecuteScalar();
                 return (long?) result ?? 0;
