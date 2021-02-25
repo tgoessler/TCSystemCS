@@ -326,7 +326,7 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        private Address ReadAddress(SqliteDataReader reader, int startIndex)
+        private static Address ReadAddress(SqliteDataReader reader, int startIndex)
         {
             return new(
                 reader.GetString(startIndex + 0),

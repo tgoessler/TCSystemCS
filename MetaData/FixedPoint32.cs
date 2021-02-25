@@ -73,6 +73,16 @@ namespace TCSystem.MetaData
             return FromJson(JToken.Parse(jsonString));
         }
 
+        public static bool operator ==(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return !lhs.Equals(rhs);
+        }
+
         public float Value => RawValue / (float) (1 << 16);
         public int RawValue { get; }
 

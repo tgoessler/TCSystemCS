@@ -98,6 +98,16 @@ namespace TCSystem.MetaData
             return FromJson(JObject.Parse(jsonString));
         }
 
+        public static bool operator ==(Rectangle lhs, Rectangle rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Rectangle lhs, Rectangle rhs)
+        {
+            return !lhs.Equals(rhs);
+        }
+
         public FixedPoint32 X { get; }
         public FixedPoint32 Y { get; }
         public FixedPoint32 W { get; }

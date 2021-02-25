@@ -31,7 +31,7 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData
 {
-    public class FaceInfo : IEquatable<FaceInfo>
+    public sealed class FaceInfo : IEquatable<FaceInfo>
     {
 #region Public
 
