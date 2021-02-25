@@ -110,11 +110,8 @@ namespace TCSystem.MetaData.Tests
         public void GetHashCodeTest()
         {
             var data1 = TestData.GpsPosition1;
-            var copyOfData1 = new GpsPosition(TestData.GpsPosition1.Degrees,
-                TestData.GpsPosition1.Minutes,
-                TestData.GpsPosition1.Seconds,
-                TestData.GpsPosition1.SubSeconds,
-                TestData.GpsPosition1.Negative);
+            var copyOfData1 = new GpsPosition(data1.Degrees,
+                data1.Minutes, data1.Seconds, data1.SubSeconds, data1.Negative);
 
             TestUtil.GetHashCodeTest(TestData.GpsPositionZero, TestData.GpsPosition1,
                 TestData.GpsPosition2, copyOfData1);

@@ -89,6 +89,16 @@ namespace TCSystem.MetaData
             return array.Select(v => FromJson((JObject) v));
         }
 
+        public static bool operator ==(FaceDistanceInfo lhs, FaceDistanceInfo rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(FaceDistanceInfo lhs, FaceDistanceInfo rhs)
+        {
+            return !lhs.Equals(rhs);
+        }
+
         public long FaceId1 { get; }
         public FixedPoint32 Distance { get; }
         public long FaceId2 { get; }
