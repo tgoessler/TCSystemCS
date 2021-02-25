@@ -1,4 +1,4 @@
-name: .NET
+name: Build Release
 
 on:
   push:
@@ -26,4 +26,4 @@ jobs:
       run: dotnet restore
     
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build -c Release --no-restore
