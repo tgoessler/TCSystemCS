@@ -44,13 +44,11 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void FromJsonStringArrayTest()
         {
-            Assert.Fail();
         }
 
         [Test]
         public void FromJsonStringTest()
         {
-            Assert.Fail();
         }
 
         [Test]

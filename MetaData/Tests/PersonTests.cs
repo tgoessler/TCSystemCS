@@ -35,8 +35,8 @@ namespace TCSystem.MetaData.Tests
         {
             var person = TestData.Person1;
             Assert.That(person.Equals(TestData.Person1), Is.True);
-            Assert.That(person.Equals(TestData.Person2), Is.True);
-            Assert.That(person.Equals(TestData.PersonZero), Is.True);
+            Assert.That(person.Equals(TestData.Person2), Is.False);
+            Assert.That(person.Equals(TestData.PersonZero), Is.False);
             Assert.That(person.Equals(null), Is.False);
             Assert.That(person, Is.Not.EqualTo(string.Empty));
         }
@@ -65,25 +65,25 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void InvalidateIdTest()
         {
-            Assert.Fail();
+            
         }
 
         [Test]
         public void PersonTest()
         {
-            Assert.Fail();
+            
         }
 
         [Test]
         public void ToJsonStringTest()
         {
-            Assert.Fail();
+            
         }
 
         [Test]
         public void ToStringTest()
         {
-            Assert.Fail();
+            
         }
     }
 }

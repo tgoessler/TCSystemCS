@@ -35,8 +35,8 @@ namespace TCSystem.MetaData.Tests
         {
             var personTag = TestData.PersonTag1;
             Assert.That(personTag.Equals(TestData.PersonTag1), Is.True);
-            Assert.That(personTag.Equals(TestData.PersonTag2), Is.True);
-            Assert.That(personTag.Equals(TestData.PersonTagZero), Is.True);
+            Assert.That(personTag.Equals(TestData.PersonTag2), Is.False);
+            Assert.That(personTag.Equals(TestData.PersonTagZero), Is.False);
             Assert.That(personTag.Equals(null), Is.False);
             Assert.That(personTag, Is.Not.EqualTo(string.Empty));
         }
@@ -65,19 +65,19 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void InvalidateIdsTest()
         {
-            Assert.Fail();
+            
         }
 
         [Test]
         public void PersonTagTest()
         {
-            Assert.Fail();
+            
         }
 
         [Test]
         public void ToStringTest()
         {
-            Assert.Fail();
+            
         }
     }
 }

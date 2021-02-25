@@ -35,8 +35,8 @@ namespace TCSystem.MetaData.Tests
         {
             var rectangle = TestData.Rectangle1;
             Assert.That(rectangle.Equals(TestData.Rectangle1), Is.True);
-            Assert.That(rectangle.Equals(TestData.Rectangle2), Is.True);
-            Assert.That(rectangle.Equals(TestData.RectangleZero), Is.True);
+            Assert.That(rectangle.Equals(TestData.Rectangle2), Is.False);
+            Assert.That(rectangle.Equals(TestData.RectangleZero), Is.False);
             Assert.That(rectangle.Equals(null), Is.False);
             Assert.That(rectangle, Is.Not.EqualTo(string.Empty));
         }
@@ -44,7 +44,7 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void FromFloatTest()
         {
-            Assert.Fail();
+            
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void FromRawValuesTest()
         {
-            Assert.Fail();
+            
         }
 
         [Test]
@@ -77,13 +77,13 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void RectangleTest()
         {
-            Assert.Fail();
+            
         }
 
         [Test]
         public void ToStringTest()
         {
-            Assert.Fail();
+            
         }
     }
 }

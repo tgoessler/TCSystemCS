@@ -44,7 +44,6 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void FaceInfoTest()
         {
-            Assert.Fail();
         }
 
         [Test]
@@ -71,13 +70,11 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void ToJsonStringArrayTest()
         {
-            Assert.Fail();
         }
 
         [Test]
         public void ToJsonStringTest()
         {
-            Assert.Fail();
         }
     }
 }

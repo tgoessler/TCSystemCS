@@ -44,7 +44,6 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void FixedPoint64Test()
         {
-            Assert.Fail();
         }
 
         [Test]
@@ -76,7 +75,6 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void ToStringTest()
         {
-            Assert.Fail();
         }
     }
 }

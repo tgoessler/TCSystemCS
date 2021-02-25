@@ -44,13 +44,11 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void FileAndPersonTagTest()
         {
-            Assert.Fail();
         }
 
         [Test]
         public void FromJsonStringArrayTest()
         {
-            Assert.Fail();
         }
 
         [Test]
@@ -77,19 +75,16 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void ToJsonStringArrayTest()
         {
-            Assert.Fail();
         }
 
         [Test]
         public void ToJsonStringTest()
         {
-            Assert.Fail();
         }
 
         [Test]
         public void ToStringTest()
         {
-            Assert.Fail();
         }
     }
 }

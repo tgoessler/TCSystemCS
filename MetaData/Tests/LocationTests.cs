@@ -35,8 +35,8 @@ namespace TCSystem.MetaData.Tests
         {
             var location1 = TestData.Location1;
             Assert.That(location1.Equals(TestData.Location1), Is.True);
-            Assert.That(location1.Equals(TestData.Location2), Is.True);
-            Assert.That(location1.Equals(TestData.LocationZero), Is.True);
+            Assert.That(location1.Equals(TestData.Location2), Is.False);
+            Assert.That(location1.Equals(TestData.LocationZero), Is.False);
             Assert.That(location1.Equals(null), Is.False);
             Assert.That(location1, Is.Not.EqualTo(string.Empty));
 
@@ -76,11 +76,11 @@ namespace TCSystem.MetaData.Tests
 
             var location = new Location(TestData.Location1.Address, null);
             Assert.That(location.IsAllSet, Is.False);
-            Assert.That(location.IsSet, Is.False);
+            Assert.That(location.IsSet, Is.True);
 
             location = new Location(null, TestData.Location1.Point);
             Assert.That(location.IsAllSet, Is.False);
-            Assert.That(location.IsSet, Is.False);
+            Assert.That(location.IsSet, Is.True);
         }
     }
 }

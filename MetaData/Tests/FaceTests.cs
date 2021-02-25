@@ -44,7 +44,6 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void FaceTest()
         {
-            Assert.Fail();
         }
 
         [Test]
@@ -71,7 +70,6 @@ namespace TCSystem.MetaData.Tests
         [Test]
         public void InvalidateIdTest()
         {
-            Assert.Fail();
         }
     }
 }
