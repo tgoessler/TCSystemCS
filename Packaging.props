@@ -1,12 +1,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageProjectUrl>https://github.com/ThE-TiGeR/TCSystemCS</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/ThE-TiGeR/TCSystemCS</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <NuGetPushSource>https://api.nuget.org/v3/index.json</NuGetPushSource>
+    <GeneratePackageOnBuild Condition="'$(GeneratePackageOnBuild)' == ''">true</GeneratePackageOnBuild>
+    <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</PackageProjectUrl>
+    <RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</RepositoryUrl>
+    <RepositoryType Condition="'$(RepositoryType)' == ''">Git</RepositoryType>
+    <PackageLicenseFile Condition="'$(PackageLicenseFile)' == ''">LICENSE</PackageLicenseFile>
+    <NuGetPushSource Condition="'$(NuGetPushSource)' == ''">https://api.nuget.org/v3/index.json</NuGetPushSource>
+    <NuGetPushFolder Condition="'$(NuGetPushFolder)' == ''">D:\Source\NuGetPackages\</NuGetPushFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +21,11 @@
           DependsOnTargets="Rebuild">
     <Exec WorkingDirectory="$(OutputPath)"
           Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate" />
+  </Target>
+
+  <Target Name="NugetCopy" DependsOnTargets="Rebuild">
+    <Exec WorkingDirectory="$(OutputPath)"
+          Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushFolder)" />
   </Target>
 
 </Project>

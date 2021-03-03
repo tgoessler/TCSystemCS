@@ -40,6 +40,8 @@ namespace TCSystem.Thread
         Task ClearOpenCommandsAsync();
 
         void StopThread();
+
+        int NumOpenActions { get; }
         bool IsBusy { get; }
 
 #endregion

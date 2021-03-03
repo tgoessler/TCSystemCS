@@ -20,4 +20,6 @@
     <ProjectReference Include="..\TCSystem.MetaData.csproj" />
   </ItemGroup>
 
+  <Import Project="..\..\NoPackaging.props"></Import>
+
 </Project>
