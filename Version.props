@@ -3,7 +3,9 @@
   <PropertyGroup>
     <Company>TCSystem</Company>
     <Authors>Thomas Gößler</Authors>
-    <Version>1.0.0-beta.3</Version>
+    <!--<DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''">.1</DevlopmentVersionSuffix>
+    <Version>1.0.0-rc.1$(DevlopmentVersionSuffix)</Version-->
+    <Version>1.0.0</Version>
     <NamespaceName>at.tcsystem</NamespaceName>
     <Copyright>Copyright © Thomas Gößler 2021</Copyright>
   </PropertyGroup>

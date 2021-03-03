@@ -107,6 +107,16 @@ namespace TCSystem.Thread
             }
         }
 
+        public int NumOpenActions
+        {
+            get
+            {
+                using (_semaphoreSlim.Lock())
+                {
+                    return _workerActions.Count;
+                }
+            }
+        }
         public bool IsBusy
         {
             get
