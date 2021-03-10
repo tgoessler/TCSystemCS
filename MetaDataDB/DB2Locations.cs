@@ -153,7 +153,7 @@ namespace TCSystem.MetaDataDB
             var locationId = location == null || location.Equals(Location.NoLocation) ? 
                 Constants.EmptyLocationId : GetLocationId(location.Address, transaction);
                 
-            if (locationId == Constants.InvalidId)
+            if (locationId == Constants.InvalidId && location != null)
             {
                 using (var command = new SqliteCommand
                 {
