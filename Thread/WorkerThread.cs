@@ -117,6 +117,7 @@ namespace TCSystem.Thread
                 }
             }
         }
+
         public bool IsBusy
         {
             get

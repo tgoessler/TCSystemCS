@@ -22,27 +22,34 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 #endregion
 
 namespace TCSystem.Thread
 {
-    public static class SemaphoreSlimExt
+    internal readonly struct SemaphoreSlimLock : IDisposable
     {
 #region Public
 
-        public static IDisposable Lock(this SemaphoreSlim semaphore)
+        public void Dispose()
         {
-            semaphore.Wait();
-            return new SemaphoreSlimLock(semaphore);
+            _semaphore?.Release();
         }
 
-        public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
+#endregion
+
+#region Internal
+
+        internal SemaphoreSlimLock(SemaphoreSlim semaphore)
         {
-            await semaphore.WaitAsync();
-            return new SemaphoreSlimLock(semaphore);
+            _semaphore = semaphore;
         }
+
+#endregion
+
+#region Private
+
+        private readonly SemaphoreSlim _semaphore;
 
 #endregion
     }
