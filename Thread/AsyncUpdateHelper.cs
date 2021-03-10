@@ -21,24 +21,51 @@
 #region Usings
 
 using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
 namespace TCSystem.Thread
 {
-    public static class Factory
+    internal sealed class AsyncUpdateHelper : IAsyncUpdateHelper
     {
 #region Public
 
-        public static IWorkerThread CreateWorkerThread(string name, ThreadPriority priority)
+        public async Task BeginUpdateAsync()
         {
-            return new WorkerThread(name, priority);
+            Interlocked.Increment(ref _numPendingStops);
+            Interlocked.Increment(ref _numPendingUpdates);
+
+            await _semaphore.WaitAsync();
+
+            Interlocked.Decrement(ref _numPendingStops);
+            Interlocked.Decrement(ref _numPendingUpdates);
         }
 
-        public static IAsyncUpdateHelper CreateAsyncUpdateHelper()
+        public async Task WaitAsync()
         {
-            return new AsyncUpdateHelper();
+            Interlocked.Increment(ref _numPendingUpdates);
+
+            await _semaphore.WaitAsync();
+
+            Interlocked.Decrement(ref _numPendingUpdates);
         }
+
+        public void EndUpdate()
+        {
+            _semaphore.Release();
+        }
+
+        public bool ShouldStop => Interlocked.Read(ref _numPendingStops) > 0;
+        public bool IsUpdatePending => Interlocked.Read(ref _numPendingUpdates) > 0;
+
+#endregion
+
+#region Private
+
+        private long _numPendingStops;
+        private long _numPendingUpdates;
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
 #endregion
     }

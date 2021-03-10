@@ -20,25 +20,21 @@
 
 #region Usings
 
-using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
 namespace TCSystem.Thread
 {
-    public static class Factory
+    public interface IAsyncUpdateHelper
     {
 #region Public
 
-        public static IWorkerThread CreateWorkerThread(string name, ThreadPriority priority)
-        {
-            return new WorkerThread(name, priority);
-        }
-
-        public static IAsyncUpdateHelper CreateAsyncUpdateHelper()
-        {
-            return new AsyncUpdateHelper();
-        }
+        Task BeginUpdateAsync();
+        Task WaitAsync();
+        void EndUpdate();
+        bool ShouldStop { get; }
+        bool IsUpdatePending { get; }
 
 #endregion
     }
