@@ -6,4 +6,6 @@
 
   <Import Project="..\NoPackaging.props"></Import>
 
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('$(MSBuildThisFile)', '$(MSBuildThisFileDirectory)../'))" />
+
 </Project>

@@ -31,6 +31,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.MetaDataDB", "MetaDataDB\TCSystem.MetaDataDB.csproj", "{34ABFE86-D4BA-4672-B323-AE0AF186AFE5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10 Tools", "10 Tools", "{6CE560F4-9704-4980-8C99-023B7FC95801}"
+	ProjectSection(SolutionItems) = preProject
+		Tools\Directory.Build.targets = Tools\Directory.Build.targets
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Tools.DBConverter", "Tools\DBConverter\TCSystem.Tools.DBConverter.csproj", "{DEBDD0BE-D427-4174-81FA-FD91DD11FACB}"
 EndProject
