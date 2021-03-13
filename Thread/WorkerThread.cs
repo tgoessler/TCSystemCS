@@ -96,7 +96,7 @@ namespace TCSystem.Thread
 
                 using (_semaphoreSlim.Lock())
                 {
-                    ClearOpenCommands();
+                    _workerActions.Clear();
                     _running = false;
                     _event.Set();
                 }
