@@ -5,7 +5,7 @@
     <Authors>Thomas Gößler</Authors>
     <!--<DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''">.1</DevlopmentVersionSuffix>
     <Version>1.0.0-rc.1$(DevlopmentVersionSuffix)</Version-->
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <NamespaceName>at.tcsystem</NamespaceName>
     <Copyright>Copyright © Thomas Gößler 2021</Copyright>
   </PropertyGroup>
