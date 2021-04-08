@@ -38,7 +38,6 @@ namespace TCSystem.Logging
             File = 1,
             Debugger = 2,
             Console = 4,
-            AppCenter = 8
         }
 
         public static Logger GetLogger(Type type)
@@ -92,7 +91,6 @@ namespace TCSystem.Logging
             loggerConfiguration = AddDebuggerLoggerConfiguration(options, loggerConfiguration);
             loggerConfiguration = AddConsoleLoggerConfiguration(options, loggerConfiguration);
             loggerConfiguration = AddFileLoggerConfiguration(options, loggingFile, maxFiles, maxFileSizeKb, loggerConfiguration);
-            loggerConfiguration = AddAppCenterLoggerConfiguration(options, loggerConfiguration);
 
             configure?.Invoke(loggerConfiguration);
 
@@ -116,16 +114,6 @@ namespace TCSystem.Logging
 #else
                 .MinimumLevel.Information();
 #endif
-            return loggerConfiguration;
-        }
-
-        private static LoggerConfiguration AddAppCenterLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
-        {
-            if ((options & LoggingOptions.AppCenter) == LoggingOptions.AppCenter)
-            {
-                loggerConfiguration = loggerConfiguration.WriteTo.Async(a => { a.AppCenterSink(); });
-            }
-
             return loggerConfiguration;
         }
 

@@ -28,7 +28,7 @@ using Serilog.Events;
 
 #endregion
 
-namespace TCSystem.Logging
+namespace TCSystem.Logging.AppCenter
 {
     internal sealed class AppCenterSink : ILogEventSink
     {

@@ -26,17 +26,23 @@ using Serilog.Configuration;
 
 #endregion
 
-namespace TCSystem.Logging
+namespace TCSystem.Logging.AppCenter
 {
-    internal static class AppCenterSinkExtensions
+    public static class AppCenterExt
     {
 #region Public
 
-        public static LoggerConfiguration AppCenterSink(
-            this LoggerSinkConfiguration loggerConfiguration,
-            IFormatProvider formatProvider = null)
+        public static LoggerConfiguration AppCenter(this LoggerSinkConfiguration loggerConfiguration,
+                                                        bool async= true, IFormatProvider formatProvider = null)
         {
-            return loggerConfiguration.Sink(new AppCenterSink(formatProvider));
+            return async ?
+                loggerConfiguration.Async(l => l.Sink(new AppCenterSink(formatProvider))) :
+                loggerConfiguration.Sink(new AppCenterSink(formatProvider));
+        }
+
+        public static LoggerConfiguration AppCenter(this LoggerConfiguration loggerConfiguration, bool async=true, IFormatProvider formatProvider = null)
+        {
+            return loggerConfiguration.WriteTo.AppCenter(async, formatProvider);
         }
 
 #endregion
