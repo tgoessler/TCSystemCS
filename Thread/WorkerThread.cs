@@ -154,6 +154,15 @@ namespace TCSystem.Thread
                         action.Value.Action();
                     }
                 }
+                catch (ThreadAbortException e)
+                {
+                    if (_isBusy)
+                    {
+                        Log.Instance.Error($"Error executing {action?.Message}", e);
+                    }
+
+                    _running = false;
+                }
                 catch (Exception e)
                 {
                     Log.Instance.Error($"Error executing {action?.Message}", e);
