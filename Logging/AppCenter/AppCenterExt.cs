@@ -33,16 +33,16 @@ namespace TCSystem.Logging.AppCenter
 #region Public
 
         public static LoggerConfiguration AppCenter(this LoggerSinkConfiguration loggerConfiguration,
-                                                        bool async= true, IFormatProvider formatProvider = null)
+                                                        bool logAsync= true, IFormatProvider formatProvider = null)
         {
-            return async ?
+            return logAsync ?
                 loggerConfiguration.Async(l => l.Sink(new AppCenterSink(formatProvider))) :
                 loggerConfiguration.Sink(new AppCenterSink(formatProvider));
         }
 
-        public static LoggerConfiguration AppCenter(this LoggerConfiguration loggerConfiguration, bool async=true, IFormatProvider formatProvider = null)
+        public static LoggerConfiguration AppCenter(this LoggerConfiguration loggerConfiguration, bool logAsync = true, IFormatProvider formatProvider = null)
         {
-            return loggerConfiguration.WriteTo.AppCenter(async, formatProvider);
+            return loggerConfiguration.WriteTo.AppCenter(logAsync, formatProvider);
         }
 
 #endregion
