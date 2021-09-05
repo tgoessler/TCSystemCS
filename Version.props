@@ -4,7 +4,7 @@
     <Company>TCSystem</Company>
     <Authors>Thomas Gößler</Authors>
     <DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''"></DevlopmentVersionSuffix>
-    <Version>2.0.0-beta.4$(DevlopmentVersionSuffix)</Version>
+    <Version>2.0.0-rc.1$(DevlopmentVersionSuffix)</Version>
     <NamespaceName>at.tcsystem</NamespaceName>
     <Copyright>Copyright © Thomas Gößler 2021</Copyright>
   </PropertyGroup>
