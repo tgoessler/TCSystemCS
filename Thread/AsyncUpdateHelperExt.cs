@@ -21,27 +21,26 @@
 #region Usings
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 #endregion
 
 namespace TCSystem.Thread
 {
-    public static class SemaphoreSlimExt
+    public static class AsyncUpdateHelperExt
     {
 #region Public
 
-        public static IDisposable Lock(this SemaphoreSlim semaphore)
+        public static async Task<IDisposable> BeginUpdateScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
         {
-            semaphore.Wait();
-            return new SemaphoreSlimLock(semaphore);
+            await asyncUpdateHelper.BeginUpdateAsync();
+            return new AsyncUpdateScope(asyncUpdateHelper);
         }
 
-        public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
+        public static async Task<IDisposable> WaitScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
         {
-            await semaphore.WaitAsync();
-            return new SemaphoreSlimLock(semaphore);
+            await asyncUpdateHelper.WaitAsync();
+            return new AsyncUpdateScope(asyncUpdateHelper);
         }
 
 #endregion

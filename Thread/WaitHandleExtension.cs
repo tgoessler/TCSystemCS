@@ -20,7 +20,6 @@
 
 #region Usings
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,20 +27,18 @@ using System.Threading.Tasks;
 
 namespace TCSystem.Thread
 {
-    public static class SemaphoreSlimExt
+    internal static class WaitHandleExt
     {
 #region Public
 
-        public static IDisposable Lock(this SemaphoreSlim semaphore)
+        public static async Task WaitOneAsync(this WaitHandle waitHandle)
         {
-            semaphore.Wait();
-            return new SemaphoreSlimLock(semaphore);
+            await Task.Run(waitHandle.WaitOne);
         }
 
-        public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
+        public static async Task WaitOneAsync(this WaitHandle waitHandle, CancellationToken cancellationToken)
         {
-            await semaphore.WaitAsync();
-            return new SemaphoreSlimLock(semaphore);
+            await Task.Run(waitHandle.WaitOne, cancellationToken);
         }
 
 #endregion

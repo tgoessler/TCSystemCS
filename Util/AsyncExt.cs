@@ -21,27 +21,23 @@
 #region Usings
 
 using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Util
 {
-    public static class SemaphoreSlimExt
+    public static class AsyncExt
     {
 #region Public
 
-        public static IDisposable Lock(this SemaphoreSlim semaphore)
+        public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
         {
-            semaphore.Wait();
-            return new SemaphoreSlimLock(semaphore);
-        }
-
-        public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
-        {
-            await semaphore.WaitAsync();
-            return new SemaphoreSlimLock(semaphore);
+            foreach (var item in source)
+            {
+                await action(item);
+            }
         }
 
 #endregion

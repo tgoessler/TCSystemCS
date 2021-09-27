@@ -21,28 +21,30 @@
 #region Usings
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 #endregion
 
 namespace TCSystem.Thread
 {
-    public static class SemaphoreSlimExt
+    internal readonly struct AsyncUpdateScope : IDisposable
     {
 #region Public
 
-        public static IDisposable Lock(this SemaphoreSlim semaphore)
+        public AsyncUpdateScope(IAsyncUpdateHelper asyncUpdateHelper)
         {
-            semaphore.Wait();
-            return new SemaphoreSlimLock(semaphore);
+            _asyncUpdateHelper = asyncUpdateHelper;
         }
 
-        public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
+        public void Dispose()
         {
-            await semaphore.WaitAsync();
-            return new SemaphoreSlimLock(semaphore);
+            _asyncUpdateHelper.EndUpdate();
         }
+
+#endregion
+
+#region Private
+
+        private readonly IAsyncUpdateHelper _asyncUpdateHelper;
 
 #endregion
     }

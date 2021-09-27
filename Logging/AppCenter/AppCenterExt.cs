@@ -21,27 +21,28 @@
 #region Usings
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
+using Serilog;
+using Serilog.Configuration;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Logging.AppCenter
 {
-    public static class SemaphoreSlimExt
+    public static class AppCenterExt
     {
 #region Public
 
-        public static IDisposable Lock(this SemaphoreSlim semaphore)
+        public static LoggerConfiguration AppCenter(this LoggerSinkConfiguration loggerConfiguration,
+                                                        bool logAsync= true, IFormatProvider formatProvider = null)
         {
-            semaphore.Wait();
-            return new SemaphoreSlimLock(semaphore);
+            return logAsync ?
+                loggerConfiguration.Async(l => l.Sink(new AppCenterSink(formatProvider))) :
+                loggerConfiguration.Sink(new AppCenterSink(formatProvider));
         }
 
-        public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
+        public static LoggerConfiguration AppCenter(this LoggerConfiguration loggerConfiguration, bool logAsync = true, IFormatProvider formatProvider = null)
         {
-            await semaphore.WaitAsync();
-            return new SemaphoreSlimLock(semaphore);
+            return loggerConfiguration.WriteTo.AppCenter(logAsync, formatProvider);
         }
 
 #endregion

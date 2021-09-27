@@ -20,29 +20,21 @@
 
 #region Usings
 
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 #endregion
 
 namespace TCSystem.Thread
 {
-    public static class SemaphoreSlimExt
+    public interface IAsyncUpdateHelper
     {
 #region Public
 
-        public static IDisposable Lock(this SemaphoreSlim semaphore)
-        {
-            semaphore.Wait();
-            return new SemaphoreSlimLock(semaphore);
-        }
-
-        public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
-        {
-            await semaphore.WaitAsync();
-            return new SemaphoreSlimLock(semaphore);
-        }
+        Task BeginUpdateAsync();
+        Task WaitAsync();
+        void EndUpdate();
+        bool ShouldStop { get; }
+        bool IsUpdatePending { get; }
 
 #endregion
     }

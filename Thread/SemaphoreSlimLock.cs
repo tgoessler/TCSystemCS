@@ -21,23 +21,35 @@
 #region Usings
 
 using System;
-using Serilog;
-using Serilog.Configuration;
+using System.Threading;
 
 #endregion
 
-namespace TCSystem.Logging
+namespace TCSystem.Thread
 {
-    internal static class AppCenterSinkExtensions
+    internal readonly struct SemaphoreSlimLock : IDisposable
     {
 #region Public
 
-        public static LoggerConfiguration AppCenterSink(
-            this LoggerSinkConfiguration loggerConfiguration,
-            IFormatProvider formatProvider = null)
+        public void Dispose()
         {
-            return loggerConfiguration.Sink(new AppCenterSink(formatProvider));
+            _semaphore?.Release();
         }
+
+#endregion
+
+#region Internal
+
+        internal SemaphoreSlimLock(SemaphoreSlim semaphore)
+        {
+            _semaphore = semaphore;
+        }
+
+#endregion
+
+#region Private
+
+        private readonly SemaphoreSlim _semaphore;
 
 #endregion
     }

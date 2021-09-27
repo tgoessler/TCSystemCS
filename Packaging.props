@@ -8,6 +8,8 @@
     <PackageLicenseFile Condition="'$(PackageLicenseFile)' == ''">LICENSE</PackageLicenseFile>
     <NuGetPushSource Condition="'$(NuGetPushSource)' == ''">https://api.nuget.org/v3/index.json</NuGetPushSource>
     <NuGetPushFolder Condition="'$(NuGetPushFolder)' == ''">D:\Source\NuGetPackages\</NuGetPushFolder>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

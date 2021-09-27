@@ -35,6 +35,11 @@ namespace TCSystem.Thread
             return new WorkerThread(name, priority);
         }
 
+        public static IAsyncUpdateHelper CreateAsyncUpdateHelper()
+        {
+            return new AsyncUpdateHelper();
+        }
+
 #endregion
     }
 }

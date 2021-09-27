@@ -31,6 +31,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.MetaDataDB", "MetaDataDB\TCSystem.MetaDataDB.csproj", "{34ABFE86-D4BA-4672-B323-AE0AF186AFE5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10 Tools", "10 Tools", "{6CE560F4-9704-4980-8C99-023B7FC95801}"
+	ProjectSection(SolutionItems) = preProject
+		Tools\Directory.Build.targets = Tools\Directory.Build.targets
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Tools.DBConverter", "Tools\DBConverter\TCSystem.Tools.DBConverter.csproj", "{DEBDD0BE-D427-4174-81FA-FD91DD11FACB}"
 EndProject
@@ -41,6 +44,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.MetaData.Tests", "MetaData\Tests\TCSystem.MetaData.Tests.csproj", "{3DC9B76A-5104-46E2-82A5-0AC6A59F2A5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Util", "Util\TCSystem.Util.csproj", "{7E5A256C-2761-4949-AA04-A4CCF2999913}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Logging.AppCenter", "Logging\AppCenter\TCSystem.Logging.AppCenter.csproj", "{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +81,10 @@ Global
 		{7E5A256C-2761-4949-AA04-A4CCF2999913}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E5A256C-2761-4949-AA04-A4CCF2999913}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E5A256C-2761-4949-AA04-A4CCF2999913}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +98,7 @@ Global
 		{DEBDD0BE-D427-4174-81FA-FD91DD11FACB} = {6CE560F4-9704-4980-8C99-023B7FC95801}
 		{3DC9B76A-5104-46E2-82A5-0AC6A59F2A5A} = {4CE1B8F2-510C-49F2-A0F0-B9D00EDEB28A}
 		{7E5A256C-2761-4949-AA04-A4CCF2999913} = {4057D25C-619C-46D2-AC77-47B5D34BE2F4}
+		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB} = {4057D25C-619C-46D2-AC77-47B5D34BE2F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54DE1ACD-AE36-4599-8245-A013203F9814}
