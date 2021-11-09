@@ -82,9 +82,12 @@ namespace TCSystem.MetaDataDB
 
         void EnableUnsafeMode();
         void EnableDefaultMode();
+
         event Action<Image> MetaDataAdded;
         event Action<Image> MetaDataRemoved;
         event Action<(Image NewData, Image OldData)> MetaDataChanged;
+
+        string Version { get; }
 
 #endregion
     }

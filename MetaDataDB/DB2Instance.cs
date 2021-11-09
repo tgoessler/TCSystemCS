@@ -118,6 +118,8 @@ namespace TCSystem.MetaDataDB
 
         internal SqliteConnection Connection { get; private set; }
 
+        internal string Version => _dbVersion;
+
 #endregion
 
 #region Private
@@ -462,9 +464,9 @@ namespace TCSystem.MetaDataDB
             {
                 transaction = BeginTransaction();
 
-                ExecuteNonQuery($"INSERT INTO {TableKeyValues}({IdKey}, {IdValue}) VALUES('Version', '{Version}');",
+                ExecuteNonQuery($"INSERT INTO {TableKeyValues}({IdKey}, {IdValue}) VALUES('Version', '{CurrentVersion}');",
                     transaction);
-                _dbVersion = Version;
+                _dbVersion = CurrentVersion;
             }
             else if (_dbVersion == Version10)
             {
@@ -477,7 +479,7 @@ namespace TCSystem.MetaDataDB
 
                 UpdateDbVersion(transaction);
             }
-            else if (_dbVersion != Version)
+            else if (_dbVersion != CurrentVersion)
             {
                 CloseDataBaseFile();
                 OpenDataBaseFile();
@@ -502,8 +504,8 @@ namespace TCSystem.MetaDataDB
 
         private void UpdateDbVersion(SqliteTransaction transaction)
         {
-            _dbVersion = Version;
-            ExecuteNonQuery($"UPDATE {TableKeyValues} SET {IdValue}='{Version}' WHERE {IdKey}='Version';",
+            _dbVersion = CurrentVersion;
+            ExecuteNonQuery($"UPDATE {TableKeyValues} SET {IdValue}='{CurrentVersion}' WHERE {IdKey}='Version';",
                 transaction);
         }
 
