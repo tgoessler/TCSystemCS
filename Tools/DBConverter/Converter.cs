@@ -80,6 +80,11 @@ namespace TCSystem.Tools.DBConverter
             {
                 Log.Instance.Fatal("Received exception", e);
             }
+            finally
+            {
+                MetaDataDB.Factory.Destroy(ref db1);
+                MetaDataDB.Factory.Destroy(ref db2);
+            }
 
             Factory.DeInitLogging();
         }
@@ -102,12 +107,18 @@ namespace TCSystem.Tools.DBConverter
                     var originalData = ConvertFile(fileName);
                     CheckConvertedData(fileName, originalData);
                 }
+                stopWatch.Stop();
+                Log.Instance.Info($"ConvertDB done in {stopWatch.ElapsedMilliseconds}ms.");
+
+
+                Log.Instance.Info($"Checking DB");
+                stopWatch.Start();
 
                 CheckDbCounters();
                 CheckData();
 
                 stopWatch.Stop();
-                Log.Instance.Info($"ConvertDB done in {stopWatch.ElapsedMilliseconds}ms.");
+                Log.Instance.Info($"Checking DB done in {stopWatch.ElapsedMilliseconds}ms.");
             }
             catch (Exception e)
             {
@@ -118,6 +129,8 @@ namespace TCSystem.Tools.DBConverter
         // ReSharper disable once UnusedMember.Local
         private void CheckData()
         {
+            Log.Instance.Info("Checking data");
+
             CheckFiles();
             CheckYears();
             CheckTags();
@@ -127,6 +140,8 @@ namespace TCSystem.Tools.DBConverter
 
         private void CheckFiles()
         {
+            Log.Instance.Info("Checking files");
+
             var files1 = _fromDB.GetAllFilesLike();
             var files2 = _toDB.GetAllFilesLike();
             var files3 = files1.Except(files2).ToArray();
@@ -176,7 +191,9 @@ namespace TCSystem.Tools.DBConverter
         }
 
         private void CheckFolder(string folder)
-        {
+        { 
+            Log.Instance.Info($"Checking folder {folder}");
+
             var num1 = _fromDB.GetNumFilesOfFolder(folder);
             var num2 = _toDB.GetNumFilesOfFolder(folder);
             if (num1 != num2)
@@ -201,6 +218,8 @@ namespace TCSystem.Tools.DBConverter
 
         private void CheckYears()
         {
+            Log.Instance.Info("Checking years");
+
             var years1 = _fromDB.GetAllYears();
             var years2 = _toDB.GetAllYears();
             var years3 = years1.Except(years2).ToArray();
@@ -230,6 +249,8 @@ namespace TCSystem.Tools.DBConverter
 
         private void CheckPersons()
         {
+            Log.Instance.Info("Checking persons");
+
             var personNames1 = _fromDB.GetAllPersonNamesLike();
             var personNames2 = _toDB.GetAllPersonNamesLike();
             var personNames3 = personNames1.Except(personNames2).ToArray();
@@ -266,6 +287,8 @@ namespace TCSystem.Tools.DBConverter
 
         private void CheckTags()
         {
+            Log.Instance.Info("Checking tags");
+
             var tags1 = _fromDB.GetAllTagsLike();
             var tags2 = _toDB.GetAllTagsLike();
             var tags3 = tags1.Except(tags2).ToArray();
@@ -295,6 +318,8 @@ namespace TCSystem.Tools.DBConverter
 
         private void CheckLocations()
         {
+            Log.Instance.Info("Checking locations");
+
             var locations1 = _fromDB.GetAllLocationsLike();
             var locations2 = _toDB.GetAllLocationsLike();
             var locations3 = locations1.Except(locations2).ToArray();
@@ -328,6 +353,8 @@ namespace TCSystem.Tools.DBConverter
         // ReSharper disable once UnusedMember.Local
         private void CheckDbCounters()
         {
+            Log.Instance.Info("Checking counters");
+
             if (_fromDB.GetNumFiles() != _toDB.GetNumFiles())
             {
                 throw new InvalidProgramException($"Num files different {_fromDB.GetNumFiles()} != {_toDB.GetNumFiles()}");
@@ -338,7 +365,8 @@ namespace TCSystem.Tools.DBConverter
                 Log.Instance.Warn($"Num tags different {_fromDB.GetNumTags()} != {_toDB.GetNumTags()}");
             }
 
-            if (_fromDB.GetNumPersons() + 1 != _toDB.GetNumPersons())
+            var add = _fromDB.Version == "1.0" ? 1 : 0;
+            if (_fromDB.GetNumPersons() + add != _toDB.GetNumPersons())
             {
                 Log.Instance.Warn($"Num persons different {_fromDB.GetNumPersons()} != {_toDB.GetNumPersons()}");
             }

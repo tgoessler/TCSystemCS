@@ -148,12 +148,12 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public long AddLocation(Location location, SqliteTransaction transaction)
+        public long AddLocation(Location location, SqliteTransaction transaction, bool force=false)
         {
             var locationId = location == null || location.Equals(Location.NoLocation) ? 
                 Constants.EmptyLocationId : GetLocationId(location.Address, transaction);
                 
-            if (locationId == Constants.InvalidId && location != null)
+            if (force || (locationId == Constants.InvalidId && location != null))
             {
                 using (var command = new SqliteCommand
                 {

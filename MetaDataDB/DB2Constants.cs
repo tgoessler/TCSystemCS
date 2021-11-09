@@ -24,7 +24,7 @@ namespace TCSystem.MetaDataDB
     {
 #region Protected
 
-        protected const string Version = "1.1";
+        protected const string CurrentVersion = "1.1";
         protected const string Version10 = "1.0";
 
         protected const string TableKeyValues = "KeyValues";

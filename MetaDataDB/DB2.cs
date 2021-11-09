@@ -478,7 +478,7 @@ namespace TCSystem.MetaDataDB
                     // add an empty address first
                     if (_locations.GetNumLocations(transaction) == 0)
                     {
-                        var id = _locations.AddLocation(Location.NoLocation, transaction);
+                        var id = _locations.AddLocation(Location.NoLocation, transaction, true);
                         if (id != Constants.EmptyLocationId)
                         {
                             Log.Instance.Error($"Empty location id not {Constants.EmptyLocationId}, id ={id}");
@@ -520,6 +520,8 @@ namespace TCSystem.MetaDataDB
         private readonly DB2Data _data = new();
         private readonly SemaphoreSlim _lock = new(1);
 
-#endregion
+        public string Version => _instance.Version;
+
+        #endregion
     }
 }
