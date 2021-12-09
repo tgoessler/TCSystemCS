@@ -21,11 +21,11 @@
 #region Usings
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
+using System.Data;
 using Microsoft.Data.Sqlite;
 using TCSystem.MetaData;
-using TCSystem.Thread;
 
 #endregion
 
@@ -37,141 +37,135 @@ namespace TCSystem.MetaDataDB
 
         public void EnableUnsafeMode()
         {
-            using (_lock.Lock())
-            {
-                _instance.EnableUnsafeMode();
-            }
+            _instance.EnableUnsafeMode();
         }
 
         public void EnableDefaultMode()
         {
-            using (_lock.Lock())
-            {
-                _instance.EnableDefaultMode();
-            }
+            _instance.EnableDefaultMode();
         }
 
         public long GetNumFiles()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _files.GetNumFiles();
+                return acquiredInstance.Instance.Files.GetNumFiles();
             }
         }
 
         public long GetNumTags()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _tags.GetNumTags(null);
+                return acquiredInstance.Instance.Tags.GetNumTags(null);
             }
         }
 
         public long GetNumPersons()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetNumPersons(null);
+                return acquiredInstance.Instance.Persons.GetNumPersons(null);
             }
         }
 
         public long GetNumLocations()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _locations.GetNumLocations();
+                return acquiredInstance.Instance.Locations.GetNumLocations();
             }
         }
 
         public long GetNumFaces()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetNumFaces();
+                return acquiredInstance.Instance.Persons.GetNumFaces();
             }
         }
 
         public long GetNumAutoDetectedFaces()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetNumAutoDetectedFaces();
+                return acquiredInstance.Instance.Persons.GetNumAutoDetectedFaces();
             }
         }
 
         public IList<string> GetAllFilesLike(string filter = null)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _files.GetAllFilesLike(filter);
+                return acquiredInstance.Instance.Files.GetAllFilesLike(filter);
             }
         }
 
         public IList<string> GetAllTagsLike(string filter = null)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _tags.GetAllTagsLike(filter);
+                return acquiredInstance.Instance.Tags.GetAllTagsLike(filter);
             }
         }
 
         public IList<Address> GetAllLocationsLike(string filter = null)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _locations.GetAllLocationsLike(filter);
+                return acquiredInstance.Instance.Locations.GetAllLocationsLike(filter);
             }
         }
 
         public IList<string> GetAllPersonNamesLike(string filter = null)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetAllPersonNamesLike(filter);
+                return acquiredInstance.Instance.Persons.GetAllPersonNamesLike(filter);
             }
         }
 
         public IList<DateTimeOffset> GetAllYears()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _data.GetAllYears();
+                return acquiredInstance.Instance.Data.GetAllYears();
             }
         }
 
         public IList<(string FileName, ProcessingInfos ProcessingInfo)> GetAllProcessingInformation()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _files.GetAllProcessingInformation();
+                return acquiredInstance.Instance.Files.GetAllProcessingInformation();
             }
         }
 
         public IDictionary<string, DateTimeOffset> GetAllFileAndModifiedDates()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _files.GetAllFileAndModifiedDates();
+                return acquiredInstance.Instance.Files.GetAllFileAndModifiedDates();
             }
         }
 
         public IList<FaceInfo> GetAllFaceInfos()
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetAllFaceInfos();
+                return acquiredInstance.Instance.Persons.GetAllFaceInfos();
             }
         }
 
         public Image GetMetaData(string fileName)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
                 Image image = null;
-                var fileId = _files.GetFileId(fileName, null);
+                long fileId = acquiredInstance.Instance.Files.GetFileId(fileName, null);
                 if (fileId != Constants.InvalidId)
                 {
-                    image = GetMetaData(fileId, null);
+                    image = GetMetaData(fileId, acquiredInstance.Instance, null);
                 }
 
                 return image;
@@ -180,13 +174,13 @@ namespace TCSystem.MetaDataDB
 
         public Location GetLocation(string fileName)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
                 Location location = null;
-                var fileId = _files.GetFileId(fileName, null);
+                long fileId = acquiredInstance.Instance.Files.GetFileId(fileName, null);
                 if (fileId != Constants.InvalidId)
                 {
-                    location = _locations.GetLocation(fileId, null);
+                    location = acquiredInstance.Instance.Locations.GetLocation(fileId, null);
                 }
 
                 return location;
@@ -195,43 +189,44 @@ namespace TCSystem.MetaDataDB
 
         public DateTimeOffset GetDateModified(string fileName)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _files.GetDateModified(fileName);
+                return acquiredInstance.Instance.Files.GetDateModified(fileName);
             }
         }
 
         public OrientationMode GetOrientation(string fileName)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _data.GetOrientation(fileName);
+                return acquiredInstance.Instance.Data.GetOrientation(fileName);
             }
         }
 
         public Image AddMetaData(Image data, DateTimeOffset dateModified)
         {
             Image oldData = null;
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                using (var transaction = _instance.BeginTransaction())
+                using (SqliteTransaction transaction = acquiredInstance.Instance.BeginTransaction())
                 {
-                    var fileId = _files.GetFileId(data.FileName, transaction);
+                    var files = acquiredInstance.Instance.Files;
+                    long fileId = files.GetFileId(data.FileName, transaction);
                     // to make sure that we only store the information once per file
                     if (fileId != Constants.InvalidId)
                     {
-                        oldData = GetMetaData(fileId, transaction);
-                        _files.RemoveFile(fileId, transaction);
+                        oldData = GetMetaData(fileId, acquiredInstance.Instance, transaction);
+                        files.RemoveFile(fileId, transaction);
                     }
 
-                    fileId = _files.AddFile(data, dateModified, transaction);
-                    _persons.AddPersonTags(fileId, data.PersonTags, transaction);
-                    _tags.AddTags(fileId, data.Tags, transaction);
-                    _locations.AddLocation(fileId, data.Location, transaction);
-                    _data.AddMetaData(fileId, data, transaction);
+                    fileId = files.AddFile(data, dateModified, transaction);
+                    acquiredInstance.Instance.Persons.AddPersonTags(fileId, data.PersonTags, transaction);
+                    acquiredInstance.Instance.Tags.AddTags(fileId, data.Tags, transaction);
+                    acquiredInstance.Instance.Locations.AddLocation(fileId, data.Location, transaction);
+                    acquiredInstance.Instance.Data.AddMetaData(fileId, data, transaction);
 
                     // get really save data for calling changed callback with correct data
-                    data = GetMetaData(fileId, transaction);
+                    data = GetMetaData(fileId, acquiredInstance.Instance, transaction);
 
                     transaction.Commit();
                 }
@@ -253,16 +248,17 @@ namespace TCSystem.MetaDataDB
         public void RemoveMetaData(string fileName)
         {
             Image data = null;
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                using (var transaction = _instance.BeginTransaction())
+                using (SqliteTransaction transaction = acquiredInstance.Instance.BeginTransaction())
                 {
-                    var fileId = _files.GetFileId(fileName, transaction);
+                    var files = acquiredInstance.Instance.Files;
+                    long fileId = files.GetFileId(fileName, transaction);
                     // to make sure that we only store the information once per file
                     if (fileId != Constants.InvalidId)
                     {
-                        data = GetMetaData(fileId, transaction);
-                        _files.RemoveFile(fileId, transaction);
+                        data = GetMetaData(fileId, acquiredInstance.Instance, transaction);
+                        files.RemoveFile(fileId, transaction);
                     }
 
                     transaction.Commit();
@@ -277,9 +273,9 @@ namespace TCSystem.MetaDataDB
 
         public void RemoveAllFilesOfFolder(string folder)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                _files.RemoveAllFilesOfFolder(folder);
+                acquiredInstance.Instance.Files.RemoveAllFilesOfFolder(folder);
             }
 
             MetaDataRemoved?.Invoke(null);
@@ -287,46 +283,47 @@ namespace TCSystem.MetaDataDB
 
         public Person GetPersonFromName(string name)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetPersonFromName(name, null);
+                return acquiredInstance.Instance.Persons.GetPersonFromName(name, null);
             }
         }
 
         public long GetPersonIdFromName(string name)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetPersonId(name, null);
+                return acquiredInstance.Instance.Persons.GetPersonId(name, null);
             }
         }
 
         public Person GetPersonFromId(long personId)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetPersonFromId(personId, null);
+                return acquiredInstance.Instance.Persons.GetPersonFromId(personId, null);
             }
         }
 
         public FileAndPersonTag GetFileAndPersonTagFromFaceId(long faceId)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetFileAndPersonTagFromFaceId(faceId);
+                return acquiredInstance.Instance.Persons.GetFileAndPersonTagFromFaceId(faceId);
             }
         }
 
         public long GetNumFilesOfTag(string tag)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                var num = _tags.GetNumFilesOfTag(tag);
-                if (num == 0)
+                var tags = acquiredInstance.Instance.Tags;
+                long num = tags.GetNumFilesOfTag(tag);
+                if (num == 0 && !acquiredInstance.Instance.ReadOnly)
                 {
-                    using (var transaction = _instance.BeginTransaction())
+                    using (SqliteTransaction transaction = acquiredInstance.Instance.BeginTransaction())
                     {
-                        _tags.RemoveTag(tag, transaction);
+                        tags.RemoveTag(tag, transaction);
                         transaction.Commit();
                     }
                 }
@@ -337,22 +334,23 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfYear(DateTimeOffset year)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _data.GetNumFilesOfYear(year);
+                return acquiredInstance.Instance.Data.GetNumFilesOfYear(year);
             }
         }
 
         public long GetNumFilesOfPerson(string person)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                var num = _persons.GetNumFilesOfPerson(person);
-                if (num == 0)
+                var persons = acquiredInstance.Instance.Persons;
+                long num = persons.GetNumFilesOfPerson(person);
+                if (num == 0 && !acquiredInstance.Instance.ReadOnly)
                 {
-                    using (var transaction = _instance.BeginTransaction())
+                    using (SqliteTransaction transaction = acquiredInstance.Instance.BeginTransaction())
                     {
-                        _persons.RemovePerson(person, transaction);
+                        persons.RemovePerson(person, transaction);
                         transaction.Commit();
                     }
                 }
@@ -363,14 +361,15 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfAddress(Address address, bool useProvinceAlsoIfEmpty)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                var num = _locations.GetNumFilesOfAddress(address, useProvinceAlsoIfEmpty);
-                if (num == 0)
+                var locations = acquiredInstance.Instance.Locations;
+                long num = locations.GetNumFilesOfAddress(address, useProvinceAlsoIfEmpty);
+                if (num == 0 && !acquiredInstance.Instance.ReadOnly)
                 {
-                    using (var transaction = _instance.BeginTransaction())
+                    using (SqliteTransaction transaction = acquiredInstance.Instance.BeginTransaction())
                     {
-                        _locations.RemoveAddress(address, transaction);
+                        locations.RemoveAddress(address, transaction);
                         transaction.Commit();
                     }
                 }
@@ -381,65 +380,65 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfFolder(string folder)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _files.GetNumAllFilesLike(folder);
+                return acquiredInstance.Instance.Files.GetNumAllFilesLike(folder);
             }
         }
 
         public IList<string> GetFilesOfTag(string tag)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _tags.GetFilesOfTag(tag);
+                return acquiredInstance.Instance.Tags.GetFilesOfTag(tag);
             }
         }
 
         public IList<string> GetFilesOfYear(DateTimeOffset year)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _data.GetFilesOfYear(year);
+                return acquiredInstance.Instance.Data.GetFilesOfYear(year);
             }
         }
 
         public IList<string> GetFilesOfPerson(string person)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetFilesOfPerson(person);
+                return acquiredInstance.Instance.Persons.GetFilesOfPerson(person);
             }
         }
 
         public IList<string> GetFilesOfAddress(Address address, bool useProvinceAlsoIfEmpty)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _locations.GetFilesOfAddress(address, useProvinceAlsoIfEmpty);
+                return acquiredInstance.Instance.Locations.GetFilesOfAddress(address, useProvinceAlsoIfEmpty);
             }
         }
 
         public IList<string> GetFilesOfFolder(string folder)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _files.GetAllFilesLike(folder);
+                return acquiredInstance.Instance.Files.GetAllFilesLike(folder);
             }
         }
 
         public IList<string> SearchForFiles(string searchFilter)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _files.SearchForFiles(searchFilter);
+                return acquiredInstance.Instance.Files.SearchForFiles(searchFilter);
             }
         }
 
         public IList<FileAndPersonTag> GetFileAndPersonTagsOfPerson(string name)
         {
-            using (_lock.Lock())
+            using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return _persons.GetFileAndPersonTags(name);
+                return acquiredInstance.Instance.Persons.GetFileAndPersonTags(name);
             }
         }
 
@@ -447,81 +446,133 @@ namespace TCSystem.MetaDataDB
         public event Action<Image> MetaDataRemoved;
         public event Action<(Image NewData, Image OldData)> MetaDataChanged;
 
+        public string Version => _instance.Version;
+
 #endregion
 
 #region Internal
 
-        internal DB2(string fileName)
+        internal DB2(string fileName, bool readOnly)
         {
-            using (_lock.Lock())
+            _instance = new DB2Instance(fileName, readOnly);
+
+            if (!readOnly)
             {
-                _instance.Open(fileName);
-
-                _files.Instance = _instance;
-                _persons.Instance = _instance;
-                _tags.Instance = _instance;
-                _locations.Instance = _instance;
-                _data.Instance = _instance;
-
-                using (var transaction = _instance.BeginTransaction())
+                // add an empty person first
+                if (_instance.Persons.GetNumPersons(null) == 0)
                 {
-                    // add an empty person first
-                    if (_persons.GetNumPersons(transaction) == 0)
+                    using (SqliteTransaction transaction = _instance.BeginTransaction())
                     {
-                        var id = _persons.AddPerson(new Person(Constants.InvalidId, "", "", "", ""), transaction);
+                        long id = _instance.Persons.AddPerson(new Person(Constants.InvalidId, "", "", "", ""), transaction);
                         if (id != Constants.EmptyPersonId)
                         {
                             Log.Instance.Error($"Empty person id not {Constants.EmptyPersonId}, id ={id}");
                         }
-                    }
 
-                    // add an empty address first
-                    if (_locations.GetNumLocations(transaction) == 0)
+                        transaction.Commit();
+                    }
+                }
+
+                // add an empty address first
+                if (_instance.Locations.GetNumLocations() == 0)
+                {
+                    using (SqliteTransaction transaction = _instance.BeginTransaction())
                     {
-                        var id = _locations.AddLocation(Location.NoLocation, transaction, true);
+                        long id = _instance.Locations.AddLocation(Location.NoLocation, transaction, true);
                         if (id != Constants.EmptyLocationId)
                         {
                             Log.Instance.Error($"Empty location id not {Constants.EmptyLocationId}, id ={id}");
                         }
-                    }
 
-                    transaction.Commit();
+                        transaction.Commit();
+                    }
                 }
             }
+
+            _instance.Connection.Close();
         }
 
         internal void Close()
         {
-            using (_lock.Lock())
+            while (_instances.TryPop(out DB2Instance instance))
             {
-                _instance.Close();
+                instance.Close();
             }
+
+            _instance.Close();
         }
 
 #endregion
 
 #region Private
 
-        private Image GetMetaData(long fileId, SqliteTransaction transaction)
+        private Image GetMetaData(long fileId, DB2Instance instance, SqliteTransaction transaction)
         {
-            var personTags = _persons.GetPersonTags(fileId, transaction);
-            var tags = _tags.GetTags(fileId, transaction);
-            var location = _locations.GetLocation(fileId, transaction);
-            var image = _data.GetMetaData(fileId, location, personTags, tags, transaction);
+            IReadOnlyList<PersonTag> personTags = instance.Persons.GetPersonTags(fileId, transaction);
+            IReadOnlyList<string> tags = instance.Tags.GetTags(fileId, transaction);
+            Location location = instance.Locations.GetLocation(fileId, transaction);
+            Image image = instance.Data.GetMetaData(fileId, location, personTags, tags, transaction);
             return image;
         }
 
+        private DB2Instance AcquireInstance()
+        {
+            if (!_instances.TryPop(out DB2Instance instance))
+            {
+                _totalCreatedConnections++;
+                Log.Instance.Info($"Creating new connection _totalCreatedConnections={_totalCreatedConnections}");
 
-        private readonly DB2Instance _instance = new();
-        private readonly DB2Files _files = new();
-        private readonly DB2Persons _persons = new();
-        private readonly DB2Tags _tags = new();
-        private readonly DB2Locations _locations = new();
-        private readonly DB2Data _data = new();
-        private readonly SemaphoreSlim _lock = new(1);
+                instance = _instance.Clone();
+            }
 
-        public string Version => _instance.Version;
+            if (instance.Connection.State != ConnectionState.Open)
+            {
+                instance.Connection.Open();
+            }
 
-        #endregion
+            return instance;
+        }
+
+        private void ReleaseInstance(DB2Instance instance)
+        {
+            if (!instance.ReadOnly && !instance.UnsafeModeEnabled)
+            {
+                instance.Connection.Close();
+            }
+
+            _instances.Push(instance);
+        }
+
+        private readonly struct InstanceAcquire : IDisposable
+        {
+#region Public
+
+            public InstanceAcquire(DB2 db2)
+            {
+                _db2 = db2;
+                Instance = db2.AcquireInstance();
+            }
+
+            public void Dispose()
+            {
+                _db2.ReleaseInstance(Instance);
+            }
+
+            public DB2Instance Instance { get; }
+
+#endregion
+
+#region Private
+
+            private readonly DB2 _db2;
+
+#endregion
+        }
+
+        private readonly DB2Instance _instance;
+        private readonly ConcurrentStack<DB2Instance> _instances = new();
+        private int _totalCreatedConnections;
+
+#endregion
     }
 }

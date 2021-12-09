@@ -347,6 +347,10 @@ namespace TCSystem.MetaDataDB
         }
 
         public DB2Instance Instance;
+        public DB2Persons(DB2Instance instance)
+        {
+            Instance = instance;
+        }
 
 #endregion
 

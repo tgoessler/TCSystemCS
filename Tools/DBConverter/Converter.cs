@@ -29,8 +29,6 @@ using TCSystem.MetaData;
 using TCSystem.MetaDataDB;
 using Factory = TCSystem.Logging.Factory;
 
-// ReSharper disable CognitiveComplexity
-
 #endregion
 
 namespace TCSystem.Tools.DBConverter
@@ -39,7 +37,7 @@ namespace TCSystem.Tools.DBConverter
     {
 #region Public
 
-        public void Start(IDB2 from, IDB2 to, IEnumerable<string> folders)
+        public void Start(IDB2Read from, IDB2 to, IEnumerable<string> folders)
         {
             _fromDB = from;
             _toDB = to;
@@ -68,8 +66,8 @@ namespace TCSystem.Tools.DBConverter
 
             File.Delete(args[1]);
 
-            var db1 = MetaDataDB.Factory.Create(args[0]);
-            var db2 = MetaDataDB.Factory.Create(args[1]);
+            var db1 = MetaDataDB.Factory.CreateRead(args[0]);
+            var db2 = MetaDataDB.Factory.CreateReadWrite(args[1]);
 
             try
             {
@@ -103,7 +101,6 @@ namespace TCSystem.Tools.DBConverter
 
                 foreach (var fileName in files)
                 {
-                    // ReSharper disable once UnusedVariable
                     var originalData = ConvertFile(fileName);
                     CheckConvertedData(fileName, originalData);
                 }
@@ -387,7 +384,6 @@ namespace TCSystem.Tools.DBConverter
             }
         }
 
-        // ReSharper disable once UnusedMember.Local
         private void CheckConvertedData(string file, Image originalData)
         {
             var convertedData = _toDB.GetMetaData(file);
@@ -409,7 +405,7 @@ namespace TCSystem.Tools.DBConverter
             return data;
         }
 
-        private IDB2 _fromDB;
+        private IDB2Read _fromDB;
         private IDB2 _toDB;
         private IList<string> _folders;
 

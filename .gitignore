@@ -353,3 +353,5 @@ MigrationBackup/
 *.trx
 /coverage.opencover.xml
 *.db
+*.db-shm
+*.db-wal

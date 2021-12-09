@@ -3,8 +3,8 @@
   <PropertyGroup>
     <Company>TCSystem</Company>
     <Authors>Thomas Gößler</Authors>
-    <DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''"></DevlopmentVersionSuffix>
-    <Version>2.1.0$(DevlopmentVersionSuffix)</Version>
+    <DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''">-alpha.8</DevlopmentVersionSuffix>
+    <Version>3.0.0$(DevlopmentVersionSuffix)</Version>
     <NamespaceName>at.tcsystem</NamespaceName>
     <Copyright>Copyright © Thomas Gößler 2021</Copyright>
   </PropertyGroup>

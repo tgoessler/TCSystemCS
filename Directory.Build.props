@@ -4,10 +4,12 @@
     <DefaultLanguage Condition="'$(DefaultLanguage)'==''">en-US</DefaultLanguage>
     <ProduceReferenceAssembly Condition="'$(ProduceReferenceAssembly)'==''">true</ProduceReferenceAssembly>
     <TargetFramework Condition="'$(TargetFramework)'==''">netstandard2.0</TargetFramework>
-    <LangVersion Condition="'$(LangVersion)'==''">9.0</LangVersion>
+    <LangVersion Condition="'$(LangVersion)'==''">10</LangVersion>
     <WarningLevel>5</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <PropertyGroup>
