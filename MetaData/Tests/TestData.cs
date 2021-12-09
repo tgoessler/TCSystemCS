@@ -18,6 +18,7 @@
 // 
 // *******************************************************************************
 
+using System;
 using System.Linq;
 
 namespace TCSystem.MetaData.Tests
@@ -59,7 +60,7 @@ namespace TCSystem.MetaData.Tests
         public static readonly FaceDistanceInfo FaceDistanceInfo2 = new(2, new FixedPoint32(5), 2);
 
         public static readonly FaceInfo FaceInfoZero = new(Constants.InvalidId, Constants.InvalidId, Constants.InvalidId, FaceMode.DlibCnn, null);
-        public static readonly FaceInfo FaceInfo1 = new(1, 2, 3, FaceMode.DlibCnn, new FixedPoint64[0]);
+        public static readonly FaceInfo FaceInfo1 = new(1, 2, 3, FaceMode.DlibCnn, Array.Empty<FixedPoint64>());
         public static readonly FaceInfo FaceInfo2 = new(2, 3, 4, FaceMode.DlibCnn, 
             Enumerable.Repeat(new FixedPoint64(1), 128));
 

@@ -188,14 +188,14 @@ namespace TCSystem.MetaDataDB
                 Log.Instance.Fatal($"Creating connection {_fileName}' failed", e);
                 Connection = null;
             }
-            finally
-            {
-                if (Connection == null)
-                {
-                    Log.Instance.Fatal($"Creating connection {_fileName}' failed");
-                    throw new InvalidProgramException($"Open connection '{_fileName}' failed");
-                }
 
+            if (Connection == null)
+            {
+                Log.Instance.Fatal($"Creating connection {_fileName}' failed");
+                throw new InvalidProgramException($"Open connection '{_fileName}' failed");
+            }
+            else
+            {
                 Log.Instance.Info("Creating connection done");
             }
         }

@@ -506,7 +506,7 @@ namespace TCSystem.MetaDataDB
 
 #region Private
 
-        private Image GetMetaData(long fileId, DB2Instance instance, SqliteTransaction transaction)
+        private static Image GetMetaData(long fileId, DB2Instance instance, SqliteTransaction transaction)
         {
             IReadOnlyList<PersonTag> personTags = instance.Persons.GetPersonTags(fileId, transaction);
             IReadOnlyList<string> tags = instance.Tags.GetTags(fileId, transaction);
