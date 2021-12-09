@@ -68,7 +68,8 @@ namespace TCSystem.MetaDataDB
                 CommandText = $"SELECT COUNT({IdLocationId}) FROM {TableLocations};"
             })
             {
-                return (long)command.ExecuteScalar();
+                var result = command.ExecuteScalar();
+                return (long?)result ?? 0;
             }
         }
 
