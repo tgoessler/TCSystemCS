@@ -18,57 +18,26 @@
 // 
 // *******************************************************************************
 
+#region Usings
+
+using System;
+using TCSystem.MetaData;
+
+#endregion
+
 namespace TCSystem.MetaDataDB
 {
-    public static class Factory
+    public interface IDB2Write
     {
 #region Public
 
-        public static IDB2 CreateReadWrite(string fileName)
-        {
-            return new DB2(fileName, false);
-        }
+        Image AddMetaData(Image data, DateTimeOffset dateModified);
+        void RemoveMetaData(string fileName);
+        void RemoveAllFilesOfFolder(string folder);
 
-        public static IDB2Read CreateRead(string fileName)
-        {
-            return new DB2(fileName, true);
-        }
-
-        public static IDB2Write CreateWrite(string fileName)
-        {
-            return new DB2(fileName, false);
-        }
-
-        public static void Destroy(ref IDB2 db)
-        {
-            if (db is DB2 db2)
-            {
-                db2.Close();
-            }
-
-            db = null;
-        }
-
-        public static void Destroy(ref IDB2Read db)
-        {
-            if (db is DB2 db2)
-            {
-                db2.Close();
-            }
-
-            db = null;
-        }
-
-        public static void Destroy(ref IDB2Write db)
-        {
-            if (db is DB2 db2)
-            {
-                db2.Close();
-            }
-
-            db = null;
-        }
-
-        #endregion
+        event Action<Image> MetaDataAdded;
+        event Action<Image> MetaDataRemoved;
+        event Action<(Image NewData, Image OldData)> MetaDataChanged;
+#endregion
     }
 }

@@ -34,16 +34,21 @@ namespace TCSystem.MetaDataDB
     {
 #region Public
 
+        public DB2Files(DB2Instance instance)
+        {
+            _instance = instance;
+        }
+
         public long GetNumFiles()
         {
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT COUNT({IdFileId}) FROM {TableFiles};"
             })
             {
-                var result = command.ExecuteScalar();
-                return (long?) result ?? 0;
+                object result = command.ExecuteScalar();
+                return (long?)result ?? 0;
             }
         }
 
@@ -51,7 +56,7 @@ namespace TCSystem.MetaDataDB
         {
             var filterFilesCommand = $"WHERE {IdFileName} LIKE @Filter {LikeEscape} ";
 
-            var filterCommand = filter != null ? filterFilesCommand : "";
+            string filterCommand = filter != null ? filterFilesCommand : "";
             if (filter != null)
             {
                 filter = EscapeSpecialLikeCharacters(filter);
@@ -60,7 +65,7 @@ namespace TCSystem.MetaDataDB
 
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT {IdFileName} FROM {TableFiles}" +
                               $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId} " +
                               filterCommand +
@@ -69,7 +74,7 @@ namespace TCSystem.MetaDataDB
             {
                 command.Parameters.AddWithValue("@Filter", filter);
 
-                using (var reader = command.ExecuteReader())
+                using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     var files = new List<string>();
                     while (reader.Read())
@@ -87,32 +92,32 @@ namespace TCSystem.MetaDataDB
             using (var command = new SqliteCommand
             {
                 Transaction = transaction,
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT {IdFileId} FROM {TableFiles} WHERE {IdFileName}=@{IdFileName};"
             })
             {
                 command.Parameters.AddWithValue($"@{IdFileName}", fileName);
-                var result = command.ExecuteScalar();
-                return (long?) result ?? Constants.InvalidId;
+                object result = command.ExecuteScalar();
+                return (long?)result ?? Constants.InvalidId;
             }
         }
 
         public long AddFile(Image data, DateTimeOffset dateModified, SqliteTransaction transaction)
         {
-            var fileId = GetFileId(data.FileName, transaction);
+            long fileId = GetFileId(data.FileName, transaction);
             if (fileId == Constants.InvalidId)
             {
                 using (var command = new SqliteCommand
                 {
                     Transaction = transaction,
-                    Connection = Instance.Connection,
+                    Connection = _instance.Connection,
                     CommandText = $"INSERT INTO {TableFiles} ({IdFileName}, {IdDateModified}, {IdProcessingInfo}) " +
                                   $"VALUES (@{IdFileName}, @{IdDateModified}, @{IdProcessingInfo});"
                 })
                 {
                     command.Parameters.AddWithValue($"@{IdFileName}", data.FileName);
                     command.Parameters.AddWithValue($"@{IdDateModified}", dateModified.ToString("s"));
-                    command.Parameters.AddWithValue($"@{IdProcessingInfo}", (long) data.ProcessingInfos);
+                    command.Parameters.AddWithValue($"@{IdProcessingInfo}", (long)data.ProcessingInfos);
                     command.ExecuteNonQuery();
                 }
 
@@ -127,7 +132,7 @@ namespace TCSystem.MetaDataDB
             using (var command = new SqliteCommand
             {
                 Transaction = transaction,
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"DELETE From {TableFiles} WHERE {IdFileId}=@{IdFileId};"
             })
             {
@@ -140,13 +145,13 @@ namespace TCSystem.MetaDataDB
         {
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT {IdDateModified} FROM {TableFiles} " +
                               $"WHERE {IdFileName}=@{IdFileName};"
             })
             {
                 command.Parameters.AddWithValue($"@{IdFileName}", fileName);
-                using (var reader = command.ExecuteReader())
+                using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     if (reader.HasRows && reader.Read())
                     {
@@ -162,7 +167,7 @@ namespace TCSystem.MetaDataDB
         {
             var filterFilesCommand = $"WHERE {IdFileName} LIKE @Filter {LikeEscape} ";
 
-            var filterCommand = folder != null ? filterFilesCommand : "";
+            string filterCommand = folder != null ? filterFilesCommand : "";
             if (folder != null)
             {
                 folder += "%";
@@ -170,7 +175,7 @@ namespace TCSystem.MetaDataDB
 
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT COUNT({IdFileName}) FROM {TableFiles}" +
                               $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId} " +
                               filterCommand +
@@ -178,8 +183,8 @@ namespace TCSystem.MetaDataDB
             })
             {
                 command.Parameters.AddWithValue("@Filter", folder);
-                var result = command.ExecuteScalar();
-                return (long?) result ?? 0;
+                object result = command.ExecuteScalar();
+                return (long?)result ?? 0;
             }
         }
 
@@ -187,18 +192,18 @@ namespace TCSystem.MetaDataDB
         {
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT {IdFileName}, {IdProcessingInfo} FROM {TableFiles}" +
                               $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId} " +
                               $"ORDER by {TableFileData}.{IdDateTaken} DESC;"
             })
             {
-                using (var reader = command.ExecuteReader())
+                using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     var values = new List<(string FileName, ProcessingInfos ProcessingInfo)>();
                     while (reader.HasRows && reader.Read())
                     {
-                        values.Add((reader.GetString(0), (ProcessingInfos) reader.GetInt64(1)));
+                        values.Add((reader.GetString(0), (ProcessingInfos)reader.GetInt64(1)));
                     }
 
                     return values;
@@ -210,11 +215,11 @@ namespace TCSystem.MetaDataDB
         {
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT {IdFileName}, {IdDateModified} FROM {TableFiles};"
             })
             {
-                using (var reader = command.ExecuteReader())
+                using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     var values = new Dictionary<string, DateTimeOffset>();
                     while (reader.HasRows && reader.Read())
@@ -229,16 +234,16 @@ namespace TCSystem.MetaDataDB
 
         public IList<string> SearchForFiles(string searchFilterString)
         {
-            var searchFilters = PrepareFilters(searchFilterString);
+            IReadOnlyList<(string Key, string Value, bool IsAdd)> searchFilters = PrepareFilters(searchFilterString);
             if (searchFilters.Count == 0)
             {
                 searchFilters = _filters.Select(f => (f, search_filter_string: searchFilterString, false)).ToArray();
             }
 
             var commandText = string.Empty;
-            foreach (var (key, value, isAdd) in searchFilters)
+            foreach ((string key, string value, bool isAdd) in searchFilters)
             {
-                var nextCommand = key switch
+                string nextCommand = key switch
                 {
                     FilterFile => $"SELECT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFiles}\n " +
                                   $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFiles}.{IdFileId}\n " +
@@ -275,7 +280,7 @@ namespace TCSystem.MetaDataDB
                                     $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId}\n " +
                                     $"WHERE {IdFaceId}='{value}'\n ",
 
-                    FilterNumPersons when int.TryParse(value, out var _) =>
+                    FilterNumPersons when int.TryParse(value, out int _) =>
                         $"SELECT DISTINCT {IdFileName}, {TableFileData}.{IdDateTaken} FROM {TableFileFaces}\n " +
                         $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId}\n " +
                         $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId}\n " +
@@ -301,8 +306,8 @@ namespace TCSystem.MetaDataDB
             if (!string.IsNullOrEmpty(commandText))
             {
                 commandText += $"ORDER by {TableFileData}.{IdDateTaken} DESC;";
-                using var command = new SqliteCommand {Connection = Instance.Connection, CommandText = commandText};
-                using var reader = command.ExecuteReader();
+                using var command = new SqliteCommand { Connection = _instance.Connection, CommandText = commandText };
+                using SqliteDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     files.Add(reader.GetString(0));
@@ -314,12 +319,12 @@ namespace TCSystem.MetaDataDB
 
         public void RemoveAllFilesOfFolder(string folder)
         {
-            using (var transaction = Instance.BeginTransaction())
+            using (SqliteTransaction transaction = _instance.BeginTransaction())
             {
                 using (var command = new SqliteCommand
                 {
                     Transaction = transaction,
-                    Connection = Instance.Connection,
+                    Connection = _instance.Connection,
                     CommandText = $"DELETE From {TableFiles} WHERE {IdFileName} LIKE @Folder {LikeEscape};"
                 })
                 {
@@ -331,8 +336,6 @@ namespace TCSystem.MetaDataDB
                 }
             }
         }
-
-        public DB2Instance Instance;
 
 #endregion
 
@@ -352,7 +355,7 @@ namespace TCSystem.MetaDataDB
             int endValue;
             for (var index = 0; index < searchFilterString.Length; index++)
             {
-                var v = searchFilterString[index];
+                char v = searchFilterString[index];
                 if (v == '=')
                 {
                     endKey = index - 1;
@@ -386,10 +389,10 @@ namespace TCSystem.MetaDataDB
         {
             if (startKey < endKey && endKey < startValue)
             {
-                var key = searchFilterString.Substring(startKey, endKey + 1 - startKey);
+                string key = searchFilterString.Substring(startKey, endKey + 1 - startKey);
                 if (startValue <= endValue)
                 {
-                    var value = searchFilterString.Substring(startValue, endValue + 1 - startValue);
+                    string value = searchFilterString.Substring(startValue, endValue + 1 - startValue);
                     return (key, value);
                 }
             }
@@ -402,6 +405,8 @@ namespace TCSystem.MetaDataDB
             return text.Replace("_", $"{EscapeCharacter}_")
                 .Replace("'", "");
         }
+
+        private readonly DB2Instance _instance;
 
 #endregion
     }

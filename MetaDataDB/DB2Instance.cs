@@ -28,146 +28,214 @@ using TCSystem.MetaData;
 
 #endregion
 
-// ReSharper disable InconsistentlySynchronizedField
-
 [assembly: InternalsVisibleTo("TCPhotoGalleryConvertDB")]
 
 namespace TCSystem.MetaDataDB
 {
     internal sealed class DB2Instance : DB2Constants
     {
-#region Internal
+#region Public
 
-        internal void Open(string fileName)
+        public DB2Instance(string fileName, bool readOnly)
+            : this(fileName, readOnly, false)
         {
-            Log.Instance.Info($"Open Database '{fileName}'");
+            Log.Instance.Info($"Open Database '{fileName}:readOnly={readOnly}'");
 
             _fileName = fileName;
-            if (!OpenDataBaseFile())
+            ReadOnly = readOnly;
+            CreateConnection();
+
+            if (readOnly)
             {
-                Log.Instance.Fatal($"Open Database {fileName}' failed");
-                throw new InvalidProgramException($"Open Database '{fileName}' failed");
+                ReadDbVersion();
             }
-
-            CreateTableIndex();
-            ReadDbVersion();
-
-            using (var transaction = WriteDbVersion())
+            else
             {
-                CreateTableFiles(transaction);
-                CreateTablePersons(transaction);
-                CreateTableTags(transaction);
-                CreateTableLocation(transaction);
+                CreateTableIndex();
+                ReadDbVersion();
 
-                CreateTableFileData(transaction);
-                CreateTableFileFaces(transaction);
-                CreateTableFileTags(transaction);
-                CreateTableFileLocation(transaction);
+                using (SqliteTransaction transaction = WriteDbVersion())
+                {
+                    CreateTableFiles(transaction);
+                    CreateTablePersons(transaction);
+                    CreateTableTags(transaction);
+                    CreateTableLocation(transaction);
 
-                transaction.Commit();
+                    CreateTableFileData(transaction);
+                    CreateTableFileFaces(transaction);
+                    CreateTableFileTags(transaction);
+                    CreateTableFileLocation(transaction);
+
+                    transaction.Commit();
+                }
             }
 
             Log.Instance.Info($"Open Database '{fileName}' done.");
         }
 
-        internal void Close()
+        public void OpenConnection()
         {
-            CloseDataBaseFile();
+            Connection.Open();
+            ApplyDbSetting();
         }
 
-        internal SqliteTransaction BeginTransaction()
+        public void CloseConnection()
+        {
+            Connection.Close();
+        }
+
+        public void Close()
+        {
+            DestroyConnection();
+        }
+
+        public DB2Instance Clone()
+        {
+            return new DB2Instance(_fileName, ReadOnly, Version, UnsafeModeEnabled);
+        }
+
+        public SqliteTransaction BeginTransaction()
         {
             _numTransactions++;
-            if (_numTransactions % 100 == 99 && !_unsafeModeEnabled)
+            if (_numTransactions % 100 == 99 && !UnsafeModeEnabled)
             {
                 Log.Instance.Info("Reopening Database");
-                CloseDataBaseFile();
-                if (OpenDataBaseFile())
-                {
-                    Log.Instance.Info("Reopening Database done");
-                }
-                else
-                {
-                    Log.Instance.Fatal("Reopening Database failed");
-                }
+                DestroyConnection();
+                CreateConnection();
             }
 
             return Connection.BeginTransaction();
         }
 
-        internal void EnableUnsafeMode()
+        public void EnableUnsafeMode()
         {
-            if (!_unsafeModeEnabled)
+            if (!UnsafeModeEnabled)
             {
-                _unsafeModeEnabled = true;
-                CloseDataBaseFile();
-                OpenDataBaseFile();
+                UnsafeModeEnabled = true;
+                DestroyConnection();
+                CreateConnection();
             }
         }
 
-        internal void EnableDefaultMode()
+        public void EnableDefaultMode()
         {
-            if (_unsafeModeEnabled)
+            if (UnsafeModeEnabled)
             {
-                _unsafeModeEnabled = false;
-                CloseDataBaseFile();
-                OpenDataBaseFile();
-                VacuumDb();
+                UnsafeModeEnabled = false;
+                DestroyConnection();
+                CreateConnection();
+                if (!ReadOnly)
+                {
+                    VacuumDb();
+                }
             }
         }
 
-        internal SqliteConnection Connection { get; private set; }
+        public SqliteConnection Connection { get; private set; }
+        public string Version { get; private set; }
+        public bool ReadOnly { get; }
+        public bool UnsafeModeEnabled { get; private set; }
+
+        public DB2Data Data { get; }
+        public DB2Files Files { get; }
+        public DB2Locations Locations { get; }
+        public DB2Persons Persons { get; }
+        public DB2Tags Tags { get; }
 
 #endregion
 
 #region Private
 
-        private bool OpenDataBaseFile()
+        private DB2Instance(string fileName, bool readOnly, bool unsafeModeEnabled)
         {
-            Connection = new SqliteConnection($"Filename={_fileName}");
-            Connection.Open();
+            _fileName = fileName;
+            UnsafeModeEnabled = unsafeModeEnabled;
+            ReadOnly = readOnly;
 
-            if (_unsafeModeEnabled)
-            {
-                using (var command = new SqliteCommand
-                {
-                    Connection = Connection
-                })
-                {
-                    command.CommandText = "PRAGMA synchronous = OFF;";
-                    command.ExecuteNonQuery();
-
-                    command.CommandText = "PRAGMA journal_mode = OFF;";
-                    command.ExecuteNonQuery();
-                }
-            }
-
-            using (var command = new SqliteCommand
-            {
-                Connection = Connection
-            })
-            {
-                const int size = 1024 * 1024 * 100;
-                command.CommandText = $"PRAGMA cache_size = {size};";
-                command.ExecuteNonQuery();
-
-                command.CommandText = "PRAGMA temp_store = MEMORY;";
-                command.ExecuteNonQuery();
-
-                command.CommandText = "PRAGMA locking_mode = EXCLUSIVE;";
-                command.ExecuteNonQuery();
-            }
-
-            return Connection != null;
+            Data = new DB2Data(this);
+            Files = new DB2Files(this);
+            Locations = new DB2Locations(this);
+            Persons = new DB2Persons(this);
+            Tags = new DB2Tags(this);
         }
 
-        private void CloseDataBaseFile()
+        private DB2Instance(string fileName, bool readOnly, string version, bool unsafeModeEnabled)
+            : this(fileName, readOnly, unsafeModeEnabled)
+        {
+            Version = version;
+
+            CreateConnection();
+        }
+
+        private void CreateConnection()
+        {
+            try
+            {
+                var builder = new SqliteConnectionStringBuilder
+                {
+                    DataSource = _fileName,
+                    Mode = ReadOnly ? SqliteOpenMode.ReadOnly : SqliteOpenMode.ReadWriteCreate
+                };
+                Log.Instance.Info($"Creating connection {builder.ConnectionString}");
+
+                Connection = new SqliteConnection(builder.ConnectionString);
+                Connection.Open();
+
+                ApplyDbSetting();
+            }
+            catch (Exception e)
+            {
+                Log.Instance.Fatal($"Creating connection {_fileName}' failed", e);
+                Connection = null;
+            }
+
+            if (Connection == null)
+            {
+                Log.Instance.Fatal($"Creating connection {_fileName}' failed");
+                throw new InvalidProgramException($"Open connection '{_fileName}' failed");
+            }
+            else
+            {
+                Log.Instance.Info("Creating connection done");
+            }
+        }
+
+        private void ApplyDbSetting()
+        {
+            using (var command = new SqliteCommand{Connection = Connection})
+            {
+                if (UnsafeModeEnabled)
+                {
+                    command.CommandText += "PRAGMA synchronous = OFF;";
+                }
+                else
+                {
+                    command.CommandText += "PRAGMA synchronous = NORMAL;";
+                }
+
+                const int size = 1024 * 1024 * 100;
+                command.CommandText += $"PRAGMA cache_size = {size};";
+                command.CommandText += "PRAGMA temp_store = MEMORY;";
+                command.CommandText += "PRAGMA locking_mode = NORMAL;";
+
+                if (!ReadOnly)
+                {
+                    command.CommandText += "PRAGMA journal_mode = WAL;";
+                }
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private void DestroyConnection()
         {
             if (Connection != null)
             {
+                Log.Instance.Info("Destroying connection");
                 Connection.Close();
                 Connection.Dispose();
                 Connection = null;
+                Log.Instance.Info("Destroying connection done");
             }
         }
 
@@ -175,25 +243,25 @@ namespace TCSystem.MetaDataDB
         {
             using (var command = new SqliteCommand
 
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileTags}" +
-                              "( " +
-                              $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
-                              $"{IdTagId} INTEGER NOT NULL " +
-                              ");"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileTags}" +
+                                     "( " +
+                                     $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
+                                     $"{IdTagId} INTEGER NOT NULL " +
+                                     ");"
+                   })
             {
                 command.ExecuteNonQuery();
             }
 
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE INDEX IF NOT EXISTS index_fileid_to_tags ON {TableFileTags}({IdFileId});"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE INDEX IF NOT EXISTS index_fileid_to_tags ON {TableFileTags}({IdFileId});"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -203,28 +271,28 @@ namespace TCSystem.MetaDataDB
         {
             using (var command = new SqliteCommand
 
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileLocations}" +
-                              "( " +
-                              $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
-                              $"{IdLocationId} INTEGER NOT NULL, " +
-                              $"{IdLatitude} TEXT, " +
-                              $"{IdLongitude} TEXT, " +
-                              $"{IdAltitude} TEXT " +
-                              ");"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileLocations}" +
+                                     "( " +
+                                     $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
+                                     $"{IdLocationId} INTEGER NOT NULL, " +
+                                     $"{IdLatitude} TEXT, " +
+                                     $"{IdLongitude} TEXT, " +
+                                     $"{IdAltitude} TEXT " +
+                                     ");"
+                   })
             {
                 command.ExecuteNonQuery();
             }
 
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE INDEX IF NOT EXISTS index_fileid_to_locations ON {TableFileLocations}({IdFileId});"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE INDEX IF NOT EXISTS index_fileid_to_locations ON {TableFileLocations}({IdFileId});"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -233,15 +301,15 @@ namespace TCSystem.MetaDataDB
         private void ReadDbVersion()
         {
             using (var command = new SqliteCommand
+                   {
+                       Connection = Connection,
+                       CommandText = $"SELECT {IdValue} FROM {TableKeyValues} WHERE {IdKey}='Version';"
+                   })
             {
-                Connection = Connection,
-                CommandText = $"SELECT {IdValue} FROM {TableKeyValues} WHERE {IdKey}='Version';"
-            })
-            {
-                _dbVersion = null;
+                Version = null;
                 try
                 {
-                    _dbVersion = command.ExecuteScalar() as string;
+                    Version = command.ExecuteScalar() as string;
                 }
                 catch (Exception)
                 {
@@ -252,14 +320,14 @@ namespace TCSystem.MetaDataDB
 
         private void CreateTableIndex()
         {
-            using (var transaction = BeginTransaction())
+            using (SqliteTransaction transaction = BeginTransaction())
             {
                 using (var command = new SqliteCommand
-                {
-                    Connection = Connection,
-                    Transaction = transaction,
-                    CommandText = $"CREATE TABLE IF NOT EXISTS {TableKeyValues}({IdKey} TEXT NOT NULL UNIQUE, {IdValue} TEXT NOT NULL);"
-                })
+                       {
+                           Connection = Connection,
+                           Transaction = transaction,
+                           CommandText = $"CREATE TABLE IF NOT EXISTS {TableKeyValues}({IdKey} TEXT NOT NULL UNIQUE, {IdValue} TEXT NOT NULL);"
+                       })
                 {
                     command.ExecuteNonQuery();
                 }
@@ -271,27 +339,27 @@ namespace TCSystem.MetaDataDB
         private void CreateTableFiles(SqliteTransaction transaction)
         {
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE TABLE IF NOT EXISTS {TableFiles}" +
-                              "( " +
-                              $"{IdFileId} INTEGER PRIMARY KEY, " +
-                              $"{IdFileName} TEXT NOT NULL UNIQUE, " +
-                              $"{IdDateModified} TEXT, " +
-                              $"{IdProcessingInfo} INTEGER" +
-                              ");"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE TABLE IF NOT EXISTS {TableFiles}" +
+                                     "( " +
+                                     $"{IdFileId} INTEGER PRIMARY KEY, " +
+                                     $"{IdFileName} TEXT NOT NULL UNIQUE, " +
+                                     $"{IdDateModified} TEXT, " +
+                                     $"{IdProcessingInfo} INTEGER" +
+                                     ");"
+                   })
             {
                 command.ExecuteNonQuery();
             }
 
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE UNIQUE INDEX IF NOT EXISTS index_filename_to_fileid ON {TableFiles} ({IdFileName});"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE UNIQUE INDEX IF NOT EXISTS index_filename_to_fileid ON {TableFiles} ({IdFileName});"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -300,28 +368,28 @@ namespace TCSystem.MetaDataDB
         private void CreateTableFileData(SqliteTransaction transaction)
         {
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileData} " +
-                              "( " +
-                              $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
-                              $"{IdWidth} INTEGER, " +
-                              $"{IdHeight} INTEGER, " +
-                              $"{IdOrientation} INTEGER, " +
-                              $"{IdDateTaken} TEXT" +
-                              ");"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileData} " +
+                                     "( " +
+                                     $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
+                                     $"{IdWidth} INTEGER, " +
+                                     $"{IdHeight} INTEGER, " +
+                                     $"{IdOrientation} INTEGER, " +
+                                     $"{IdDateTaken} TEXT" +
+                                     ");"
+                   })
             {
                 command.ExecuteNonQuery();
             }
 
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE UNIQUE INDEX IF NOT EXISTS index_fileid_to_data ON {TableFileData}({IdFileId});"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE UNIQUE INDEX IF NOT EXISTS index_fileid_to_data ON {TableFileData}({IdFileId});"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -330,28 +398,28 @@ namespace TCSystem.MetaDataDB
         private void CreateTablePersons(SqliteTransaction transaction)
         {
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE TABLE IF NOT EXISTS {TablePersons}" +
-                              "( " +
-                              $"{IdPersonId} INTEGER PRIMARY KEY, " +
-                              $"{IdName} TEXT NOT NULL UNIQUE, " +
-                              $"{IdEmailDigest} TEXT, " +
-                              $"{IdLiveId} TEXT, " +
-                              $"{IdSourceId} TEXT " +
-                              ");"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE TABLE IF NOT EXISTS {TablePersons}" +
+                                     "( " +
+                                     $"{IdPersonId} INTEGER PRIMARY KEY, " +
+                                     $"{IdName} TEXT NOT NULL UNIQUE, " +
+                                     $"{IdEmailDigest} TEXT, " +
+                                     $"{IdLiveId} TEXT, " +
+                                     $"{IdSourceId} TEXT " +
+                                     ");"
+                   })
             {
                 command.ExecuteNonQuery();
             }
 
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = "CREATE UNIQUE INDEX IF NOT EXISTS index_name_to_person_id ON " + TablePersons + "(Name);"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = "CREATE UNIQUE INDEX IF NOT EXISTS index_name_to_person_id ON " + TablePersons + "(Name);"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -360,32 +428,32 @@ namespace TCSystem.MetaDataDB
         private void CreateTableFileFaces(SqliteTransaction transaction)
         {
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileFaces}" +
-                              "( " +
-                              $"{IdFaceId} INTEGER PRIMARY KEY, " +
-                              $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
-                              $"{IdPersonId} INTEGER, " +
-                              $"{IdRectangleX} INTEGER, " +
-                              $"{IdRectangleY} INTEGER, " +
-                              $"{IdRectangleW} INTEGER, " +
-                              $"{IdRectangleH} INTEGER, " +
-                              $"{IdFaceMode} INTEGER DEFAULT {(int) FaceMode.Undefined}, " +
-                              $"{IdFaceDescriptor} BLOB " +
-                              ");"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileFaces}" +
+                                     "( " +
+                                     $"{IdFaceId} INTEGER PRIMARY KEY, " +
+                                     $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
+                                     $"{IdPersonId} INTEGER, " +
+                                     $"{IdRectangleX} INTEGER, " +
+                                     $"{IdRectangleY} INTEGER, " +
+                                     $"{IdRectangleW} INTEGER, " +
+                                     $"{IdRectangleH} INTEGER, " +
+                                     $"{IdFaceMode} INTEGER DEFAULT {(int)FaceMode.Undefined}, " +
+                                     $"{IdFaceDescriptor} BLOB " +
+                                     ");"
+                   })
             {
                 command.ExecuteNonQuery();
             }
 
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE INDEX IF NOT EXISTS index_fileid_to_faces ON  {TableFileFaces}({IdFileId});"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE INDEX IF NOT EXISTS index_fileid_to_faces ON  {TableFileFaces}({IdFileId});"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -395,25 +463,25 @@ namespace TCSystem.MetaDataDB
         {
             using (var command = new SqliteCommand
 
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE TABLE IF NOT EXISTS {TableTags}" +
-                              "(" +
-                              $"{IdTagId} INTEGER PRIMARY KEY, " +
-                              $"{IdTag} TEXT" +
-                              ");"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE TABLE IF NOT EXISTS {TableTags}" +
+                                     "(" +
+                                     $"{IdTagId} INTEGER PRIMARY KEY, " +
+                                     $"{IdTag} TEXT" +
+                                     ");"
+                   })
             {
                 command.ExecuteNonQuery();
             }
 
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE UNIQUE INDEX IF NOT EXISTS index_tag_to_tag_id ON {TableTags}({IdTag});"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE UNIQUE INDEX IF NOT EXISTS index_tag_to_tag_id ON {TableTags}({IdTag});"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -422,18 +490,18 @@ namespace TCSystem.MetaDataDB
         private void CreateTableLocation(SqliteTransaction transaction)
         {
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = $"CREATE TABLE IF NOT EXISTS {TableLocations} " +
-                              "( " +
-                              $"{IdLocationId} INTEGER PRIMARY KEY, " +
-                              $"{IdCountry} TEXT, " +
-                              $"{IdProvince} TEXT, " +
-                              $"{IdCity} TEXT, " +
-                              $"{IdStreet} TEXT " +
-                              ");"
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = $"CREATE TABLE IF NOT EXISTS {TableLocations} " +
+                                     "( " +
+                                     $"{IdLocationId} INTEGER PRIMARY KEY, " +
+                                     $"{IdCountry} TEXT, " +
+                                     $"{IdProvince} TEXT, " +
+                                     $"{IdCity} TEXT, " +
+                                     $"{IdStreet} TEXT " +
+                                     ");"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -443,10 +511,10 @@ namespace TCSystem.MetaDataDB
         {
             Log.Instance.Info("Optimizing database");
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                CommandText = "VACUUM;"
-            })
+                   {
+                       Connection = Connection,
+                       CommandText = "VACUUM;"
+                   })
             {
                 command.ExecuteNonQuery();
             }
@@ -458,33 +526,33 @@ namespace TCSystem.MetaDataDB
         {
             SqliteTransaction transaction;
 
-            if (_dbVersion == null)
+            if (Version == null)
             {
                 transaction = BeginTransaction();
 
-                ExecuteNonQuery($"INSERT INTO {TableKeyValues}({IdKey}, {IdValue}) VALUES('Version', '{Version}');",
+                ExecuteNonQuery($"INSERT INTO {TableKeyValues}({IdKey}, {IdValue}) VALUES('Version', '{CurrentVersion}');",
                     transaction);
-                _dbVersion = Version;
+                Version = CurrentVersion;
             }
-            else if (_dbVersion == Version10)
+            else if (Version == Version10)
             {
                 transaction = BeginTransaction();
 
-                ExecuteNonQuery($"ALTER TABLE {TableFileFaces} ADD {IdFaceMode} INTEGER DEFAULT {(int) FaceMode.Undefined};",
+                ExecuteNonQuery($"ALTER TABLE {TableFileFaces} ADD {IdFaceMode} INTEGER DEFAULT {(int)FaceMode.Undefined};",
                     transaction);
-                ExecuteNonQuery($"UPDATE {TableFiles} SET {IdProcessingInfo}={(long) ProcessingInfos.None};",
+                ExecuteNonQuery($"UPDATE {TableFiles} SET {IdProcessingInfo}={(long)ProcessingInfos.None};",
                     transaction);
 
                 UpdateDbVersion(transaction);
             }
-            else if (_dbVersion != Version)
+            else if (Version != CurrentVersion)
             {
-                CloseDataBaseFile();
-                OpenDataBaseFile();
+                DestroyConnection();
+                CreateConnection();
 
                 transaction = BeginTransaction();
 
-                foreach (var tableName in _dataTableNames)
+                foreach (string tableName in _dataTableNames)
                 {
                     ExecuteNonQuery($"DROP TABLE IF EXISTS {tableName};",
                         transaction);
@@ -502,25 +570,23 @@ namespace TCSystem.MetaDataDB
 
         private void UpdateDbVersion(SqliteTransaction transaction)
         {
-            _dbVersion = Version;
-            ExecuteNonQuery($"UPDATE {TableKeyValues} SET {IdValue}='{Version}' WHERE {IdKey}='Version';",
+            Version = CurrentVersion;
+            ExecuteNonQuery($"UPDATE {TableKeyValues} SET {IdValue}='{CurrentVersion}' WHERE {IdKey}='Version';",
                 transaction);
         }
 
         private void ExecuteNonQuery(string commandText, SqliteTransaction transaction = null)
         {
             using (var command = new SqliteCommand
-            {
-                Connection = Connection,
-                Transaction = transaction,
-                CommandText = commandText
-            })
+                   {
+                       Connection = Connection,
+                       Transaction = transaction,
+                       CommandText = commandText
+                   })
             {
                 command.ExecuteNonQuery();
             }
         }
-
-        private bool _unsafeModeEnabled;
 
         private readonly IReadOnlyList<string> _dataTableNames = new[]
         {
@@ -534,9 +600,8 @@ namespace TCSystem.MetaDataDB
             TableFileLocations
         };
 
-        private string _dbVersion;
         private int _numTransactions;
-        private string _fileName = "MetaData2.db";
+        private readonly string _fileName;
 
 #endregion
     }

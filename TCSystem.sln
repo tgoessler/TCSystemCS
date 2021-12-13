@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30002.166
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Logging", "Logging\TCSystem.Logging.csproj", "{AC669ED1-3FC9-4AE7-B1C0-E90C20E9DD53}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99 Build", "99 Build", "{6D152A6C-C528-4993-B34C-91FF550D6D40}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		deploy.bat = deploy.bat
+		deploy_local.bat = deploy_local.bat
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		LICENSE = LICENSE

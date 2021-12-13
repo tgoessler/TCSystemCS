@@ -32,16 +32,21 @@ namespace TCSystem.MetaDataDB
     {
 #region Public
 
+        public DB2Tags(DB2Instance instance)
+        {
+            _instance = instance;
+        }
+
         public long GetNumTags(SqliteTransaction transaction)
         {
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT COUNT({IdTagId}) FROM {TableTags};"
             })
             {
-                var result = command.ExecuteScalar();
-                return (long?) result ?? 0;
+                object result = command.ExecuteScalar();
+                return (long?)result ?? 0;
             }
         }
 
@@ -49,7 +54,7 @@ namespace TCSystem.MetaDataDB
         {
             const string filterTagsCommand = "WHERE " + IdTag + " LIKE @Filter ";
 
-            var filterCommand = filter != null ? filterTagsCommand : "";
+            string filterCommand = filter != null ? filterTagsCommand : "";
             if (filter != null)
             {
                 filter = "%" + filter.Replace(' ', '%') + "%";
@@ -57,12 +62,12 @@ namespace TCSystem.MetaDataDB
 
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT DISTINCT {IdTag} FROM {TableTags} {filterCommand} ORDER by {IdTag} ASC;"
             })
             {
                 command.Parameters.AddWithValue("@Filter", filter);
-                using (var reader = command.ExecuteReader())
+                using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     var tags = new List<string>();
                     while (reader.Read())
@@ -81,14 +86,14 @@ namespace TCSystem.MetaDataDB
             using (var command = new SqliteCommand
             {
                 Transaction = transaction,
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT {TableTags}.{IdTag} FROM {TableFileTags} " +
                               $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId} = {TableFileTags}.{IdTagId} " +
                               $"WHERE {IdFileId}=@{IdFileId};"
             })
             {
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
-                using (var reader = command.ExecuteReader())
+                using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     var tags = new List<string>();
                     while (reader.Read())
@@ -103,7 +108,7 @@ namespace TCSystem.MetaDataDB
 
         public void AddTags(long fileId, IReadOnlyList<string> tags, SqliteTransaction transaction)
         {
-            foreach (var tag in tags)
+            foreach (string tag in tags)
             {
                 AddTag(fileId, tag, transaction);
             }
@@ -113,7 +118,7 @@ namespace TCSystem.MetaDataDB
         {
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT DISTINCT {TableFiles}.{IdFileName} " +
                               $"FROM {TableFileTags} " +
                               $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
@@ -124,7 +129,7 @@ namespace TCSystem.MetaDataDB
             })
             {
                 command.Parameters.AddWithValue($"@{IdTag}", tag + "%");
-                using (var reader = command.ExecuteReader())
+                using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     var fileNames = new List<string>();
                     while (reader.Read())
@@ -141,7 +146,7 @@ namespace TCSystem.MetaDataDB
         {
             using (var command = new SqliteCommand
             {
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT DISTINCT COUNT({TableFiles}.{IdFileName}) " +
                               $"FROM {TableFileTags} " +
                               $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
@@ -152,20 +157,20 @@ namespace TCSystem.MetaDataDB
             })
             {
                 command.Parameters.AddWithValue($"@{IdTag}", tag + "%");
-                var result = command.ExecuteScalar();
-                return (long?) result ?? 0;
+                object result = command.ExecuteScalar();
+                return (long?)result ?? 0;
             }
         }
 
         public void RemoveTag(string tag, SqliteTransaction transaction)
         {
-            var id = GetTagId(tag, transaction);
+            long id = GetTagId(tag, transaction);
             if (id != Constants.InvalidId)
             {
                 using (var command = new SqliteCommand
                 {
                     Transaction = transaction,
-                    Connection = Instance.Connection,
+                    Connection = _instance.Connection,
                     CommandText = $"DELETE From {TableFileTags} WHERE {IdTagId}=@{IdTagId};"
                 })
                 {
@@ -174,8 +179,6 @@ namespace TCSystem.MetaDataDB
                 }
             }
         }
-
-        public DB2Instance Instance;
 
 #endregion
 
@@ -186,19 +189,19 @@ namespace TCSystem.MetaDataDB
             using (var command = new SqliteCommand
             {
                 Transaction = transaction,
-                Connection = Instance.Connection,
+                Connection = _instance.Connection,
                 CommandText = $"SELECT {IdTagId} FROM {TableTags} WHERE {IdTag}=@{IdTag}"
             })
             {
                 command.Parameters.AddWithValue($"@{IdTag}", tag);
-                var result = command.ExecuteScalar();
-                return (long?) result ?? Constants.InvalidId;
+                object result = command.ExecuteScalar();
+                return (long?)result ?? Constants.InvalidId;
             }
         }
 
         private long AddTag(string tag, SqliteTransaction transaction)
         {
-            var tagId = Constants.InvalidId;
+            long tagId = Constants.InvalidId;
             if (tag.Length > 0)
             {
                 tagId = GetTagId(tag, transaction);
@@ -208,7 +211,7 @@ namespace TCSystem.MetaDataDB
                     using (var command = new SqliteCommand
                     {
                         Transaction = transaction,
-                        Connection = Instance.Connection,
+                        Connection = _instance.Connection,
                         CommandText = $"INSERT INTO {TableTags} ({IdTag}) VALUES(@{IdTag});"
                     })
                     {
@@ -225,13 +228,13 @@ namespace TCSystem.MetaDataDB
 
         private void AddTag(long fileId, string tag, SqliteTransaction transaction)
         {
-            var tagId = AddTag(tag, transaction);
+            long tagId = AddTag(tag, transaction);
             if (tagId != Constants.InvalidId)
             {
                 using (var command = new SqliteCommand
                 {
                     Transaction = transaction,
-                    Connection = Instance.Connection,
+                    Connection = _instance.Connection,
                     CommandText = $"INSERT INTO {TableFileTags} ({IdFileId}, {IdTagId}) VALUES(@{IdFileId}, @{IdTagId});"
                 })
                 {
@@ -241,6 +244,8 @@ namespace TCSystem.MetaDataDB
                 }
             }
         }
+
+        private readonly DB2Instance _instance;
 
 #endregion
     }

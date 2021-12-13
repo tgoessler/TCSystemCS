@@ -7,6 +7,8 @@
     <Description>Classes for handling, storing image meta data (e.g.: Serialize as Json)</Description>
   </PropertyGroup>
 
+  <Import Project="..\Packaging.props"></Import>
+
   <ItemGroup>
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="Tests\**" />
@@ -21,5 +23,4 @@
     <ProjectReference Include="..\Util\TCSystem.Util.csproj" />
   </ItemGroup>
 
-  <Import Project="..\Packaging.props"></Import>
 </Project>
