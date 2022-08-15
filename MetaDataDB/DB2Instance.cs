@@ -230,6 +230,8 @@ namespace TCSystem.MetaDataDB
             if (Connection != null)
             {
                 Log.Instance.Info("Destroying connection");
+
+                SqliteConnection.ClearPool(Connection);
                 Connection.Close();
                 Connection.Dispose();
                 Connection = null;

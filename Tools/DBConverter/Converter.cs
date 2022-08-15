@@ -62,20 +62,22 @@ namespace TCSystem.Tools.DBConverter
                 Log.Instance.Fatal("Wrong number of arguments\n filename_from filename_to is required");
             }
 
-            File.Delete(args[1]);
-
             IDB2 db1Write = null;
             IDB2Read db1 = null;
             IDB2 db2 = null;
+            var fileToConvert = Path.GetTempFileName();
 
             try
             {
+                File.Delete(fileToConvert);
                 File.Delete(args[1]);
 
-                db1Write = MetaDataDB.Factory.CreateReadWrite(args[0]); // just to update version
+                File.Copy(args[0], fileToConvert);
+
+                db1Write = MetaDataDB.Factory.CreateReadWrite(fileToConvert); // just to update version
                 MetaDataDB.Factory.Destroy(ref db1Write);
 
-                db1 = MetaDataDB.Factory.CreateRead(args[0]);
+                db1 = MetaDataDB.Factory.CreateRead(fileToConvert);
                 db2 = MetaDataDB.Factory.CreateReadWrite(args[1]);
 
                 var converter = new Converter();
@@ -90,6 +92,10 @@ namespace TCSystem.Tools.DBConverter
                 MetaDataDB.Factory.Destroy(ref db1Write);
                 MetaDataDB.Factory.Destroy(ref db1);
                 MetaDataDB.Factory.Destroy(ref db2);
+
+                File.Delete(fileToConvert);
+                File.Delete(fileToConvert + "-shm");
+                File.Delete(fileToConvert + "-wal");
             }
 
             Factory.DeInitLogging();
