@@ -70,6 +70,7 @@ namespace TCSystem.MetaData
                 var hashCode = FileId.GetHashCode();
                 hashCode *= 397 ^ FaceId.GetHashCode();
                 hashCode *= 397 ^ PersonId.GetHashCode();
+                hashCode *= 397 ^ FaceMode.GetHashCode();
                 return FaceDescriptor.Aggregate(hashCode, (current, fixedPoint64) => (current * 397) ^ fixedPoint64.GetHashCode());
             }
         }

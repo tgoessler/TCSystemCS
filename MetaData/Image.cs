@@ -158,6 +158,24 @@ namespace TCSystem.MetaData
             return image;
         }
 
+        public static Image ChangePersonTagVisible(Image image, PersonTag pt, bool visible)
+        {
+            if (image.HasPersonTag(pt))
+            {
+                var pts = image._personTags.ToList();
+                pts.Remove(pt);
+                pt = new PersonTag(pt.Person, new Face(pt.Face.Id, pt.Face.Rectangle, pt.Face.FaceMode, visible, pt.Face.FaceDescriptor));
+                pts.Add(pt);
+
+                image = new Image(image.Id, image.FileName, image.ProcessingInfos,
+                    image.Width, image.Height, image.Orientation,
+                    image.DateTaken, image.Title, image.Location,
+                    pts.AsReadOnly(), image._tags);
+            }
+
+            return image;
+        }
+
         public static Image RemovePersonWithName(Image image, string name)
         {
             var person = image.GetPersonTag(name);
@@ -205,15 +223,6 @@ namespace TCSystem.MetaData
             }
 
             return image;
-        }
-
-        public static Image InvalidateIds(Image image)
-        {
-            var personTags = image._personTags.Select(PersonTag.InvalidateIds).ToArray();
-            return new Image(Constants.InvalidId, image.FileName, image.ProcessingInfos,
-                image.Width, image.Height, image.Orientation,
-                image.DateTaken, image.Title, image.Location,
-                personTags, image._tags);
         }
 
         public override bool Equals(object obj)

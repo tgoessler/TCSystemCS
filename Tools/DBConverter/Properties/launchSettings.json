@@ -2,7 +2,7 @@
   "profiles": {
     "TCSystem.Tools.DBConverter": {
         "commandName": "Project",
-        "commandLineArgs": "MetaData2.db MetaData2Converted.db \"\\\\Server01\\Pictures\" \"E:\\Thomas\\OneDrive\\Bilder\" \"\\\\Server01\\homes\\Thomas\\Pictures\"",
+        "commandLineArgs": "MetaData2.db MetaData2Converted.db",
         "workingDirectory": "D:\\Source\\TCSystemCS.git\\Tools\\DBConverter"
     }
   }

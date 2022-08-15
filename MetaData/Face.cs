@@ -35,11 +35,12 @@ namespace TCSystem.MetaData
     {
 #region Public
 
-        public Face(long faceId, Rectangle rectangle, FaceMode faceMode, IEnumerable<FixedPoint64> faceDescriptor)
+        public Face(long faceId, Rectangle rectangle, FaceMode faceMode, bool visible, IEnumerable<FixedPoint64> faceDescriptor)
         {
             Id = faceId;
             Rectangle = rectangle;
             FaceMode = faceMode;
+            Visible = visible;
             _faceDescriptor = faceDescriptor?.ToArray();
             // safety check for wrong face descriptors
             if (_faceDescriptor != null && _faceDescriptor.Length != FaceDescriptorLength)
@@ -58,25 +59,6 @@ namespace TCSystem.MetaData
             return EqualsUtil.Equals(this, other, EqualsImp);
         }
 
-        private bool EqualsImp(Face other)
-        {
-            var equal = false;
-            if (Id == other.Id &&
-                Rectangle.Equals(other.Rectangle))
-            {
-                if (_faceDescriptor == null && other._faceDescriptor == null)
-                {
-                    equal = true;
-                }
-                else if (_faceDescriptor != null)
-                {
-                    equal = _faceDescriptor.SequenceEqual(other._faceDescriptor);
-                }
-            }
-
-            return equal;
-        }
-
         public override int GetHashCode()
         {
             unchecked
@@ -84,7 +66,9 @@ namespace TCSystem.MetaData
                 var hashCode = Id.GetHashCode();
                 hashCode = (hashCode * 397) ^ Rectangle.GetHashCode();
                 hashCode = (hashCode * 397) ^ FaceMode.GetHashCode();
-                return _faceDescriptor != null ? _faceDescriptor.Aggregate(hashCode, (current, fixedPoint64) => (current * 397) ^ fixedPoint64.GetHashCode()) : hashCode;
+                hashCode = (hashCode * 397) ^ Visible.GetHashCode();
+                return _faceDescriptor != null ? 
+                    _faceDescriptor.Aggregate(hashCode, (current, fixedPoint64) => (current * 397) ^ fixedPoint64.GetHashCode()) : hashCode;
             }
         }
 
@@ -103,15 +87,11 @@ namespace TCSystem.MetaData
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
         }
 
-        public static Face InvalidateId(Face face)
-        {
-            return new(Constants.InvalidId, face.Rectangle, face.FaceMode, face.FaceDescriptor);
-        }
-
         public long Id { get; }
         public Rectangle Rectangle { get; }
         public FaceMode FaceMode { get; }
         public bool IsFrontFace => FaceMode == FaceMode.DlibFront;
+        public bool Visible { get; }
         public bool HasFaceDescriptor => _faceDescriptor != null;
         public IReadOnlyCollection<FixedPoint64> FaceDescriptor => _faceDescriptor;
 
@@ -125,6 +105,7 @@ namespace TCSystem.MetaData
             return new Face((long) jsonObject["id"],
                 Rectangle.FromJson((JObject) jsonObject["rectangle"]),
                 (FaceMode) (int) jsonObject["face_mode"],
+                 (int) jsonObject["visible"] == 1,
                 fdJson != null && fdJson.Count > 0 ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
         }
 
@@ -134,7 +115,8 @@ namespace TCSystem.MetaData
             {
                 ["id"] = Id,
                 ["rectangle"] = Rectangle.ToJson(),
-                ["face_mode"] = (int) FaceMode,
+                ["face_mode"] = (int)FaceMode,
+                ["visible"] = Visible ? 1 : 0,
                 ["face_descriptor"] = HasFaceDescriptor ? new JArray(FaceDescriptor.Select(v => v.Value)) : new JArray()
             };
 
@@ -146,6 +128,24 @@ namespace TCSystem.MetaData
 #region Private
 
         private const int FaceDescriptorLength = 128;
+
+        private bool EqualsImp(Face other)
+        {
+            var equal = false;
+            if (Id == other.Id && Rectangle.Equals(other.Rectangle) && Visible == other.Visible)
+            {
+                if (_faceDescriptor == null && other._faceDescriptor == null)
+                {
+                    equal = true;
+                }
+                else if (_faceDescriptor != null)
+                {
+                    equal = _faceDescriptor.SequenceEqual(other._faceDescriptor);
+                }
+            }
+
+            return equal;
+        }
 
         private readonly FixedPoint64[] _faceDescriptor;
 

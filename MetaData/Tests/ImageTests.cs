@@ -70,6 +70,12 @@ namespace TCSystem.MetaData.Tests
         }
 
         [Test]
+        public void ChangePersonTagVisibleTest()
+        {
+            
+        }
+
+        [Test]
         public void ChangeTagsTest()
         {
             

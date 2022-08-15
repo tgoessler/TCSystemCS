@@ -194,15 +194,13 @@ namespace TCSystem.MetaDataDB
                 Log.Instance.Fatal($"Creating connection {_fileName}' failed");
                 throw new InvalidProgramException($"Open connection '{_fileName}' failed");
             }
-            else
-            {
-                Log.Instance.Info("Creating connection done");
-            }
+
+            Log.Instance.Info("Creating connection done");
         }
 
         private void ApplyDbSetting()
         {
-            using (var command = new SqliteCommand{Connection = Connection})
+            using (var command = new SqliteCommand { Connection = Connection })
             {
                 if (UnsafeModeEnabled)
                 {
@@ -441,6 +439,7 @@ namespace TCSystem.MetaDataDB
                                      $"{IdRectangleW} INTEGER, " +
                                      $"{IdRectangleH} INTEGER, " +
                                      $"{IdFaceMode} INTEGER DEFAULT {(int)FaceMode.Undefined}, " +
+                                     $"{IdVisible} INTEGER DEFAULT 1, " +
                                      $"{IdFaceDescriptor} BLOB " +
                                      ");"
                    })
@@ -524,29 +523,39 @@ namespace TCSystem.MetaDataDB
 
         private SqliteTransaction WriteDbVersion()
         {
-            SqliteTransaction transaction;
+            SqliteTransaction transaction = null;
 
             if (Version == null)
             {
                 transaction = BeginTransaction();
 
-                ExecuteNonQuery($"INSERT INTO {TableKeyValues}({IdKey}, {IdValue}) VALUES('Version', '{CurrentVersion}');",
-                    transaction);
+                ExecuteNonQuery($"INSERT INTO {TableKeyValues}({IdKey}, {IdValue}) VALUES('Version', '{CurrentVersion}');", transaction);
                 Version = CurrentVersion;
             }
-            else if (Version == Version10)
+
+            if (Version == Version10)
             {
-                transaction = BeginTransaction();
+                transaction ??= BeginTransaction();
 
-                ExecuteNonQuery($"ALTER TABLE {TableFileFaces} ADD {IdFaceMode} INTEGER DEFAULT {(int)FaceMode.Undefined};",
-                    transaction);
-                ExecuteNonQuery($"UPDATE {TableFiles} SET {IdProcessingInfo}={(long)ProcessingInfos.None};",
-                    transaction);
+                ExecuteNonQuery($"ALTER TABLE {TableFileFaces} ADD {IdFaceMode} INTEGER DEFAULT {(int)FaceMode.Undefined};", transaction);
+                ExecuteNonQuery($"UPDATE {TableFiles} SET {IdProcessingInfo}={(long)ProcessingInfos.None};", transaction);
 
-                UpdateDbVersion(transaction);
+                UpdateDbVersion(transaction, Version11);
             }
-            else if (Version != CurrentVersion)
+
+            if (Version == Version11)
             {
+                transaction ??= BeginTransaction();
+
+                ExecuteNonQuery($"ALTER TABLE {TableFileFaces} ADD {IdVisible} INTEGER DEFAULT 1;", transaction);
+
+                UpdateDbVersion(transaction, Version12);
+            }
+
+            if (Version != CurrentVersion)
+            {
+                transaction?.Dispose();
+
                 DestroyConnection();
                 CreateConnection();
 
@@ -554,25 +563,19 @@ namespace TCSystem.MetaDataDB
 
                 foreach (string tableName in _dataTableNames)
                 {
-                    ExecuteNonQuery($"DROP TABLE IF EXISTS {tableName};",
-                        transaction);
+                    ExecuteNonQuery($"DROP TABLE IF EXISTS {tableName};", transaction);
                 }
 
-                UpdateDbVersion(transaction);
-            }
-            else
-            {
-                transaction = BeginTransaction();
+                UpdateDbVersion(transaction, CurrentVersion);
             }
 
-            return transaction;
+            return transaction ?? BeginTransaction();
         }
 
-        private void UpdateDbVersion(SqliteTransaction transaction)
+        private void UpdateDbVersion(SqliteTransaction transaction, string version)
         {
-            Version = CurrentVersion;
-            ExecuteNonQuery($"UPDATE {TableKeyValues} SET {IdValue}='{CurrentVersion}' WHERE {IdKey}='Version';",
-                transaction);
+            Version = version;
+            ExecuteNonQuery($"UPDATE {TableKeyValues} SET {IdValue}='{Version}' WHERE {IdKey}='Version';", transaction);
         }
 
         private void ExecuteNonQuery(string commandText, SqliteTransaction transaction = null)

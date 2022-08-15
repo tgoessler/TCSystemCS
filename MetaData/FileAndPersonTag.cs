@@ -126,9 +126,5 @@ namespace TCSystem.MetaData
         }
 
 #endregion
-
-#region Private
-
-#endregion
     }
 }

@@ -18,8 +18,12 @@
 // 
 // *******************************************************************************
 
+#region Usings
+
 using System;
 using System.Linq;
+
+#endregion
 
 namespace TCSystem.MetaData.Tests
 {
@@ -61,14 +65,13 @@ namespace TCSystem.MetaData.Tests
 
         public static readonly FaceInfo FaceInfoZero = new(Constants.InvalidId, Constants.InvalidId, Constants.InvalidId, FaceMode.DlibCnn, null);
         public static readonly FaceInfo FaceInfo1 = new(1, 2, 3, FaceMode.DlibCnn, Array.Empty<FixedPoint64>());
-        public static readonly FaceInfo FaceInfo2 = new(2, 3, 4, FaceMode.DlibCnn, 
+
+        public static readonly FaceInfo FaceInfo2 = new(2, 3, 4, FaceMode.DlibCnn,
             Enumerable.Repeat(new FixedPoint64(1), 128));
 
-        public static readonly Face FaceZero = new(0, Rectangle.FromFloat(0, 0, 0, 0), FaceMode.Undefined, null);
-        public static readonly Face Face1 = new(1, Rectangle.FromFloat(10, 10, 100, 100), FaceMode.DlibFront,
-            Enumerable.Repeat(new FixedPoint64(1), 128));
-        public static readonly Face Face2 = new(2, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined,
-            Enumerable.Repeat(new FixedPoint64(2), 128));
+        public static readonly Face FaceZero = new(0, Rectangle.FromFloat(0, 0, 0, 0), FaceMode.Undefined, false, null);
+        public static readonly Face Face1 = new(1, Rectangle.FromFloat(10, 10, 100, 100), FaceMode.DlibFront, true, Enumerable.Repeat(new FixedPoint64(1), 128));
+        public static readonly Face Face2 = new(2, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, true, Enumerable.Repeat(new FixedPoint64(2), 128));
 
         public static readonly Person PersonZero = new(0, null, null, null, null);
         public static readonly Person Person1 = new(1, "Thomas", "thomas@email.com", "123", "456");
@@ -82,6 +85,6 @@ namespace TCSystem.MetaData.Tests
         public static readonly FileAndPersonTag FileAndPersonTag1 = new("file1", PersonTag1);
         public static readonly FileAndPersonTag FileAndPersonTag2 = new("file2", PersonTag2);
 
-        #endregion
+#endregion
     }
 }

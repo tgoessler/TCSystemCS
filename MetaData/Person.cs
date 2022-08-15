@@ -80,11 +80,6 @@ namespace TCSystem.MetaData
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
         }
 
-        public static Person InvalidateId(Person person)
-        {
-            return new(Constants.InvalidId, person.Name, person.EmailDigest, person.LiveId, person.SourceId);
-        }
-
         public long Id { get; }
         public string Name { get; }
         public string EmailDigest { get; }

@@ -108,21 +108,7 @@ namespace TCSystem.MetaData
             return !lhs.Equals(rhs);
         }
 
-        public FixedPoint32 X { get; }
-        public FixedPoint32 Y { get; }
-        public FixedPoint32 W { get; }
-        public FixedPoint32 H { get; }
-
-        public FixedPoint32 Left => X;
-        public FixedPoint32 Top => Y;
-        public FixedPoint32 Right => new(X.RawValue + W.RawValue);
-        public FixedPoint32 Bottom => new(Y.RawValue + H.RawValue);
-
-#endregion
-
-#region Internal
-
-        internal static Rectangle FromJson(JObject jsonObject)
+        public static Rectangle FromJson(JObject jsonObject)
         {
             return new(
                 FixedPoint32.FromJson(jsonObject["x"]),
@@ -132,7 +118,7 @@ namespace TCSystem.MetaData
             );
         }
 
-        internal JObject ToJson()
+        public JObject ToJson()
         {
             var obj = new JObject
             {
@@ -144,6 +130,16 @@ namespace TCSystem.MetaData
 
             return obj;
         }
+
+        public FixedPoint32 X { get; }
+        public FixedPoint32 Y { get; }
+        public FixedPoint32 W { get; }
+        public FixedPoint32 H { get; }
+
+        public FixedPoint32 Left => X;
+        public FixedPoint32 Top => Y;
+        public FixedPoint32 Right => new(X.RawValue + W.RawValue);
+        public FixedPoint32 Bottom => new(Y.RawValue + H.RawValue);
 
 #endregion
     }

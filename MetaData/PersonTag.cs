@@ -74,12 +74,6 @@ namespace TCSystem.MetaData
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
         }
 
-        public static PersonTag InvalidateIds(PersonTag personTag)
-        {
-            return new(Person.InvalidateId(personTag.Person),
-                Face.InvalidateId(personTag.Face));
-        }
-
         public Person Person { get; }
         public Face Face { get; }
 

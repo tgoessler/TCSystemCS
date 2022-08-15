@@ -21,7 +21,6 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -37,12 +36,11 @@ namespace TCSystem.Tools.DBConverter
     {
 #region Public
 
-        public void Start(IDB2Read from, IDB2 to, IEnumerable<string> folders)
+        public void Start(IDB2Read from, IDB2 to)
         {
             _fromDB = from;
             _toDB = to;
-            _folders = folders.ToList();
-
+            
             _fromDB.EnableUnsafeMode();
             _toDB.EnableUnsafeMode();
 
@@ -66,13 +64,22 @@ namespace TCSystem.Tools.DBConverter
 
             File.Delete(args[1]);
 
-            var db1 = MetaDataDB.Factory.CreateRead(args[0]);
-            var db2 = MetaDataDB.Factory.CreateReadWrite(args[1]);
+            IDB2 db1Write = null;
+            IDB2Read db1 = null;
+            IDB2 db2 = null;
 
             try
             {
+                File.Delete(args[1]);
+
+                db1Write = MetaDataDB.Factory.CreateReadWrite(args[0]); // just to update version
+                MetaDataDB.Factory.Destroy(ref db1Write);
+
+                db1 = MetaDataDB.Factory.CreateRead(args[0]);
+                db2 = MetaDataDB.Factory.CreateReadWrite(args[1]);
+
                 var converter = new Converter();
-                converter.Start(db1, db2, args.Skip(2));
+                converter.Start(db1, db2);
             }
             catch (Exception e)
             {
@@ -80,6 +87,7 @@ namespace TCSystem.Tools.DBConverter
             }
             finally
             {
+                MetaDataDB.Factory.Destroy(ref db1Write);
                 MetaDataDB.Factory.Destroy(ref db1);
                 MetaDataDB.Factory.Destroy(ref db2);
             }
@@ -97,7 +105,7 @@ namespace TCSystem.Tools.DBConverter
                 stopWatch.Start();
 
                 var files = _fromDB.GetAllFilesLike();
-                Log.Instance.Info($"Converting old database format to new format: {files.Count}");
+                Log.Instance.Info($"Converting old database format to new format: {files.Count} Entries");
 
                 foreach (var fileName in files)
                 {
@@ -108,7 +116,7 @@ namespace TCSystem.Tools.DBConverter
                 Log.Instance.Info($"ConvertDB done in {stopWatch.ElapsedMilliseconds}ms.");
 
 
-                Log.Instance.Info($"Checking DB");
+                Log.Instance.Info("Checking DB");
                 stopWatch.Start();
 
                 CheckDbCounters();
@@ -128,11 +136,15 @@ namespace TCSystem.Tools.DBConverter
         {
             Log.Instance.Info("Checking data");
 
-            CheckFiles();
             CheckYears();
             CheckTags();
             CheckPersons();
             CheckLocations();
+            CheckFaces(true);
+            CheckFaces(false);
+            CheckPersonTags(true);
+            CheckPersonTags(false);
+            CheckFiles();
         }
 
         private void CheckFiles()
@@ -179,9 +191,16 @@ namespace TCSystem.Tools.DBConverter
                 {
                     throw new InvalidProgramException($"Orientation of {fileName} not equal. o1={o1}, o2={o2}");
                 }
+
+                var l1 = _fromDB.GetLocation(fileName);
+                var l2 = _toDB.GetLocation(fileName);
+                if (!(ReferenceEquals(l1, l2) || l1.Equals(l2)))
+                {
+                    throw new InvalidProgramException($"Location of {fileName} not equal. l1={l1}, l2={l2}");
+                }
             }
 
-            foreach (var folder in _folders)
+            foreach (var folder in files1.Select(Path.GetDirectoryName).Distinct())
             {
                 CheckFolder(folder);
             }
@@ -204,12 +223,6 @@ namespace TCSystem.Tools.DBConverter
             if (files3.Length > 0)
             {
                 throw new InvalidProgramException($"List of Files of ${folder} is different {string.Join(",", files3)}");
-            }
-
-
-            foreach (var subFolder in Directory.EnumerateDirectories(folder))
-            {
-                CheckFolder(subFolder);
             }
         }
 
@@ -258,8 +271,10 @@ namespace TCSystem.Tools.DBConverter
 
             foreach (var personName in personNames1)
             {
-                var p1 = _fromDB.GetPersonFromName(personName);
-                var p2 = _fromDB.GetPersonFromName(personName);
+                var personId1 = _fromDB.GetPersonIdFromName(personName);
+
+                var p1 = _fromDB.GetPersonFromId(personId1).InvalidateId();
+                var p2 = _toDB.GetPersonFromName(personName).InvalidateId();
                 if (!p1.Equals(p2))
                 {
                     throw new InvalidProgramException($"Persons are different, '{p1}' != '{p2}''");
@@ -279,6 +294,38 @@ namespace TCSystem.Tools.DBConverter
                 {
                     throw new InvalidProgramException($"List of Files of Person={personName} is different {string.Join(",", files3)}");
                 }
+            }
+        }
+
+        private void CheckFaces(bool visibleOnly)
+        {
+            Log.Instance.Info($"Checking faces visibleOnly={visibleOnly}");
+
+            var faceInfos1 = _fromDB.GetAllFaceInfos(visibleOnly);
+            var faceInfos2 = _toDB.GetAllFaceInfos(visibleOnly);
+            if (faceInfos1.Count !=  faceInfos2.Count)
+            {
+                throw new InvalidProgramException("Length of all Face Infos is different");
+            }
+        }
+
+        private void CheckPersonTags(bool visibleOnly)
+        {
+            Log.Instance.Info($"Checking person tags visibleOnly={visibleOnly}");
+
+            var personNames1 = _fromDB.GetAllPersonNamesLike();
+            foreach (string name in personNames1)
+            {
+                var personTags1 = _fromDB.GetFileAndPersonTagsOfPerson(name, visibleOnly)
+                    .Select(f => new FileAndPersonTag(f.FileName, f.PersonTag.InvalidateId()));
+                var personTags2 = _toDB.GetFileAndPersonTagsOfPerson(name, visibleOnly)
+                    .Select(f => new FileAndPersonTag(f.FileName, f.PersonTag.InvalidateId()));
+                var personTags3 = personTags1.Except(personTags2).ToArray();
+                if (personTags3.Length > 0)
+                {
+                    throw new InvalidProgramException($"List of all person tags is different for person {name}: {string.Join(",", personTags3.Select(p => p.ToString()))}");
+                }
+               
             }
         }
 
@@ -387,7 +434,7 @@ namespace TCSystem.Tools.DBConverter
         private void CheckConvertedData(string file, Image originalData)
         {
             var convertedData = _toDB.GetMetaData(file);
-            convertedData = Image.InvalidateIds(convertedData);
+            convertedData = convertedData.InvalidateId();
             if (!originalData.Equals(convertedData))
             {
                 throw new InvalidProgramException($"Converting data of {file} failed\n\n{originalData}\n\n{convertedData}");
@@ -397,7 +444,7 @@ namespace TCSystem.Tools.DBConverter
         private Image ConvertFile(string file)
         {
             var data = _fromDB.GetMetaData(file);
-            data = Image.InvalidateIds(data);
+            data = data.InvalidateId();
             var dateModified = _fromDB.GetDateModified(file);
 
             _toDB.AddMetaData(data, dateModified);
@@ -407,7 +454,6 @@ namespace TCSystem.Tools.DBConverter
 
         private IDB2Read _fromDB;
         private IDB2 _toDB;
-        private IList<string> _folders;
 
 #endregion
     }
