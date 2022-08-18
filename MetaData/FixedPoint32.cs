@@ -43,6 +43,11 @@ namespace TCSystem.MetaData
             RawValue = (int)(val * (1 << 16));
         }
 
+        public FixedPoint32(double val)
+        {
+            RawValue = (int)(val * (1 << 16));
+        }
+
         public override bool Equals(object obj)
         {
             return obj is FixedPoint32 fixedPoint && Equals(fixedPoint);
@@ -81,6 +86,26 @@ namespace TCSystem.MetaData
         public static bool operator !=(FixedPoint32 lhs, FixedPoint32 rhs)
         {
             return !lhs.Equals(rhs);
+        }
+
+        public static bool operator >(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.RawValue > rhs.RawValue;
+        }
+
+        public static bool operator <=(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.RawValue <= rhs.RawValue;
+        }
+
+        public static bool operator >=(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.RawValue >= rhs.RawValue;
+        }
+
+        public static bool operator <(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.RawValue < rhs.RawValue;
         }
 
         public float Value => RawValue / (float) (1 << 16);

@@ -40,6 +40,14 @@ namespace TCSystem.MetaData
             H = h;
         }
 
+        public bool Contains(Rectangle other)
+        {
+            return Left <= other.Left &&
+                   Top <= other.Top && 
+                   Right >= other.Right &&
+                   Bottom >= other.Bottom;
+        }
+
         public static Rectangle FromFloat(float x, float y, float w, float h)
         {
             return new(new FixedPoint32(x),
@@ -140,7 +148,9 @@ namespace TCSystem.MetaData
         public FixedPoint32 Top => Y;
         public FixedPoint32 Right => new(X.RawValue + W.RawValue);
         public FixedPoint32 Bottom => new(Y.RawValue + H.RawValue);
-
+        public FixedPoint32 Diameter => new((int)Math.Sqrt(W.RawValue * W.RawValue + H.RawValue * H.RawValue));
+        public (FixedPoint32 x, FixedPoint32 y) Center => 
+            (new((Left.RawValue + Right.RawValue) / 2), new((Top.RawValue + Bottom.RawValue) / 2));
 #endregion
     }
 }
