@@ -148,7 +148,7 @@ namespace TCSystem.MetaDataDB
                    })
             {
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
-                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly);
+                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
                 using (var reader = command.ExecuteReader())
                 {
                     var personTags = new List<PersonTag>();
@@ -320,7 +320,7 @@ namespace TCSystem.MetaDataDB
                    })
             {
                 command.Parameters.AddWithValue($"@{IdName}", name);
-                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly);
+                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
                 using (var reader = command.ExecuteReader())
                 {
                     var fileAndPersonTags = new List<FileAndPersonTag>();
@@ -365,7 +365,7 @@ namespace TCSystem.MetaDataDB
                                      $"WHERE {IdFaceDescriptor} != \"\"{AddVisibleWhere(visibleOnly)};"
                    })
             {
-                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly);
+                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
                 using (var reader = command.ExecuteReader())
                 {
                     var faceInfos = new List<FaceInfo>();
@@ -398,7 +398,7 @@ namespace TCSystem.MetaDataDB
                                      $"WHERE {IdFaceId}={faceId}{AddVisibleWhere(visibleOnly)};"
                    })
             {
-                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly);
+                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -488,9 +488,9 @@ namespace TCSystem.MetaDataDB
                        Transaction = transaction,
                        Connection = _instance.Connection,
                        CommandText = $"INSERT INTO {TableFileFaces} " + "" +
-                                     $"( {IdFileId},  {IdPersonId},  {IdRectangleX},  {IdRectangleY},  {IdRectangleW},  {IdRectangleH},  {IdFaceMode},  {IdFaceDescriptor})" +
+                                     $"( {IdFileId},  {IdPersonId},  {IdRectangleX},  {IdRectangleY},  {IdRectangleW},  {IdRectangleH},  {IdFaceMode},  {IdVisible}, {IdFaceDescriptor})" +
                                      "VALUES " +
-                                     $"(@{IdFileId}, @{IdPersonId}, @{IdRectangleX}, @{IdRectangleY}, @{IdRectangleW}, @{IdRectangleH}, @{IdFaceMode}, @{IdFaceDescriptor});"
+                                     $"(@{IdFileId}, @{IdPersonId}, @{IdRectangleX}, @{IdRectangleY}, @{IdRectangleW}, @{IdRectangleH}, @{IdFaceMode}, @{IdVisible}, @{IdFaceDescriptor});"
                    })
             {
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
@@ -500,6 +500,7 @@ namespace TCSystem.MetaDataDB
                 command.Parameters.AddWithValue($"@{IdRectangleW}", face.Rectangle.W.RawValue);
                 command.Parameters.AddWithValue($"@{IdRectangleH}", face.Rectangle.H.RawValue);
                 command.Parameters.AddWithValue($"@{IdFaceMode}", (int)face.FaceMode);
+                command.Parameters.AddWithValue($"@{IdVisible}", face.Visible ? 1 : 0);
                 var faceDescriptorStringValues = face.HasFaceDescriptor ? face.FaceDescriptor.Select(v => v.RawValue.ToString(CultureInfo.InvariantCulture)) : null;
                 var faceDescriptorString = faceDescriptorStringValues != null ? string.Join(",", faceDescriptorStringValues) : "";
                 command.Parameters.AddWithValue($"@{IdFaceDescriptor}", faceDescriptorString);
