@@ -59,9 +59,9 @@ namespace TCSystem.MetaData.Tests
         public static readonly Location Location1 = new(Address1, GpsPoint1);
         public static readonly Location Location2 = new(Address2, GpsPoint2);
 
-        public static readonly FaceDistanceInfo FaceDistanceInfoZero = new(0, FixedPoint32Zero, 0);
-        public static readonly FaceDistanceInfo FaceDistanceInfo1 = new(1, new FixedPoint32(10), 1);
-        public static readonly FaceDistanceInfo FaceDistanceInfo2 = new(2, new FixedPoint32(5), 2);
+        public static readonly FaceDistanceInfo FaceDistanceInfoZero = new(0, 0, 0);
+        public static readonly FaceDistanceInfo FaceDistanceInfo1 = new(1, 1, 10);
+        public static readonly FaceDistanceInfo FaceDistanceInfo2 = new(2, 2, 5);
 
         public static readonly FaceInfo FaceInfoZero = new(Constants.InvalidId, Constants.InvalidId, Constants.InvalidId, FaceMode.DlibCnn, null);
         public static readonly FaceInfo FaceInfo1 = new(1, 2, 3, FaceMode.DlibCnn, Array.Empty<FixedPoint64>());

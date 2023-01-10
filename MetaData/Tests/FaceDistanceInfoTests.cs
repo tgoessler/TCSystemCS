@@ -55,7 +55,7 @@ namespace TCSystem.MetaData.Tests
         public void GetHashCodeTest()
         {
             var data1 = TestData.FaceDistanceInfo1;
-            var copyOfData1 = new FaceDistanceInfo(data1.FaceId1, data1.Distance, data1.FaceId1);
+            var copyOfData1 = new FaceDistanceInfo(data1.FaceId1, data1.FaceId1, data1.Distance);
 
             TestUtil.GetHashCodeTest(TestData.FaceDistanceInfoZero, TestData.FaceDistanceInfo1,
                 TestData.FaceDistanceInfo2, copyOfData1);

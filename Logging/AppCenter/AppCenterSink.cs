@@ -56,12 +56,9 @@ namespace TCSystem.Logging.AppCenter
                     logData["Exception"] = logEvent.Exception.ToString();
                 }
 
-                if (logEvent.Properties != null)
+                foreach (var keyValuePair in logEvent.Properties)
                 {
-                    foreach (var keyValuePair in logEvent.Properties)
-                    {
-                        logData[keyValuePair.Key] = keyValuePair.Value.ToString();
-                    }
+                    logData[keyValuePair.Key] = keyValuePair.Value.ToString();
                 }
 
                 Analytics.TrackEvent("LogEntry", logData);
