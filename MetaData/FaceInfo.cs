@@ -90,7 +90,7 @@ namespace TCSystem.MetaData
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
         }
 
-        public static string ToJsonStringArray(IList<FaceInfo> faceInfos)
+        public static string ToJsonStringArray(IEnumerable<FaceInfo> faceInfos)
         {
             var array = new JArray(faceInfos.Select(fi => fi.ToJson()));
             return array.ToString(Formatting.None);
