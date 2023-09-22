@@ -106,7 +106,7 @@ namespace TCSystem.MetaData
                 Rectangle.FromJson((JObject) jsonObject["rectangle"]),
                 (FaceMode) (int) jsonObject["face_mode"],
                  (int) jsonObject["visible"] == 1,
-                fdJson != null && fdJson.Count > 0 ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
+                fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
         }
 
         internal JObject ToJson()

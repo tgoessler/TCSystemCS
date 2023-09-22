@@ -114,7 +114,7 @@ namespace TCSystem.MetaData
                 (long) jsonObject["face_id"],
                 (long) jsonObject["person_id"],
                 (FaceMode) (long) jsonObject["face_mode"],
-                fdJson != null && fdJson.Count > 0 ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
+                fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
         }
 
         private JObject ToJson()

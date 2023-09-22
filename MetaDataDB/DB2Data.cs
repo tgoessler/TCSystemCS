@@ -113,7 +113,7 @@ namespace TCSystem.MetaDataDB
                         DateTimeOffset year = reader.GetDateTimeOffset(0);
                         if (year != Image.InvalidDateTaken)
                         {
-                            year = new DateTimeOffset(new DateTime(year.Year, 1, 1));
+                            year = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0, DateTimeKind.Local));
                         }
 
                         if (!years.Contains(year))
@@ -202,8 +202,8 @@ namespace TCSystem.MetaDataDB
             }
             else
             {
-                var startDate = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0));
-                var endDate = new DateTimeOffset(new DateTime(year.Year, 12, 31, 23, 59, 59));
+                var startDate = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0, DateTimeKind.Local));
+                var endDate = new DateTimeOffset(new DateTime(year.Year, 12, 31, 23, 59, 59, DateTimeKind.Local));
                 command.Parameters.AddWithValue("@StartDate", startDate);
                 command.Parameters.AddWithValue("@EndDate", endDate);
             }

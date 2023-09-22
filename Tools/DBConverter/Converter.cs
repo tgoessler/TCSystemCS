@@ -65,7 +65,7 @@ namespace TCSystem.Tools.DBConverter
             IDB2 db1Write = null;
             IDB2Read db1 = null;
             IDB2 db2 = null;
-            var fileToConvert = Path.GetTempFileName();
+            var fileToConvert = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             try
             {
