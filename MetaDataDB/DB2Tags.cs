@@ -39,12 +39,10 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumTags(SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection,
-                CommandText = $"SELECT COUNT({IdTagId}) FROM {TableTags};"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT COUNT({IdTagId}) FROM {TableTags};";
                 object result = command.ExecuteScalar();
                 return (long?)result ?? 0;
             }
@@ -60,12 +58,10 @@ namespace TCSystem.MetaDataDB
                 filter = "%" + filter.Replace(' ', '%') + "%";
             }
 
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection,
-                CommandText = $"SELECT DISTINCT {IdTag} FROM {TableTags} {filterCommand} ORDER by {IdTag} ASC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT DISTINCT {IdTag} FROM {TableTags} {filterCommand} ORDER by {IdTag} ASC;";
                 command.Parameters.AddWithValue("@Filter", filter);
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
@@ -83,15 +79,13 @@ namespace TCSystem.MetaDataDB
 
         public IReadOnlyList<string> GetTags(long fileId, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = _instance.Connection,
-                CommandText = $"SELECT {TableTags}.{IdTag} FROM {TableFileTags} " +
-                              $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId} = {TableFileTags}.{IdTagId} " +
-                              $"WHERE {IdFileId}=@{IdFileId};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {TableTags}.{IdTag} FROM {TableFileTags} " +
+                                      $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId} = {TableFileTags}.{IdTagId} " +
+                                      $"WHERE {IdFileId}=@{IdFileId};";
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
@@ -116,18 +110,16 @@ namespace TCSystem.MetaDataDB
 
         public IList<string> GetFilesOfTag(string tag)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection,
-                CommandText = $"SELECT DISTINCT {TableFiles}.{IdFileName} " +
-                              $"FROM {TableFileTags} " +
-                              $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileTags}.{IdFileId} " +
-                              $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId} " +
-                              $"WHERE {TableTags}.{IdTag} LIKE @{IdTag} ESCAPE '?' " +
-                              $"ORDER by {TableFileData}.{IdDateTaken} DESC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT DISTINCT {TableFiles}.{IdFileName} " +
+                                      $"FROM {TableFileTags} " +
+                                      $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileTags}.{IdFileId} " +
+                                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId} " +
+                                      $"WHERE {TableTags}.{IdTag} LIKE @{IdTag} ESCAPE '?' " +
+                                      $"ORDER by {TableFileData}.{IdDateTaken} DESC;";
                 command.Parameters.AddWithValue($"@{IdTag}", tag + "%");
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
@@ -144,18 +136,16 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfTag(string tag)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection,
-                CommandText = $"SELECT DISTINCT COUNT({TableFiles}.{IdFileName}) " +
-                              $"FROM {TableFileTags} " +
-                              $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileTags}.{IdFileId} " +
-                              $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId} " +
-                              $"WHERE {TableTags}.{IdTag} LIKE @{IdTag} ESCAPE '?' " +
-                              $"ORDER by {TableFileData}.{IdDateTaken} DESC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT DISTINCT COUNT({TableFiles}.{IdFileName}) " +
+                                      $"FROM {TableFileTags} " +
+                                      $"    INNER JOIN {TableTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileTags}.{IdFileId} " +
+                                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId} " +
+                                      $"WHERE {TableTags}.{IdTag} LIKE @{IdTag} ESCAPE '?' " +
+                                      $"ORDER by {TableFileData}.{IdDateTaken} DESC;";
                 command.Parameters.AddWithValue($"@{IdTag}", tag + "%");
                 object result = command.ExecuteScalar();
                 return (long?)result ?? 0;
@@ -167,13 +157,11 @@ namespace TCSystem.MetaDataDB
             long id = GetTagId(tag, transaction);
             if (id != Constants.InvalidId)
             {
-                using (var command = new SqliteCommand
+                using (var command = new SqliteCommand())
                 {
-                    Transaction = transaction,
-                    Connection = _instance.Connection,
-                    CommandText = $"DELETE From {TableFileTags} WHERE {IdTagId}=@{IdTagId};"
-                })
-                {
+                    command.Transaction = transaction;
+                    command.Connection = _instance.Connection;
+                    command.CommandText = $"DELETE From {TableFileTags} WHERE {IdTagId}=@{IdTagId};";
                     command.Parameters.AddWithValue($"@{IdTagId}", id);
                     command.ExecuteNonQuery();
                 }
@@ -186,13 +174,11 @@ namespace TCSystem.MetaDataDB
 
         private long GetTagId(string tag, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = _instance.Connection,
-                CommandText = $"SELECT {IdTagId} FROM {TableTags} WHERE {IdTag}=@{IdTag}"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {IdTagId} FROM {TableTags} WHERE {IdTag}=@{IdTag}";
                 command.Parameters.AddWithValue($"@{IdTag}", tag);
                 object result = command.ExecuteScalar();
                 return (long?)result ?? Constants.InvalidId;
@@ -208,13 +194,11 @@ namespace TCSystem.MetaDataDB
 
                 if (tagId == Constants.InvalidId)
                 {
-                    using (var command = new SqliteCommand
+                    using (var command = new SqliteCommand())
                     {
-                        Transaction = transaction,
-                        Connection = _instance.Connection,
-                        CommandText = $"INSERT INTO {TableTags} ({IdTag}) VALUES(@{IdTag});"
-                    })
-                    {
+                        command.Transaction = transaction;
+                        command.Connection = _instance.Connection;
+                        command.CommandText = $"INSERT INTO {TableTags} ({IdTag}) VALUES(@{IdTag});";
                         command.Parameters.AddWithValue($"@{IdTag}", tag);
                         command.ExecuteNonQuery();
                     }
@@ -231,13 +215,11 @@ namespace TCSystem.MetaDataDB
             long tagId = AddTag(tag, transaction);
             if (tagId != Constants.InvalidId)
             {
-                using (var command = new SqliteCommand
+                using (var command = new SqliteCommand())
                 {
-                    Transaction = transaction,
-                    Connection = _instance.Connection,
-                    CommandText = $"INSERT INTO {TableFileTags} ({IdFileId}, {IdTagId}) VALUES(@{IdFileId}, @{IdTagId});"
-                })
-                {
+                    command.Transaction = transaction;
+                    command.Connection = _instance.Connection;
+                    command.CommandText = $"INSERT INTO {TableFileTags} ({IdFileId}, {IdTagId}) VALUES(@{IdFileId}, @{IdTagId});";
                     command.Parameters.AddWithValue($"@{IdFileId}", fileId);
                     command.Parameters.AddWithValue($"@{IdTagId}", tagId);
                     command.ExecuteNonQuery();

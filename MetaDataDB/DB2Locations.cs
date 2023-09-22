@@ -40,11 +40,9 @@ namespace TCSystem.MetaDataDB
 
         public IList<string> GetFilesOfAddress(Address address, bool useProvinceAlsoIfEmpty)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection
-            })
-            {
+                command.Connection = _instance.Connection;
                 SetupGetFilesOfAddressCommand(command, address, useProvinceAlsoIfEmpty, false);
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
@@ -61,13 +59,11 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumLocations(SqliteTransaction transaction = null)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = _instance.Connection,
-                CommandText = $"SELECT COUNT({IdLocationId}) FROM {TableLocations};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT COUNT({IdLocationId}) FROM {TableLocations};";
                 var result = command.ExecuteScalar();
                 return (long?)result ?? 0;
             }
@@ -87,14 +83,12 @@ namespace TCSystem.MetaDataDB
                 filter = "%" + filter.Replace(' ', '%') + "% ";
             }
 
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection,
-                CommandText = $"SELECT DISTINCT {IdCountry}, {IdProvince}, {IdCity}, {IdStreet} " +
-                              $"FROM {TableLocations} {filterCommand} " +
-                              $"ORDER by {IdCountry} ASC, {IdProvince} ASC, {IdCity} ASC, {IdStreet} ASC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT DISTINCT {IdCountry}, {IdProvince}, {IdCity}, {IdStreet} " +
+                                      $"FROM {TableLocations} {filterCommand} " +
+                                      $"ORDER by {IdCountry} ASC, {IdProvince} ASC, {IdCity} ASC, {IdStreet} ASC;";
                 command.Parameters.AddWithValue("@Filter", filter);
 
                 using (SqliteDataReader reader = command.ExecuteReader())
@@ -112,17 +106,15 @@ namespace TCSystem.MetaDataDB
 
         public Location GetLocation(long fileId, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = _instance.Connection,
-                CommandText = $"SELECT {TableLocations}.{IdCountry}, {TableLocations}.{IdProvince}, {TableLocations}.{IdCity}, {TableLocations}.{IdStreet}, " +
-                              $"{IdLatitude}, {IdLongitude}, {IdAltitude} " +
-                              $"FROM {TableFileLocations} " +
-                              $"    INNER JOIN {TableLocations} ON {TableLocations}.{IdLocationId} = {TableFileLocations}.{IdLocationId} " +
-                              $"WHERE {IdFileId}=@{IdFileId};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {TableLocations}.{IdCountry}, {TableLocations}.{IdProvince}, {TableLocations}.{IdCity}, {TableLocations}.{IdStreet}, " +
+                                      $"{IdLatitude}, {IdLongitude}, {IdAltitude} " +
+                                      $"FROM {TableFileLocations} " +
+                                      $"    INNER JOIN {TableLocations} ON {TableLocations}.{IdLocationId} = {TableFileLocations}.{IdLocationId} " +
+                                      $"WHERE {IdFileId}=@{IdFileId};";
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
@@ -160,16 +152,14 @@ namespace TCSystem.MetaDataDB
 
             if ((force || locationId == Constants.InvalidId) && location != null)
             {
-                using (var command = new SqliteCommand
+                using (var command = new SqliteCommand())
                 {
-                    Transaction = transaction,
-                    Connection = _instance.Connection,
-                    CommandText = $"INSERT INTO {TableLocations} " +
-                                  $"( {IdCountry},  {IdProvince},  {IdCity},  {IdStreet}) " +
-                                  "VALUES " +
-                                  $"(@{IdCountry}, @{IdProvince}, @{IdCity}, @{IdStreet});"
-                })
-                {
+                    command.Transaction = transaction;
+                    command.Connection = _instance.Connection;
+                    command.CommandText = $"INSERT INTO {TableLocations} " +
+                                          $"( {IdCountry},  {IdProvince},  {IdCity},  {IdStreet}) " +
+                                          "VALUES " +
+                                          $"(@{IdCountry}, @{IdProvince}, @{IdCity}, @{IdStreet});";
                     command.Parameters.AddWithValue($"@{IdCountry}", location.Address.Country);
                     command.Parameters.AddWithValue($"@{IdProvince}", location.Address.Province);
                     command.Parameters.AddWithValue($"@{IdCity}", location.Address.City);
@@ -187,16 +177,14 @@ namespace TCSystem.MetaDataDB
         public void AddLocation(long fileId, Location location, SqliteTransaction transaction)
         {
             long locationId = AddLocation(location, transaction);
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = _instance.Connection,
-                CommandText = $"INSERT INTO {TableFileLocations} " +
-                              $"( {IdFileId}, {IdLocationId}, {IdLatitude}, {IdLongitude}, {IdAltitude}) " +
-                              "VALUES " +
-                              $"(@{IdFileId}, @{IdLocationId}, @{IdLatitude}, @{IdLongitude}, @{IdAltitude});"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"INSERT INTO {TableFileLocations} " +
+                                      $"( {IdFileId}, {IdLocationId}, {IdLatitude}, {IdLongitude}, {IdAltitude}) " +
+                                      "VALUES " +
+                                      $"(@{IdFileId}, @{IdLocationId}, @{IdLatitude}, @{IdLongitude}, @{IdAltitude});";
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
                 command.Parameters.AddWithValue($"@{IdLocationId}", locationId);
                 command.Parameters.AddWithValue($"@{IdLatitude}", location?.Point.Latitude?.ToString() ?? "");
@@ -210,11 +198,9 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfAddress(Address address, bool useProvinceAlsoIfEmpty)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection
-            })
-            {
+                command.Connection = _instance.Connection;
                 SetupGetFilesOfAddressCommand(command, address, useProvinceAlsoIfEmpty, true);
 
                 object result = command.ExecuteScalar();
@@ -227,13 +213,11 @@ namespace TCSystem.MetaDataDB
             long id = GetLocationId(address, transaction);
             if (id != Constants.InvalidId)
             {
-                using (var command = new SqliteCommand
+                using (var command = new SqliteCommand())
                 {
-                    Transaction = transaction,
-                    Connection = _instance.Connection,
-                    CommandText = $"DELETE From {TableLocations} WHERE {IdLocationId}=@{IdLocationId};"
-                })
-                {
+                    command.Transaction = transaction;
+                    command.Connection = _instance.Connection;
+                    command.CommandText = $"DELETE From {TableLocations} WHERE {IdLocationId}=@{IdLocationId};";
                     command.Parameters.AddWithValue($"@{IdLocationId}", id);
                     command.ExecuteNonQuery();
                 }
@@ -287,14 +271,12 @@ namespace TCSystem.MetaDataDB
 
         private long GetLocationId(Address address, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = _instance.Connection,
-                CommandText = $"SELECT {IdLocationId} FROM {TableLocations} WHERE " +
-                              $"{IdCountry}=@{IdCountry} AND {IdProvince}=@{IdProvince} AND {IdCity}=@{IdCity} AND {IdStreet}=@{IdStreet};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {IdLocationId} FROM {TableLocations} WHERE " +
+                                      $"{IdCountry}=@{IdCountry} AND {IdProvince}=@{IdProvince} AND {IdCity}=@{IdCity} AND {IdStreet}=@{IdStreet};";
                 command.Parameters.AddWithValue($"@{IdCountry}", address.Country);
                 command.Parameters.AddWithValue($"@{IdProvince}", address.Province);
                 command.Parameters.AddWithValue($"@{IdCity}", address.City);
