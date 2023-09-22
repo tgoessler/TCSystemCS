@@ -1,5 +1,7 @@
 # C# Utilities
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThE-TiGeR_TCSystemCS&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ThE-TiGeR_TCSystemCS)
+
 ## TCSystem.Logging
 
   Wraps Serilog by an abstract Logger class where debug logging is not compiled into your code when using the provided Logger class.
