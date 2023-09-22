@@ -88,7 +88,7 @@ namespace TCSystem.Thread
             }
         }
 
-        public void StopThread(TimeSpan? timeOut)
+        public void StopThread(TimeSpan? timeOut=null)
         {
             if (_thread is { IsAlive: true })
             {
