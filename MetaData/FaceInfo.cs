@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -70,6 +70,7 @@ namespace TCSystem.MetaData
                 var hashCode = FileId.GetHashCode();
                 hashCode *= 397 ^ FaceId.GetHashCode();
                 hashCode *= 397 ^ PersonId.GetHashCode();
+                hashCode *= 397 ^ FaceMode.GetHashCode();
                 return FaceDescriptor.Aggregate(hashCode, (current, fixedPoint64) => (current * 397) ^ fixedPoint64.GetHashCode());
             }
         }
@@ -89,7 +90,7 @@ namespace TCSystem.MetaData
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
         }
 
-        public static string ToJsonStringArray(IList<FaceInfo> faceInfos)
+        public static string ToJsonStringArray(IEnumerable<FaceInfo> faceInfos)
         {
             var array = new JArray(faceInfos.Select(fi => fi.ToJson()));
             return array.ToString(Formatting.None);
@@ -113,7 +114,7 @@ namespace TCSystem.MetaData
                 (long) jsonObject["face_id"],
                 (long) jsonObject["person_id"],
                 (FaceMode) (long) jsonObject["face_mode"],
-                fdJson != null && fdJson.Count > 0 ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
+                fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double) v)) : null);
         }
 
         private JObject ToJson()

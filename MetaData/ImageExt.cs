@@ -20,31 +20,38 @@
 
 #region Usings
 
-using System;
-
 #endregion
 
-namespace TCSystem.Thread
+using System.Linq;
+
+namespace TCSystem.MetaData
 {
-    internal readonly struct AsyncUpdateScope : IDisposable
+    public static class ImageExt
     {
 #region Public
-
-        public AsyncUpdateScope(IAsyncUpdateHelper asyncUpdateHelper)
+        public static Image InvalidateId(this Image image)
         {
-            _asyncUpdateHelper = asyncUpdateHelper;
+            var personTags = image.PersonTags.Select(ImageExt.InvalidateId).ToArray();
+            return new Image(Constants.InvalidId, image.FileName, image.ProcessingInfos,
+                image.Width, image.Height, image.Orientation,
+                image.DateTaken, image.Title, image.Location,
+                personTags, image.Tags);
         }
 
-        public void Dispose()
+        public static Person InvalidateId(this Person person)
         {
-            _asyncUpdateHelper.EndUpdate();
+            return new(Constants.InvalidId, person.Name, person.EmailDigest, person.LiveId, person.SourceId);
         }
 
-#endregion
+        public static Face InvalidateId(this Face face)
+        {
+            return new(Constants.InvalidId, face.Rectangle, face.FaceMode, face.Visible, face.FaceDescriptor);
+        }
 
-#region Private
-
-        private readonly IAsyncUpdateHelper _asyncUpdateHelper;
+        public static PersonTag InvalidateId(this PersonTag personTag)
+        {
+            return new(personTag.Person.InvalidateId(), personTag.Face.InvalidateId());
+        }
 
 #endregion
     }

@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -61,7 +61,7 @@ namespace TCSystem.MetaData.Tests
         public void GetHashCodeTest()
         {
             var data1 = TestData.Face1;
-            var copyOfData1 = new Face(data1.Id, data1.Rectangle, data1.FaceMode, data1.FaceDescriptor);
+            var copyOfData1 = new Face(data1.Id, data1.Rectangle, data1.FaceMode, data1.Visible, data1.FaceDescriptor);
 
             TestUtil.GetHashCodeTest(TestData.FaceZero, TestData.Face1,
                 TestData.Face2, copyOfData1);

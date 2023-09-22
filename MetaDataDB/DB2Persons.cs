@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -34,17 +34,20 @@ namespace TCSystem.MetaDataDB
     {
 #region Public
 
+        public DB2Persons(DB2Instance instance)
+        {
+            _instance = instance;
+        }
+
         public long GetNumPersons(SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = Instance.Connection,
-                CommandText = $"SELECT COUNT({IdPersonId}) FROM {TablePersons};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT COUNT({IdPersonId}) FROM {TablePersons};";
                 var result = command.ExecuteScalar();
-                return (long?) result ?? 0;
+                return (long?)result ?? 0;
             }
         }
 
@@ -58,12 +61,10 @@ namespace TCSystem.MetaDataDB
                 filter = "%" + filter.Replace(' ', '%') + "%";
             }
 
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = Instance.Connection,
-                CommandText = $"SELECT DISTINCT {IdName} FROM {TablePersons} {filterCommand} ORDER by {IdName} ASC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT DISTINCT {IdName} FROM {TablePersons} {filterCommand} ORDER by {IdName} ASC;";
                 command.Parameters.AddWithValue("@Filter", filter);
 
                 using (var reader = command.ExecuteReader())
@@ -81,15 +82,12 @@ namespace TCSystem.MetaDataDB
 
         public Person GetPersonFromName(string name, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = Instance.Connection,
-                //                             0                  1             2              3                4
-                CommandText = $"SELECT {IdPersonId}, {IdName}, {IdEmailDigest}, {IdLiveId}, {IdSourceId}, {IdPersonId} " +
-                              $"FROM {TablePersons} WHERE {IdName}=@{IdName};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection; //                             0                  1             2              3                4
+                command.CommandText = $"SELECT {IdPersonId}, {IdName}, {IdEmailDigest}, {IdLiveId}, {IdSourceId}, {IdPersonId} " +
+                                      $"FROM {TablePersons} WHERE {IdName}=@{IdName};";
                 command.Parameters.AddWithValue($"@{IdName}", name);
                 using (var reader = command.ExecuteReader())
                 {
@@ -106,15 +104,12 @@ namespace TCSystem.MetaDataDB
 
         public Person GetPersonFromId(long personId, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = Instance.Connection,
-                //                             0                  1             2              3                4
-                CommandText = $"SELECT {IdPersonId}, {IdName}, {IdEmailDigest}, {IdLiveId}, {IdSourceId}, {IdPersonId} " +
-                              $"FROM {TablePersons} WHERE {IdPersonId}={personId};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection; //                             0                  1             2              3                4
+                command.CommandText = $"SELECT {IdPersonId}, {IdName}, {IdEmailDigest}, {IdLiveId}, {IdSourceId}, {IdPersonId} " +
+                                      $"FROM {TablePersons} WHERE {IdPersonId}={personId};";
                 using (var reader = command.ExecuteReader())
                 {
                     Person person = null;
@@ -128,21 +123,19 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IReadOnlyList<PersonTag> GetPersonTags(long fileId, SqliteTransaction transaction)
+        public IReadOnlyList<PersonTag> GetPersonTags(long fileId, bool visibleOnly, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = Instance.Connection,
-                CommandText =
-                    $"SELECT {TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
-                    $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdFaceDescriptor} " +
-                    $"FROM {TableFileFaces} " +
-                    $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId} = {TableFileFaces}.{IdPersonId} " +
-                    $"WHERE {IdFileId}=@{IdFileId};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
+                                      $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdVisible}, {IdFaceDescriptor} " +
+                                      $"FROM {TableFileFaces} " +
+                                      $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId} = {TableFileFaces}.{IdPersonId} " +
+                                      $"WHERE {IdFileId}=@{IdFileId}{AddVisibleWhere(visibleOnly)};";
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
+                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
                 using (var reader = command.ExecuteReader())
                 {
                     var personTags = new List<PersonTag>();
@@ -170,16 +163,14 @@ namespace TCSystem.MetaDataDB
             var existingPerson = GetPersonFromName(person.Name, transaction);
             if (existingPerson == null)
             {
-                using (var command = new SqliteCommand
+                using (var command = new SqliteCommand())
                 {
-                    Transaction = transaction,
-                    Connection = Instance.Connection,
-                    CommandText = $"INSERT INTO {TablePersons} " +
-                                  $"( {IdName},  {IdEmailDigest},  {IdLiveId},  {IdSourceId}) " +
-                                  "VALUES " +
-                                  $"(@{IdName}, @{IdEmailDigest}, @{IdLiveId}, @{IdSourceId});"
-                })
-                {
+                    command.Transaction = transaction;
+                    command.Connection = _instance.Connection;
+                    command.CommandText = $"INSERT INTO {TablePersons} " +
+                                          $"( {IdName},  {IdEmailDigest},  {IdLiveId},  {IdSourceId}) " +
+                                          "VALUES " +
+                                          $"(@{IdName}, @{IdEmailDigest}, @{IdLiveId}, @{IdSourceId});";
                     command.Parameters.AddWithValue($"@{IdName}", person.Name);
                     command.Parameters.AddWithValue($"@{IdEmailDigest}", person.EmailDigest);
                     command.Parameters.AddWithValue($"@{IdLiveId}", person.LiveId);
@@ -209,18 +200,16 @@ namespace TCSystem.MetaDataDB
 
         public IList<string> GetFilesOfPerson(string person)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = Instance.Connection,
-                CommandText = $"SELECT DISTINCT {TableFiles}.{IdFileName} " +
-                              $"FROM {TableFileFaces} " +
-                              $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                              $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                              $"WHERE {TablePersons}.{IdName}=@{IdName} " +
-                              $"ORDER by {TableFileData}.{IdDateTaken} DESC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT DISTINCT {TableFiles}.{IdFileName} " +
+                                      $"FROM {TableFileFaces} " +
+                                      $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
+                                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId} " +
+                                      $"WHERE {TablePersons}.{IdName}=@{IdName} " +
+                                      $"ORDER by {TableFileData}.{IdDateTaken} DESC;";
                 command.Parameters.AddWithValue($"@{IdName}", person);
                 using (var reader = command.ExecuteReader())
                 {
@@ -237,89 +226,80 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfPerson(string person)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = Instance.Connection,
-                CommandText = $"SELECT DISTINCT COUNT({TableFiles}.{IdFileName}) " +
-                              $"FROM {TableFileFaces} " +
-                              $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                              $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                              $"WHERE {TablePersons}.{IdName}=@{IdName} " +
-                              $"ORDER by {TableFileData}.{IdDateTaken} DESC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT DISTINCT COUNT({TableFiles}.{IdFileName}) " +
+                                      $"FROM {TableFileFaces} " +
+                                      $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
+                                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId} " +
+                                      $"WHERE {TablePersons}.{IdName}=@{IdName} " +
+                                      $"ORDER by {TableFileData}.{IdDateTaken} DESC;";
                 command.Parameters.AddWithValue($"@{IdName}", person);
                 var result = command.ExecuteScalar();
-                return (long?) result ?? 0;
+                return (long?)result ?? 0;
             }
         }
 
         public long GetNumFaces()
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = Instance.Connection,
-                CommandText = $"SELECT COUNT({IdFileId}) FROM {TableFileFaces};"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT COUNT({IdFileId}) FROM {TableFileFaces};";
                 var result = command.ExecuteScalar();
-                return (long?) result ?? 0;
+                return (long?)result ?? 0;
             }
         }
 
         public long GetNumAutoDetectedFaces()
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = Instance.Connection,
-                CommandText = $"SELECT COUNT({IdFileId}) FROM {TableFileFaces} WHERE {IdFaceMode} != {(int) FaceMode.Undefined};"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT COUNT({IdFileId}) FROM {TableFileFaces} WHERE {IdFaceMode} != {(int)FaceMode.Undefined};";
                 var result = command.ExecuteScalar();
-                return (long?) result ?? 0;
+                return (long?)result ?? 0;
             }
         }
 
         public long GetPersonId(string name, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = Instance.Connection,
-                CommandText = $"SELECT {IdPersonId} FROM {TablePersons} WHERE {IdName}=@{IdName};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {IdPersonId} FROM {TablePersons} WHERE {IdName}=@{IdName};";
                 command.Parameters.AddWithValue($"@{IdName}", name);
                 var result = command.ExecuteScalar();
-                return (long?) result ?? Constants.InvalidId;
+                return (long?)result ?? Constants.InvalidId;
             }
         }
 
-        public IList<FileAndPersonTag> GetFileAndPersonTags(string name)
+        public IList<FileAndPersonTag> GetFileAndPersonTags(string name, bool visibleOnly)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = Instance.Connection,
-                CommandText = "SELECT " +
-                              $"{TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
-                              $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdFaceDescriptor}, " +
-                              $"{TableFiles}.{IdFileName} " +
-                              $"FROM {TableFileFaces} " +
-                              $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                              $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                              $"WHERE {TablePersons}.{IdName}=@{IdName} " +
-                              $"ORDER by {TableFileData}.{IdDateTaken} DESC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = "SELECT " +
+                                      $"{TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
+                                      $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdVisible}, {IdFaceDescriptor}, " +
+                                      $"{TableFiles}.{IdFileName} " +
+                                      $"FROM {TableFileFaces} " +
+                                      $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
+                                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileFaces}.{IdFileId} " +
+                                      $"WHERE {TablePersons}.{IdName}=@{IdName}{AddVisibleWhere(visibleOnly)} " +
+                                      $"ORDER by {TableFileData}.{IdDateTaken} DESC;";
                 command.Parameters.AddWithValue($"@{IdName}", name);
+                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
                 using (var reader = command.ExecuteReader())
                 {
                     var fileAndPersonTags = new List<FileAndPersonTag>();
                     while (reader.HasRows && reader.Read())
                     {
-                        fileAndPersonTags.Add(new FileAndPersonTag(reader.GetString(12),
+                        fileAndPersonTags.Add(new FileAndPersonTag(reader.GetString(13),
                             ReadPersonTag(0, reader)));
                     }
 
@@ -333,41 +313,28 @@ namespace TCSystem.MetaDataDB
             var id = GetPersonId(person, transaction);
             if (id != Constants.InvalidId)
             {
-                using (var command = new SqliteCommand
+                using (var command = new SqliteCommand())
                 {
-                    Transaction = transaction,
-                    Connection = Instance.Connection,
-                    CommandText = $"DELETE From {TablePersons} WHERE {IdPersonId}=@{IdPersonId};"
-                })
-                {
+                    command.Transaction = transaction;
+                    command.Connection = _instance.Connection;
+                    command.CommandText = $"DELETE From {TablePersons} WHERE {IdPersonId}=@{IdPersonId};";
                     command.Parameters.AddWithValue($"@{IdPersonId}", id);
                     command.ExecuteNonQuery();
                 }
             }
         }
 
-        public DB2Instance Instance;
-        public DB2Persons(DB2Instance instance)
+        public IList<FaceInfo> GetAllFaceInfos(bool visibleOnly)
         {
-            Instance = instance;
-        }
-
-#endregion
-
-#region Internal
-
-        internal IList<FaceInfo> GetAllFaceInfos()
-        {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = Instance.Connection,
-                CommandText = $"SELECT {TableFiles}.{IdFileId}, {IdFaceId}, {TablePersons}.{IdPersonId}, {IdFaceMode}, {IdFaceDescriptor} " +
-                              $"FROM {TableFileFaces} " +
-                              $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                              $"WHERE {IdFaceDescriptor} != \"\";"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {TableFiles}.{IdFileId}, {IdFaceId}, {TablePersons}.{IdPersonId}, {IdFaceMode}, {IdFaceDescriptor} " +
+                                      $"FROM {TableFileFaces} " +
+                                      $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
+                                      $"WHERE {IdFaceDescriptor} != \"\"{AddVisibleWhere(visibleOnly)};";
+                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
                 using (var reader = command.ExecuteReader())
                 {
                     var faceInfos = new List<FaceInfo>();
@@ -376,7 +343,7 @@ namespace TCSystem.MetaDataDB
                         faceInfos.Add(new FaceInfo(reader.GetInt64(0),
                             reader.GetInt64(1),
                             reader.GetInt64(2),
-                            (FaceMode) reader.GetInt64(3),
+                            (FaceMode)reader.GetInt64(3),
                             ReadFaceDescriptor(4, reader)));
                     }
 
@@ -385,27 +352,27 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        internal FileAndPersonTag GetFileAndPersonTagFromFaceId(long faceId)
+        public FileAndPersonTag GetFileAndPersonTagFromFaceId(long faceId, bool visibleOnly)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = Instance.Connection,
-                CommandText = "SELECT " +
-                              $"{TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
-                              $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdFaceDescriptor}, " +
-                              $"{TableFiles}.{IdFileName} " +
-                              $"FROM {TableFileFaces} " +
-                              $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                              $"WHERE {IdFaceId}={faceId};"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = "SELECT " +
+                                      $"{TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
+                                      $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdVisible}, {IdFaceDescriptor}, " +
+                                      $"{TableFiles}.{IdFileName} " +
+                                      $"FROM {TableFileFaces} " +
+                                      $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
+                                      $"WHERE {IdFaceId}={faceId}{AddVisibleWhere(visibleOnly)};";
+                command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
+
                 using (var reader = command.ExecuteReader())
                 {
                     FileAndPersonTag fileAndPersonTag = null;
                     if (reader.HasRows && reader.Read())
                     {
-                        fileAndPersonTag = new FileAndPersonTag(reader.GetString(12),
+                        fileAndPersonTag = new FileAndPersonTag(reader.GetString(13),
                             ReadPersonTag(0, reader));
                     }
 
@@ -417,6 +384,11 @@ namespace TCSystem.MetaDataDB
 #endregion
 
 #region Private
+
+        private static string AddVisibleWhere(bool visibleOnly)
+        {
+            return visibleOnly ? $" AND {IdVisible}=@{IdVisible}" : "";
+        }
 
         private static PersonTag ReadPersonTag(int start, SqliteDataReader reader)
         {
@@ -436,9 +408,10 @@ namespace TCSystem.MetaDataDB
             Face face;
             if (rect.W.RawValue > 0 && rect.H.RawValue > 0)
             {
-                var faceMode = (FaceMode) reader.GetInt32(start + 5);
-                var faceDescriptor = ReadFaceDescriptor(start + 6, reader);
-                face = new Face(faceId, rect, faceMode, faceDescriptor);
+                var faceMode = (FaceMode)reader.GetInt32(start + 5);
+                var visible = reader.GetInt32(start + 6) == 1;
+                var faceDescriptor = ReadFaceDescriptor(start + 7, reader);
+                face = new Face(faceId, rect, faceMode, visible, faceDescriptor);
             }
             else
             {
@@ -447,6 +420,7 @@ namespace TCSystem.MetaDataDB
                         new FixedPoint32(0),
                         new FixedPoint32(0)),
                     FaceMode.Undefined,
+                    false,
                     null);
             }
 
@@ -476,23 +450,22 @@ namespace TCSystem.MetaDataDB
 
         private void AddFace(long fileId, long personId, Face face, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = Instance.Connection,
-                CommandText = $"INSERT INTO {TableFileFaces} " + "" +
-                              $"( {IdFileId},  {IdPersonId},  {IdRectangleX},  {IdRectangleY},  {IdRectangleW},  {IdRectangleH},  {IdFaceMode},  {IdFaceDescriptor})" +
-                              "VALUES " +
-                              $"(@{IdFileId}, @{IdPersonId}, @{IdRectangleX}, @{IdRectangleY}, @{IdRectangleW}, @{IdRectangleH}, @{IdFaceMode}, @{IdFaceDescriptor});"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"INSERT INTO {TableFileFaces} " + "" +
+                                      $"( {IdFileId},  {IdPersonId},  {IdRectangleX},  {IdRectangleY},  {IdRectangleW},  {IdRectangleH},  {IdFaceMode},  {IdVisible}, {IdFaceDescriptor})" +
+                                      "VALUES " +
+                                      $"(@{IdFileId}, @{IdPersonId}, @{IdRectangleX}, @{IdRectangleY}, @{IdRectangleW}, @{IdRectangleH}, @{IdFaceMode}, @{IdVisible}, @{IdFaceDescriptor});";
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
                 command.Parameters.AddWithValue($"@{IdPersonId}", personId);
                 command.Parameters.AddWithValue($"@{IdRectangleX}", face.Rectangle.X.RawValue);
                 command.Parameters.AddWithValue($"@{IdRectangleY}", face.Rectangle.Y.RawValue);
                 command.Parameters.AddWithValue($"@{IdRectangleW}", face.Rectangle.W.RawValue);
                 command.Parameters.AddWithValue($"@{IdRectangleH}", face.Rectangle.H.RawValue);
-                command.Parameters.AddWithValue($"@{IdFaceMode}", (int) face.FaceMode);
+                command.Parameters.AddWithValue($"@{IdFaceMode}", (int)face.FaceMode);
+                command.Parameters.AddWithValue($"@{IdVisible}", face.Visible ? 1 : 0);
                 var faceDescriptorStringValues = face.HasFaceDescriptor ? face.FaceDescriptor.Select(v => v.RawValue.ToString(CultureInfo.InvariantCulture)) : null;
                 var faceDescriptorString = faceDescriptorStringValues != null ? string.Join(",", faceDescriptorStringValues) : "";
                 command.Parameters.AddWithValue($"@{IdFaceDescriptor}", faceDescriptorString);
@@ -502,18 +475,16 @@ namespace TCSystem.MetaDataDB
 
         private void UpdatePerson(Person person, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = Instance.Connection,
-                CommandText = $"UPDATE {TablePersons} " +
-                              $"SET {IdName}=@{IdName}," +
-                              $"    {IdEmailDigest}=@{IdEmailDigest}," +
-                              $"    {IdLiveId}=@{IdLiveId}," +
-                              $"    {IdSourceId}=@{IdSourceId} " +
-                              $"WHERE {IdPersonId}=@{IdPersonId};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"UPDATE {TablePersons} " +
+                                      $"SET {IdName}=@{IdName}," +
+                                      $"    {IdEmailDigest}=@{IdEmailDigest}," +
+                                      $"    {IdLiveId}=@{IdLiveId}," +
+                                      $"    {IdSourceId}=@{IdSourceId} " +
+                                      $"WHERE {IdPersonId}=@{IdPersonId};";
                 command.Parameters.AddWithValue($"@{IdPersonId}", person.Id);
                 command.Parameters.AddWithValue($"@{IdName}", person.Name);
                 command.Parameters.AddWithValue($"@{IdEmailDigest}", person.EmailDigest);
@@ -522,6 +493,8 @@ namespace TCSystem.MetaDataDB
                 command.ExecuteNonQuery();
             }
         }
+
+        private readonly DB2Instance _instance;
 
 #endregion
     }

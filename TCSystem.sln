@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Logging", "Logging
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99 Build", "99 Build", "{6D152A6C-C528-4993-B34C-91FF550D6D40}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		deploy.bat = deploy.bat
 		deploy_local.bat = deploy_local.bat
@@ -23,7 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{70
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\analyze.yml = .github\workflows\analyze.yml
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
-		License.props = License.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Thread", "Thread\TCSystem.Thread.csproj", "{DDEEFF2E-9211-4D10-8C65-C8057B744684}"

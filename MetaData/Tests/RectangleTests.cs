@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -78,6 +78,67 @@ namespace TCSystem.MetaData.Tests
         public void RectangleTest()
         {
             
+        }
+
+        [Test]
+        public void RectangleCenterTest()
+        {
+            Assert.That(TestData.RectangleZero.Center, Is.EqualTo((TestData.FixedPoint32Zero, TestData.FixedPoint32Zero)));
+
+            var rect = Rectangle.FromRawValues(-10, -5, 30, 40);
+            Assert.That(rect.Center, Is.EqualTo((new FixedPoint32(5), new FixedPoint32(15))));
+            
+            rect = Rectangle.FromRawValues(10, 5, 30, 40);
+            Assert.That(rect.Center, Is.EqualTo((new FixedPoint32(25), new FixedPoint32(25))));
+        }
+
+        [Test]
+        public void RectangleDiameterTest()
+        {
+            Assert.That(TestData.RectangleZero.Diameter, Is.EqualTo(TestData.FixedPoint32Zero));
+
+            var rect = Rectangle.FromRawValues(-10, -5, 30, 40);
+            Assert.That(rect.Diameter, Is.EqualTo(new FixedPoint32(50)));
+            
+            rect = Rectangle.FromRawValues(10, 5, 30, 40);
+            Assert.That(rect.Diameter, Is.EqualTo(new FixedPoint32(50)));
+        }
+
+        [Test]
+        public void RectangleContainsTest()
+        {
+            var rect1 = Rectangle.FromRawValues(-10, -5, 30, 40);
+            var rect2 = Rectangle.FromRawValues(10, 5, 30, 40);
+            var rect3 = Rectangle.FromRawValues(-10, -5, 29, 39);
+            var rect4 = Rectangle.FromRawValues(11, 6, 29, 39);
+
+            Assert.That(TestData.RectangleZero.Contains(rect1), Is.False);
+            Assert.That(TestData.RectangleZero.Contains(rect2), Is.False);
+
+            Assert.That(rect1.Contains(TestData.RectangleZero), Is.True);
+            Assert.That(rect1.Contains(TestData.RectangleZero), Is.True);
+
+            Assert.That(rect2.Contains(TestData.RectangleZero), Is.False);
+            Assert.That(rect2.Contains(TestData.RectangleZero), Is.False);
+
+            Assert.That(rect1.Contains(rect1), Is.True);
+            Assert.That(rect1.Contains(rect1), Is.True);
+
+            Assert.That(rect2.Contains(rect2), Is.True);
+            Assert.That(rect2.Contains(rect2), Is.True);
+
+            Assert.That(rect1.Contains(rect2), Is.False);
+            Assert.That(rect1.Contains(rect2), Is.False);
+
+            Assert.That(rect2.Contains(rect1), Is.False);
+            Assert.That(rect2.Contains(rect1), Is.False);
+
+            Assert.That(rect1.Contains(rect3), Is.True);
+            Assert.That(rect1.Contains(rect3), Is.True);
+
+            Assert.That(rect2.Contains(rect4), Is.True);
+            Assert.That(rect2.Contains(rect4), Is.True);
+
         }
 
         [Test]

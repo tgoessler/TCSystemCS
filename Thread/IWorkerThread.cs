@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 #endregion
@@ -39,10 +40,15 @@ namespace TCSystem.Thread
         Task ExecuteCommandAsync(Action action, string message);
         Task ClearOpenCommandsAsync();
 
-        void StopThread();
+        void StopThread(TimeSpan? timeOut=null);
 
         int NumOpenActions { get; }
         bool IsBusy { get; }
+        CancellationToken CancellationToken { get; }
+
+        event Action OnInitThread;
+        event Action OnDeInitThread;
+        event Action<bool> IdleEvent;
 
 #endregion
     }

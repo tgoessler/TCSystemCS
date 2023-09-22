@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -24,8 +24,10 @@ namespace TCSystem.MetaDataDB
     {
 #region Protected
 
-        protected const string CurrentVersion = "1.1";
         protected const string Version10 = "1.0";
+        protected const string Version11 = "1.1";
+        protected const string Version12 = "1.2";
+        protected const string CurrentVersion = Version12;
 
         protected const string TableKeyValues = "KeyValues";
         protected const string TableFiles = "Files";
@@ -70,6 +72,7 @@ namespace TCSystem.MetaDataDB
         protected const string IdRectangleW = "RectangleW";
         protected const string IdRectangleH = "RectangleH";
         protected const string IdFaceMode = "FaceMode";
+        protected const string IdVisible = "Visible";
         protected const string IdFaceDescriptor = "FaceDescriptor";
 
         protected const string IdWidth = "Width";

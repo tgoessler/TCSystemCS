@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -47,7 +47,7 @@ namespace TCSystem.MetaDataDB
         IList<DateTimeOffset> GetAllYears();
         IList<(string FileName, ProcessingInfos ProcessingInfo)> GetAllProcessingInformation();
         IDictionary<string, DateTimeOffset> GetAllFileAndModifiedDates();
-        IList<FaceInfo> GetAllFaceInfos();
+        IList<FaceInfo> GetAllFaceInfos(bool visibleOnly);
 
         Image GetMetaData(string fileName);
         Location GetLocation(string fileName);
@@ -56,7 +56,7 @@ namespace TCSystem.MetaDataDB
         Person GetPersonFromName(string name);
         long GetPersonIdFromName(string name);
         Person GetPersonFromId(long personId);
-        FileAndPersonTag GetFileAndPersonTagFromFaceId(long faceId);
+        FileAndPersonTag GetFileAndPersonTagFromFaceId(long faceId, bool visibleOnly);
 
         long GetNumFilesOfTag(string tag);
         long GetNumFilesOfYear(DateTimeOffset year);
@@ -72,7 +72,7 @@ namespace TCSystem.MetaDataDB
 
         IList<string> SearchForFiles(string searchFilter);
 
-        IList<FileAndPersonTag> GetFileAndPersonTagsOfPerson(string name);
+        IList<FileAndPersonTag> GetFileAndPersonTagsOfPerson(string name, bool visibleOnly);
 
         void EnableUnsafeMode();
         void EnableDefaultMode();

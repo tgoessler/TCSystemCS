@@ -30,3 +30,22 @@
   ```CS
   Log.Instance.Info("Hello World");
   ```
+
+## TCSystem.MetaData
+
+  Provide classes for managing meta date from photos.
+
+  It supports date/time, location and face information.
+
+## TCSystem.MetaDataDB
+
+  Sqlite database read/write/query for phot meta data.
+
+## TCSystem.Thread
+
+  Provides extensions/asybc helper functions for multi threading.
+  Implements a worker thread which queues commands to execute and executes them in the given order.
+
+## TCSystem.Util
+
+  Provides helpfull extensions for containers / enumerables

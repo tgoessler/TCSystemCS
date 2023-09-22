@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -149,11 +149,11 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IList<FaceInfo> GetAllFaceInfos()
+        public IList<FaceInfo> GetAllFaceInfos(bool visibleOnly)
         {
             using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return acquiredInstance.Instance.Persons.GetAllFaceInfos();
+                return acquiredInstance.Instance.Persons.GetAllFaceInfos(visibleOnly);
             }
         }
 
@@ -305,11 +305,11 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public FileAndPersonTag GetFileAndPersonTagFromFaceId(long faceId)
+        public FileAndPersonTag GetFileAndPersonTagFromFaceId(long faceId, bool visibleOnly)
         {
             using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return acquiredInstance.Instance.Persons.GetFileAndPersonTagFromFaceId(faceId);
+                return acquiredInstance.Instance.Persons.GetFileAndPersonTagFromFaceId(faceId, visibleOnly);
             }
         }
 
@@ -434,11 +434,11 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public IList<FileAndPersonTag> GetFileAndPersonTagsOfPerson(string name)
+        public IList<FileAndPersonTag> GetFileAndPersonTagsOfPerson(string name, bool visibleOnly)
         {
             using (var acquiredInstance = new InstanceAcquire(this))
             {
-                return acquiredInstance.Instance.Persons.GetFileAndPersonTags(name);
+                return acquiredInstance.Instance.Persons.GetFileAndPersonTags(name, visibleOnly);
             }
         }
 
@@ -508,7 +508,7 @@ namespace TCSystem.MetaDataDB
 
         private static Image GetMetaData(long fileId, DB2Instance instance, SqliteTransaction transaction)
         {
-            IReadOnlyList<PersonTag> personTags = instance.Persons.GetPersonTags(fileId, transaction);
+            IReadOnlyList<PersonTag> personTags = instance.Persons.GetPersonTags(fileId, false,  transaction);
             IReadOnlyList<string> tags = instance.Tags.GetTags(fileId, transaction);
             Location location = instance.Locations.GetLocation(fileId, transaction);
             Image image = instance.Data.GetMetaData(fileId, location, personTags, tags, transaction);

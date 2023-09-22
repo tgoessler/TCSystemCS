@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -33,11 +33,12 @@ namespace TCSystem.MetaData
     public readonly struct FaceDistanceInfo : IEquatable<FaceDistanceInfo>
     {
 #region Public
-        public FaceDistanceInfo(long faceId1, FixedPoint32 distance, long faceId2)
+
+        public FaceDistanceInfo(long faceId1, long faceId2, int distance)
         {
             FaceId1 = faceId1;
-            Distance = distance;
             FaceId2 = faceId2;
+            Distance = distance;
         }
 
         public override bool Equals(object obj)
@@ -86,7 +87,7 @@ namespace TCSystem.MetaData
             }
 
             var array = JArray.Parse(jsonString);
-            return array.Select(v => FromJson((JObject) v));
+            return array.Select(v => FromJson((JObject)v));
         }
 
         public static bool operator ==(FaceDistanceInfo lhs, FaceDistanceInfo rhs)
@@ -100,8 +101,12 @@ namespace TCSystem.MetaData
         }
 
         public long FaceId1 { get; }
-        public FixedPoint32 Distance { get; }
         public long FaceId2 { get; }
+
+        /// <summary>
+        ///     FaceId1 matches FaceId2 in percent
+        /// </summary>
+        public int Distance { get; }
 
 #endregion
 
@@ -110,9 +115,9 @@ namespace TCSystem.MetaData
         private static FaceDistanceInfo FromJson(JObject jsonObject)
         {
             return new(
-                (long) jsonObject["face_id_1"],
-                FixedPoint32.FromJson(jsonObject["distance"]),
-                (long) jsonObject["face_id_2"]
+                (long)jsonObject["face_id_1"],
+                (long)jsonObject["face_id_2"],
+                (int)jsonObject["distance"]
             );
         }
 
@@ -121,7 +126,7 @@ namespace TCSystem.MetaData
             var obj = new JObject
             {
                 ["face_id_1"] = FaceId1,
-                ["distance"] = Distance.ToJson(),
+                ["distance"] = Distance,
                 ["face_id_2"] = FaceId2
             };
 

@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -82,7 +82,7 @@ namespace TCSystem.MetaData
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
         }
 
-        public static string ToJsonStringArray(IList<FileAndPersonTag> fileAndPersonTags)
+        public static string ToJsonStringArray(IEnumerable<FileAndPersonTag> fileAndPersonTags)
         {
             var array = new JArray(fileAndPersonTags.Select(fpt => fpt.ToJson()));
             return array.ToString(Formatting.None);
@@ -124,10 +124,6 @@ namespace TCSystem.MetaData
 
             return obj;
         }
-
-#endregion
-
-#region Private
 
 #endregion
     }

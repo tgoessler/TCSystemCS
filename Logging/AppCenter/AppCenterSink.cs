@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -56,12 +56,9 @@ namespace TCSystem.Logging.AppCenter
                     logData["Exception"] = logEvent.Exception.ToString();
                 }
 
-                if (logEvent.Properties != null)
+                foreach (var keyValuePair in logEvent.Properties)
                 {
-                    foreach (var keyValuePair in logEvent.Properties)
-                    {
-                        logData[keyValuePair.Key] = keyValuePair.Value.ToString();
-                    }
+                    logData[keyValuePair.Key] = keyValuePair.Value.ToString();
                 }
 
                 Analytics.TrackEvent("LogEntry", logData);

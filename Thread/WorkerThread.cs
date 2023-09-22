@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -88,9 +88,9 @@ namespace TCSystem.Thread
             }
         }
 
-        public void StopThread()
+        public void StopThread(TimeSpan? timeOut=null)
         {
-            if (_thread != null && _thread.IsAlive)
+            if (_thread is { IsAlive: true })
             {
                 Log.Instance.Info($"Stopping Thread '{_thread.Name}'");
 
@@ -98,10 +98,18 @@ namespace TCSystem.Thread
                 {
                     _workerActions.Clear();
                     _running = false;
+                    _cancellationTokenSource.Cancel();
                     _event.Set();
                 }
 
-                _thread.Join();
+                if (timeOut == null)
+                {
+                    _thread.Join();
+                }
+                else
+                {
+                    _thread.Join(timeOut.Value);
+                }
 
                 Log.Instance.Info($"Stopping Thread '{_thread.Name} done'");
             }
@@ -129,6 +137,12 @@ namespace TCSystem.Thread
             }
         }
 
+        public CancellationToken CancellationToken => _cancellationTokenSource.Token;
+
+        public event Action OnInitThread;
+        public event Action OnDeInitThread;
+        public event Action<bool> IdleEvent;
+
 #endregion
 
 #region Private
@@ -137,7 +151,7 @@ namespace TCSystem.Thread
         {
             (Action Action, string Message)? action = null;
 
-            _isBusy = true;
+            GoToIdle(false);
             while (_running)
             {
                 try
@@ -145,13 +159,15 @@ namespace TCSystem.Thread
                     action = GetNextAction();
                     if (action == null)
                     {
-                        _isBusy = false;
+                        GoToIdle(true);
+
                         _event.WaitOne();
-                        _isBusy = true;
+
+                        GoToIdle(false);
                     }
                     else
                     {
-                        action.Value.Action();
+                        ExecuteAction(action.Value);
                     }
                 }
                 catch (ThreadAbortException e)
@@ -167,11 +183,42 @@ namespace TCSystem.Thread
                 {
                     Log.Instance.Error($"Error executing {action?.Message}", e);
                 }
-                finally
-                {
-                    _isBusy = false;
-                }
             }
+
+            if (_init)
+            {
+                OnDeInitThread?.Invoke();
+                _init = false;
+            }
+
+        }
+
+        private void ExecuteAction((Action Action, string Message) action)
+        {
+            try
+            {
+                if (!_init)
+                {
+                    OnInitThread?.Invoke();
+                    _init = true;
+                }
+
+                action.Action();
+            }
+            catch (OperationCanceledException)
+            {
+                Log.Instance.Info($"Thread '{_thread.Name}' canceled");
+            }
+            catch (Exception e)
+            {
+                Log.Instance.Error($"Thread '{_thread.Name}' failed.", e);
+            }
+        }
+
+        private void GoToIdle(bool idle)
+        {
+            _isBusy = !idle;
+            IdleEvent?.Invoke(idle);
         }
 
         private (Action Action, string Message)? GetNextAction()
@@ -188,10 +235,12 @@ namespace TCSystem.Thread
         }
 
         private bool _running;
+        private bool _init = false;
         private readonly System.Threading.Thread _thread;
         private readonly SemaphoreSlim _semaphoreSlim = new(1);
         private readonly EventWaitHandle _event = new(false, EventResetMode.AutoReset);
         private readonly Queue<(Action Action, string Message)> _workerActions = new();
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private bool _isBusy;
 
 #endregion

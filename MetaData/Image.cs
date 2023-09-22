@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -113,17 +113,15 @@ namespace TCSystem.MetaData
             return new(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
-                personTags.ToList(), image._tags);
+                personTags.ToArray(), image._tags);
         }
 
         public static Image ChangeTags(Image image, IEnumerable<string> tagsIn)
         {
-            var tags = tagsIn.ToList();
-
             return new Image(image.Id, image.FileName, image.ProcessingInfos,
                 image.Width, image.Height, image.Orientation,
                 image.DateTaken, image.Title, image.Location,
-                image._personTags, tags.AsReadOnly());
+                image._personTags, tagsIn.ToArray());
         }
 
         public static Image AddPersonTag(Image image, PersonTag pt)
@@ -152,7 +150,25 @@ namespace TCSystem.MetaData
                 image = new Image(image.Id, image.FileName, image.ProcessingInfos,
                     image.Width, image.Height, image.Orientation,
                     image.DateTaken, image.Title, image.Location,
-                    pts.AsReadOnly(), image._tags);
+                    pts, image._tags);
+            }
+
+            return image;
+        }
+
+        public static Image ChangePersonTagVisible(Image image, PersonTag pt, bool visible)
+        {
+            if (image.HasPersonTag(pt))
+            {
+                var pts = image._personTags.ToList();
+                pts.Remove(pt);
+                pt = new PersonTag(pt.Person, new Face(pt.Face.Id, pt.Face.Rectangle, pt.Face.FaceMode, visible, pt.Face.FaceDescriptor));
+                pts.Add(pt);
+
+                image = new Image(image.Id, image.FileName, image.ProcessingInfos,
+                    image.Width, image.Height, image.Orientation,
+                    image.DateTaken, image.Title, image.Location,
+                    pts, image._tags);
             }
 
             return image;
@@ -205,15 +221,6 @@ namespace TCSystem.MetaData
             }
 
             return image;
-        }
-
-        public static Image InvalidateIds(Image image)
-        {
-            var personTags = image._personTags.Select(PersonTag.InvalidateIds).ToArray();
-            return new Image(Constants.InvalidId, image.FileName, image.ProcessingInfos,
-                image.Width, image.Height, image.Orientation,
-                image.DateTaken, image.Title, image.Location,
-                personTags, image._tags);
         }
 
         public override bool Equals(object obj)
@@ -325,8 +332,8 @@ namespace TCSystem.MetaData
                 DateTimeHelper.FromJson((JObject) jsonObject["date_taken"]),
                 (string) jsonObject["title"],
                 Location.FromJson((JObject) jsonObject["location"]),
-                jsonPersonTags?.Select(v => PersonTag.FromJson((JObject) v)).ToList(),
-                jsonTags?.Select(v => (string) v).ToList()
+                jsonPersonTags?.Select(v => PersonTag.FromJson((JObject) v)).ToArray(),
+                jsonTags?.Select(v => (string) v).ToArray()
             );
         }
 

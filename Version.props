@@ -1,12 +1,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
-    <Company>TCSystem</Company>
-    <Authors>Thomas Gößler</Authors>
-    <DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''">-alpha.9</DevlopmentVersionSuffix>
-    <Version>3.0.0$(DevlopmentVersionSuffix)</Version>
-    <NamespaceName>at.tcsystem</NamespaceName>
-    <Copyright>Copyright © Thomas Gößler 2021</Copyright>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Company>TCSystem</Company>
+		<Authors>Thomas Gößler</Authors>
+		<!--<DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''">-alpha.19.b</DevlopmentVersionSuffix>-->
+		<Version>3.0.0$(DevlopmentVersionSuffix)</Version>
+		<NamespaceName>at.tcsystem</NamespaceName>
+		<Copyright>Copyright © $(Authors) 2023</Copyright>
+	</PropertyGroup>
 
 </Project>

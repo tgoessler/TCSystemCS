@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -39,6 +39,11 @@ namespace TCSystem.MetaData
         }
 
         public FixedPoint32(float val)
+        {
+            RawValue = (int)(val * (1 << 16));
+        }
+
+        public FixedPoint32(double val)
         {
             RawValue = (int)(val * (1 << 16));
         }
@@ -81,6 +86,26 @@ namespace TCSystem.MetaData
         public static bool operator !=(FixedPoint32 lhs, FixedPoint32 rhs)
         {
             return !lhs.Equals(rhs);
+        }
+
+        public static bool operator >(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.RawValue > rhs.RawValue;
+        }
+
+        public static bool operator <=(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.RawValue <= rhs.RawValue;
+        }
+
+        public static bool operator >=(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.RawValue >= rhs.RawValue;
+        }
+
+        public static bool operator <(FixedPoint32 lhs, FixedPoint32 rhs)
+        {
+            return lhs.RawValue < rhs.RawValue;
         }
 
         public float Value => RawValue / (float) (1 << 16);

@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -78,11 +78,6 @@ namespace TCSystem.MetaData
         public static Person FromJsonString(string jsonString)
         {
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
-        }
-
-        public static Person InvalidateId(Person person)
-        {
-            return new(Constants.InvalidId, person.Name, person.EmailDigest, person.LiveId, person.SourceId);
         }
 
         public long Id { get; }

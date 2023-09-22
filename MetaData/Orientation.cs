@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -93,7 +93,7 @@ namespace TCSystem.MetaData
 
         public static Face Orientate(Face face, OrientationMode mode)
         {
-            return new(face.Id, Orientate(face.Rectangle, mode), face.FaceMode, face.FaceDescriptor);
+            return new(face.Id, Orientate(face.Rectangle, mode), face.FaceMode, face.Visible, face.FaceDescriptor);
         }
 
         public static Rectangle OrientateBack(Rectangle rectangle, OrientationMode mode)
@@ -124,7 +124,7 @@ namespace TCSystem.MetaData
 
         public static Face OrientateBack(Face face, OrientationMode mode)
         {
-            return new(face.Id, OrientateBack(face.Rectangle, mode), face.FaceMode, face.FaceDescriptor);
+            return new(face.Id, OrientateBack(face.Rectangle, mode), face.FaceMode, face.Visible, face.FaceDescriptor);
         }
 
 #endregion

@@ -18,28 +18,31 @@
 // 
 // *******************************************************************************
 
+#region Usings
+
 using System;
-using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace TCSystem.MetaData.Tests
+#endregion
+
+namespace TCSystem.Util
 {
-    public static class TestUtil
+    public static class EnumerableExt
     {
-        public static void FromJsonStringTest<TData>(TData data1, Func<TData, string> toJson, Func<string, TData> fromJson)
+#region Public
+
+        public static IEnumerable<TYpe> OrderRandom<TYpe>(this IEnumerable<TYpe> values)
         {
-            var jsonString = toJson(data1);
-            var jsonData = fromJson(jsonString);
-            Assert.That(jsonData, Is.EqualTo(data1));
+            return values.OrderBy(_ => _sRandom.Next());
         }
 
-        public static void GetHashCodeTest<TData>(TData dataZero, TData data1, TData data2, TData copyOfData1)
-        {
-            Assert.That(dataZero.GetHashCode(), !Is.EqualTo(data1.GetHashCode()));
-            Assert.That(dataZero.GetHashCode(), !Is.EqualTo(data2.GetHashCode()));
-            Assert.That(data1.GetHashCode(), !Is.EqualTo(data2.GetHashCode()));
+#endregion
 
-            Assert.That(data1.GetHashCode(), Is.EqualTo(copyOfData1.GetHashCode()));
-        }
+#region Private
 
+        private static readonly Random _sRandom = new Random();
+
+#endregion
     }
 }

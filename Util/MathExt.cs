@@ -18,28 +18,28 @@
 // 
 // *******************************************************************************
 
-using System;
-using NUnit.Framework;
-
-namespace TCSystem.MetaData.Tests
+namespace TCSystem.Util
 {
-    public static class TestUtil
+    public static class MathExt
     {
-        public static void FromJsonStringTest<TData>(TData data1, Func<TData, string> toJson, Func<string, TData> fromJson)
+#region Public
+
+        public static int ToNextPowerOf2(this int x)
         {
-            var jsonString = toJson(data1);
-            var jsonData = fromJson(jsonString);
-            Assert.That(jsonData, Is.EqualTo(data1));
+            if (x < 0)
+            {
+                return 0;
+            }
+
+            --x;
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            x |= x >> 16;
+            return x + 1;
         }
 
-        public static void GetHashCodeTest<TData>(TData dataZero, TData data1, TData data2, TData copyOfData1)
-        {
-            Assert.That(dataZero.GetHashCode(), !Is.EqualTo(data1.GetHashCode()));
-            Assert.That(dataZero.GetHashCode(), !Is.EqualTo(data2.GetHashCode()));
-            Assert.That(data1.GetHashCode(), !Is.EqualTo(data2.GetHashCode()));
-
-            Assert.That(data1.GetHashCode(), Is.EqualTo(copyOfData1.GetHashCode()));
-        }
-
+#endregion
     }
 }

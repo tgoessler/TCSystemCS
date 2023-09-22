@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -41,16 +41,14 @@ namespace TCSystem.MetaDataDB
         public Image GetMetaData(long fileId, Location location, IReadOnlyList<PersonTag> personTags,
                                  IReadOnlyList<string> tags, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = _instance.Connection,
-                CommandText = $"SELECT {TableFiles}.{IdFileName}, {TableFiles}.{IdProcessingInfo}, {IdWidth}, {IdHeight}, {IdOrientation}, {IdDateTaken} " +
-                              $"FROM {TableFileData} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileData}.{IdFileId} " +
-                              $"WHERE {TableFileData}.{IdFileId}=@{IdFileId};"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {TableFiles}.{IdFileName}, {TableFiles}.{IdProcessingInfo}, {IdWidth}, {IdHeight}, {IdOrientation}, {IdDateTaken} " +
+                                      $"FROM {TableFileData} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileData}.{IdFileId} " +
+                                      $"WHERE {TableFileData}.{IdFileId}=@{IdFileId};";
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
@@ -80,20 +78,18 @@ namespace TCSystem.MetaDataDB
 
         public void AddMetaData(long fileId, Image data, SqliteTransaction transaction)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Transaction = transaction,
-                Connection = _instance.Connection,
-                CommandText = $"INSERT INTO {TableFileData} VALUES " +
-                              "(" +
-                              $"@{IdFileId}, " +
-                              $"@{IdWidth}, " +
-                              $"@{IdHeight}, " +
-                              $"@{IdOrientation}, " +
-                              $"@{IdDateTaken}" +
-                              ");"
-            })
-            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"INSERT INTO {TableFileData} VALUES " +
+                                      "(" +
+                                      $"@{IdFileId}, " +
+                                      $"@{IdWidth}, " +
+                                      $"@{IdHeight}, " +
+                                      $"@{IdOrientation}, " +
+                                      $"@{IdDateTaken}" +
+                                      ");";
                 command.Parameters.AddWithValue($"@{IdFileId}", fileId);
                 command.Parameters.AddWithValue($"@{IdWidth}", data.Width);
                 command.Parameters.AddWithValue($"@{IdHeight}", data.Height);
@@ -105,12 +101,10 @@ namespace TCSystem.MetaDataDB
 
         public IList<DateTimeOffset> GetAllYears()
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection,
-                CommandText = $"SELECT DISTINCT {IdDateTaken} FROM {TableFileData} ORDER by {IdDateTaken} DESC;"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT DISTINCT {IdDateTaken} FROM {TableFileData} ORDER by {IdDateTaken} DESC;";
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     var years = new List<DateTimeOffset>();
@@ -119,7 +113,7 @@ namespace TCSystem.MetaDataDB
                         DateTimeOffset year = reader.GetDateTimeOffset(0);
                         if (year != Image.InvalidDateTaken)
                         {
-                            year = new DateTimeOffset(new DateTime(year.Year, 1, 1));
+                            year = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0, DateTimeKind.Local));
                         }
 
                         if (!years.Contains(year))
@@ -135,11 +129,9 @@ namespace TCSystem.MetaDataDB
 
         public IList<string> GetFilesOfYear(DateTimeOffset year)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection
-            })
-            {
+                command.Connection = _instance.Connection;
                 SetupGetFilesOfYearCommand(command, year, false);
 
                 using (SqliteDataReader reader = command.ExecuteReader())
@@ -157,14 +149,12 @@ namespace TCSystem.MetaDataDB
 
         public OrientationMode GetOrientation(string fileName)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection,
-                CommandText = $"SELECT {IdOrientation} FROM {TableFileData} " +
-                              $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileData}.{IdFileId} " +
-                              $"WHERE {TableFiles}.{IdFileName}=@{IdFileName};"
-            })
-            {
+                command.Connection = _instance.Connection;
+                command.CommandText = $"SELECT {IdOrientation} FROM {TableFileData} " +
+                                      $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileData}.{IdFileId} " +
+                                      $"WHERE {TableFiles}.{IdFileName}=@{IdFileName};";
                 command.Parameters.AddWithValue($"{IdFileName}", fileName);
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
@@ -180,11 +170,9 @@ namespace TCSystem.MetaDataDB
 
         public long GetNumFilesOfYear(DateTimeOffset year)
         {
-            using (var command = new SqliteCommand
+            using (var command = new SqliteCommand())
             {
-                Connection = _instance.Connection
-            })
-            {
+                command.Connection = _instance.Connection;
                 SetupGetFilesOfYearCommand(command, year, true);
 
                 object result = command.ExecuteScalar();
@@ -214,8 +202,8 @@ namespace TCSystem.MetaDataDB
             }
             else
             {
-                var startDate = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0));
-                var endDate = new DateTimeOffset(new DateTime(year.Year, 12, 31, 23, 59, 59));
+                var startDate = new DateTimeOffset(new DateTime(year.Year, 1, 1, 0, 0, 0, DateTimeKind.Local));
+                var endDate = new DateTimeOffset(new DateTime(year.Year, 12, 31, 23, 59, 59, DateTimeKind.Local));
                 command.Parameters.AddWithValue("@StartDate", startDate);
                 command.Parameters.AddWithValue("@EndDate", endDate);
             }

@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2021 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -72,12 +72,6 @@ namespace TCSystem.MetaData
         public static PersonTag FromJsonString(string jsonString)
         {
             return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
-        }
-
-        public static PersonTag InvalidateIds(PersonTag personTag)
-        {
-            return new(Person.InvalidateId(personTag.Person),
-                Face.InvalidateId(personTag.Face));
         }
 
         public Person Person { get; }
