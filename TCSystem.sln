@@ -49,6 +49,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Util", "Util\TCSys
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.Logging.AppCenter", "Logging\AppCenter\TCSystem.Logging.AppCenter.csproj", "{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCSystem.MetaDataDB.Tests", "MetaDataDB\Tests\TCSystem.MetaDataDB.Tests.csproj", "{015D361F-C729-475E-B632-1A63664127A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{015D361F-C729-475E-B632-1A63664127A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{015D361F-C729-475E-B632-1A63664127A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{015D361F-C729-475E-B632-1A63664127A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{015D361F-C729-475E-B632-1A63664127A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +107,7 @@ Global
 		{3DC9B76A-5104-46E2-82A5-0AC6A59F2A5A} = {4CE1B8F2-510C-49F2-A0F0-B9D00EDEB28A}
 		{7E5A256C-2761-4949-AA04-A4CCF2999913} = {4057D25C-619C-46D2-AC77-47B5D34BE2F4}
 		{0B0DE61C-39F6-4F80-A550-E3A18615B9EB} = {4057D25C-619C-46D2-AC77-47B5D34BE2F4}
+		{015D361F-C729-475E-B632-1A63664127A3} = {4CE1B8F2-510C-49F2-A0F0-B9D00EDEB28A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54DE1ACD-AE36-4599-8245-A013203F9814}

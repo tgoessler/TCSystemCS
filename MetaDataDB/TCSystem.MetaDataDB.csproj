@@ -11,6 +11,12 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.1" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Remove="Tests\**" />
+		<EmbeddedResource Remove="Tests\**" />
+		<None Remove="Tests\**" />
+	</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Logging\TCSystem.Logging.csproj" />
     <ProjectReference Include="..\MetaData\TCSystem.MetaData.csproj" />

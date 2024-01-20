@@ -52,8 +52,8 @@ namespace TCSystem.MetaData.Tests
         public static readonly GpsPosition GpsPosition2 = new(47, 4, 15, 16, true);
 
         public static readonly GpsPoint GpsPointZero = new();
-        public static readonly GpsPoint GpsPoint1 = new(GpsPositionZero, GpsPosition1, 365);
-        public static readonly GpsPoint GpsPoint2 = new(GpsPositionZero, GpsPosition2, -365);
+        public static readonly GpsPoint GpsPoint1 = new(GpsPosition2, GpsPosition1, 365);
+        public static readonly GpsPoint GpsPoint2 = new(GpsPosition1, GpsPosition2, -365);
 
         public static readonly Location LocationZero = new(AddressZero, GpsPointZero);
         public static readonly Location Location1 = new(Address1, GpsPoint1);
