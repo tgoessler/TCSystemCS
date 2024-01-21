@@ -149,12 +149,29 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public void AddPersonTags(long fileId, IReadOnlyList<PersonTag> personTags, SqliteTransaction transaction)
+        public void SetPersonTags(long fileId, IReadOnlyList<PersonTag> newPersonTags, IReadOnlyList<PersonTag> oldPersonTags, SqliteTransaction transaction)
         {
-            foreach (var pt in personTags)
+            // update or add faces
+            foreach (var pt in newPersonTags)
             {
                 var personId = AddPerson(pt.Person, transaction);
-                AddFace(fileId, personId, pt.Face, transaction);
+                if (oldPersonTags.GetFace(pt.Face.Id) == null)
+                {
+                    AddFace(fileId, personId, pt.Face, transaction);
+                }
+                else
+                {
+                    UpdateFace(fileId, personId, pt.Face, transaction);
+                }
+            }
+
+            // remove deleted faces
+            foreach (var pt in oldPersonTags)
+            {
+                if (newPersonTags.GetFace(pt.Face.Id) == null)
+                {
+                    RemoveFace(pt.Face.Id, transaction);
+                }                
             }
         }
 
@@ -171,17 +188,14 @@ namespace TCSystem.MetaDataDB
                                           $"( {IdName},  {IdEmailDigest},  {IdLiveId},  {IdSourceId}) " +
                                           "VALUES " +
                                           $"(@{IdName}, @{IdEmailDigest}, @{IdLiveId}, @{IdSourceId});";
-                    command.Parameters.AddWithValue($"@{IdName}", person.Name);
-                    command.Parameters.AddWithValue($"@{IdEmailDigest}", person.EmailDigest);
-                    command.Parameters.AddWithValue($"@{IdLiveId}", person.LiveId);
-                    command.Parameters.AddWithValue($"@{IdSourceId}", person.SourceId);
+                    AddPersonParameters(person, command);
                     command.ExecuteNonQuery();
                 }
 
                 return GetPersonId(person.Name, transaction);
             }
 
-            if (!existingPerson.AllAttributesDefined && !person.Equals(existingPerson))
+            if (!person.Equals(existingPerson))
             {
                 var updatedPerson = new Person(existingPerson.Id,
                     existingPerson.Name,
@@ -458,19 +472,63 @@ namespace TCSystem.MetaDataDB
                                       $"( {IdFileId},  {IdPersonId},  {IdRectangleX},  {IdRectangleY},  {IdRectangleW},  {IdRectangleH},  {IdFaceMode},  {IdVisible}, {IdFaceDescriptor})" +
                                       "VALUES " +
                                       $"(@{IdFileId}, @{IdPersonId}, @{IdRectangleX}, @{IdRectangleY}, @{IdRectangleW}, @{IdRectangleH}, @{IdFaceMode}, @{IdVisible}, @{IdFaceDescriptor});";
-                command.Parameters.AddWithValue($"@{IdFileId}", fileId);
-                command.Parameters.AddWithValue($"@{IdPersonId}", personId);
-                command.Parameters.AddWithValue($"@{IdRectangleX}", face.Rectangle.X.RawValue);
-                command.Parameters.AddWithValue($"@{IdRectangleY}", face.Rectangle.Y.RawValue);
-                command.Parameters.AddWithValue($"@{IdRectangleW}", face.Rectangle.W.RawValue);
-                command.Parameters.AddWithValue($"@{IdRectangleH}", face.Rectangle.H.RawValue);
-                command.Parameters.AddWithValue($"@{IdFaceMode}", (int)face.FaceMode);
-                command.Parameters.AddWithValue($"@{IdVisible}", face.Visible ? 1 : 0);
-                var faceDescriptorStringValues = face.HasFaceDescriptor ? face.FaceDescriptor.Select(v => v.RawValue.ToString(CultureInfo.InvariantCulture)) : null;
-                var faceDescriptorString = faceDescriptorStringValues != null ? string.Join(",", faceDescriptorStringValues) : "";
-                command.Parameters.AddWithValue($"@{IdFaceDescriptor}", faceDescriptorString);
+                AddFaceParameters(fileId, personId, face, command);
                 command.ExecuteNonQuery();
             }
+        }
+
+        private void UpdateFace(long fileId, long personId, Face face, SqliteTransaction transaction)
+        {
+            using (var command = new SqliteCommand())
+            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"UPDATE {TableFileFaces} " + "" +
+                                      $"SET {IdFileId}=@{IdFileId}," + 
+                                      $"    {IdPersonId}=@{IdPersonId}," + 
+                                      $"    {IdRectangleX}=@{IdRectangleX}," +
+                                      $"    {IdRectangleY}=@{IdRectangleY}," +
+                                      $"    {IdRectangleW}=@{IdRectangleW}," +
+                                      $"    {IdRectangleH}=@{IdRectangleH}," +
+                                      $"    {IdFaceMode}=@{IdFaceMode}," +
+                                      $"    {IdVisible}=@{IdVisible}," +
+                                      $"    {IdFaceDescriptor}=@{IdFaceDescriptor} " +
+                                      $"WHERE {IdFaceId}=@{IdFaceId};";
+
+                AddFaceParameters(fileId, personId, face, command);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private void RemoveFace(long id, SqliteTransaction transaction)
+        {
+            if (id != Constants.InvalidId)
+            {
+                using (var command = new SqliteCommand())
+                {
+                    command.Transaction = transaction;
+                    command.Connection = _instance.Connection;
+                    command.CommandText = $"DELETE From {TableFileFaces} WHERE {IdFaceId}=@{IdFaceId};";
+                    command.Parameters.AddWithValue($"@{IdFaceId}", id);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static void AddFaceParameters(long fileId, long personId, Face face, SqliteCommand command)
+        {
+            command.Parameters.AddWithValue($"@{IdFileId}", fileId);
+            command.Parameters.AddWithValue($"@{IdPersonId}", personId);
+            command.Parameters.AddWithValue($"@{IdFaceId}", face.Id);
+            command.Parameters.AddWithValue($"@{IdRectangleX}", face.Rectangle.X.RawValue);
+            command.Parameters.AddWithValue($"@{IdRectangleY}", face.Rectangle.Y.RawValue);
+            command.Parameters.AddWithValue($"@{IdRectangleW}", face.Rectangle.W.RawValue);
+            command.Parameters.AddWithValue($"@{IdRectangleH}", face.Rectangle.H.RawValue);
+            command.Parameters.AddWithValue($"@{IdFaceMode}", (int)face.FaceMode);
+            command.Parameters.AddWithValue($"@{IdVisible}", face.Visible ? 1 : 0);
+            var faceDescriptorStringValues = face.HasFaceDescriptor ? face.FaceDescriptor.Select(v => v.RawValue.ToString(CultureInfo.InvariantCulture)) : null;
+            var faceDescriptorString = faceDescriptorStringValues != null ? string.Join(",", faceDescriptorStringValues) : "";
+            command.Parameters.AddWithValue($"@{IdFaceDescriptor}", faceDescriptorString);
         }
 
         private void UpdatePerson(Person person, SqliteTransaction transaction)
@@ -485,13 +543,18 @@ namespace TCSystem.MetaDataDB
                                       $"    {IdLiveId}=@{IdLiveId}," +
                                       $"    {IdSourceId}=@{IdSourceId} " +
                                       $"WHERE {IdPersonId}=@{IdPersonId};";
-                command.Parameters.AddWithValue($"@{IdPersonId}", person.Id);
-                command.Parameters.AddWithValue($"@{IdName}", person.Name);
-                command.Parameters.AddWithValue($"@{IdEmailDigest}", person.EmailDigest);
-                command.Parameters.AddWithValue($"@{IdLiveId}", person.LiveId);
-                command.Parameters.AddWithValue($"@{IdSourceId}", person.SourceId);
+                AddPersonParameters(person, command);
                 command.ExecuteNonQuery();
             }
+        }
+
+        private static void AddPersonParameters(Person person, SqliteCommand command)
+        {
+            command.Parameters.AddWithValue($"@{IdPersonId}", person.Id);
+            command.Parameters.AddWithValue($"@{IdName}", person.Name);
+            command.Parameters.AddWithValue($"@{IdEmailDigest}", person.EmailDigest);
+            command.Parameters.AddWithValue($"@{IdLiveId}", person.LiveId);
+            command.Parameters.AddWithValue($"@{IdSourceId}", person.SourceId);
         }
 
         private readonly DB2Instance _instance;

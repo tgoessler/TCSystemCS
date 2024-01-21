@@ -174,25 +174,19 @@ namespace TCSystem.MetaDataDB
             return locationId;
         }
 
-        public void AddLocation(long fileId, Location location, SqliteTransaction transaction)
+        public void SetLocation(long fileId, Location newLocation, Location oldLocation, SqliteTransaction transaction)
         {
-            long locationId = AddLocation(location, transaction);
-            using (var command = new SqliteCommand())
+            long newLocationId = AddLocation(newLocation, transaction);
+            if (oldLocation == null)
             {
-                command.Transaction = transaction;
-                command.Connection = _instance.Connection;
-                command.CommandText = $"INSERT INTO {TableFileLocations} " +
-                                      $"( {IdFileId}, {IdLocationId}, {IdLatitude}, {IdLongitude}, {IdAltitude}) " +
-                                      "VALUES " +
-                                      $"(@{IdFileId}, @{IdLocationId}, @{IdLatitude}, @{IdLongitude}, @{IdAltitude});";
-                command.Parameters.AddWithValue($"@{IdFileId}", fileId);
-                command.Parameters.AddWithValue($"@{IdLocationId}", locationId);
-                command.Parameters.AddWithValue($"@{IdLatitude}", location?.Point.Latitude?.ToString() ?? "");
-                command.Parameters.AddWithValue($"@{IdLongitude}", location?.Point.Longitude?.ToString() ?? "");
-                string altitudeString = location?.Point.Altitude != null ? location.Point.Altitude.Value.RawValue.ToString(CultureInfo.InvariantCulture) : "";
-                command.Parameters.AddWithValue($"@{IdAltitude}", altitudeString);
-
-                command.ExecuteNonQuery();
+                AddLocation(fileId, newLocation, newLocationId, transaction);
+            }
+            else
+            {
+                if (newLocationId != AddLocation(oldLocation, transaction))
+                {
+                    UpdateLocation(fileId, newLocation, newLocationId, transaction);
+                }
             }
         }
 
@@ -227,6 +221,51 @@ namespace TCSystem.MetaDataDB
 #endregion
 
 #region Private
+
+        private void AddLocation(long fileId, Location newLocation, long newLocationId, SqliteTransaction transaction)
+        {
+            using (var command = new SqliteCommand())
+            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"INSERT INTO {TableFileLocations} " +
+                                      $"( {IdFileId}, {IdLocationId}, {IdLatitude}, {IdLongitude}, {IdAltitude}) " +
+                                      "VALUES " +
+                                      $"(@{IdFileId}, @{IdLocationId}, @{IdLatitude}, @{IdLongitude}, @{IdAltitude});";
+                AddLocationParameters(fileId, newLocation, command, newLocationId);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private void UpdateLocation(long fileId, Location newLocation, long newLocationId, SqliteTransaction transaction)
+        {
+            using (var command = new SqliteCommand())
+            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"UPDATE {TableFileLocations} " +
+                                      $"SET {IdFileId}=@{IdFileId}," +
+                                      $"    {IdLocationId}=@{IdLocationId}," +
+                                      $"    {IdLatitude}=@{IdLatitude}," +
+                                      $"    {IdLongitude}=@{IdLongitude} ," +
+                                      $"    {IdAltitude}=@{IdAltitude} " +
+                                      $"WHERE {IdFileId}=@{IdFileId};";
+                AddLocationParameters(fileId, newLocation, command, newLocationId);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private static void AddLocationParameters(long fileId, Location location, SqliteCommand command, long locationId)
+        {
+            command.Parameters.AddWithValue($"@{IdFileId}", fileId);
+            command.Parameters.AddWithValue($"@{IdLocationId}", locationId);
+            command.Parameters.AddWithValue($"@{IdLatitude}", location?.Point.Latitude?.ToString() ?? "");
+            command.Parameters.AddWithValue($"@{IdLongitude}", location?.Point.Longitude?.ToString() ?? "");
+            string altitudeString = location?.Point.Altitude != null ? location.Point.Altitude.Value.RawValue.ToString(CultureInfo.InvariantCulture) : "";
+            command.Parameters.AddWithValue($"@{IdAltitude}", altitudeString);
+        }
 
         private static void SetupGetFilesOfAddressCommand(SqliteCommand command, Address address, bool useProvinceAlsoIfEmpty, bool countOnly)
         {

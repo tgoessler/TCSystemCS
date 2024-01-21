@@ -31,7 +31,7 @@ namespace TCSystem.MetaDataDB
     {
 #region Public
 
-        Image AddMetaData(Image data, DateTimeOffset dateModified);
+        Image AddMetaData(Image newMetaData, DateTimeOffset dateModified);
         void RemoveMetaData(string fileName);
         void RemoveAllFilesOfFolder(string folder);
 

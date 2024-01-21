@@ -49,7 +49,7 @@ namespace TCSystem.MetaData
             Width = width;
             Height = height;
             Orientation = orientation;
-            DateTaken = dateTaken.Subtract(TimeSpan.FromMilliseconds(dateTaken.Millisecond));
+            DateTaken = dateTaken.Trim(TimeSpan.TicksPerSecond);
             Title = title ?? "";
             Location = location;
             _personTags = personsTags ?? new List<PersonTag>();

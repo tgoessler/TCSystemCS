@@ -83,6 +83,10 @@ namespace TCSystem.MetaData
             return dictionary.TryGetValue(key, out var value) ? value : defaultValue;
         }
 
+        public static DateTimeOffset Trim(this DateTimeOffset date, long ticks) 
+        {
+            return new DateTime(date.Ticks - (date.Ticks % ticks));
+        }
         public static IEnumerable<string> SupportedFileTypes => _sExtensions;
 
 #endregion

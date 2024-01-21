@@ -22,6 +22,7 @@
 
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TCSystem.MetaData
@@ -51,6 +52,16 @@ namespace TCSystem.MetaData
         public static PersonTag InvalidateId(this PersonTag personTag)
         {
             return new(personTag.Person.InvalidateId(), personTag.Face.InvalidateId());
+        }
+
+        public static Face GetFace(this IEnumerable<PersonTag> personTags, long faceId)
+        {
+            if (personTags != null && faceId != Constants.InvalidId)
+            {
+                return personTags.FirstOrDefault(p => p.Face.Id == faceId)?.Face;
+            }
+
+            return null;
         }
 
 #endregion

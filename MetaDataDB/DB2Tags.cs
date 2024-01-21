@@ -21,6 +21,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Data.Sqlite;
 using TCSystem.MetaData;
 
@@ -100,12 +101,24 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public void AddTags(long fileId, IReadOnlyList<string> tags, SqliteTransaction transaction)
+        public void SetTags(long fileId, IReadOnlyList<string> newTags, IReadOnlyList<string> oldTags, SqliteTransaction transaction)
         {
-            foreach (string tag in tags)
+            foreach (string tag in newTags)
             {
-                AddTag(fileId, tag, transaction);
+                if (!oldTags.Contains(tag))
+                {
+                    AddTag(fileId, tag, transaction);
+                }
             }
+
+            foreach (string tag in oldTags)
+            {
+                if (!newTags.Contains(tag))
+                {
+                    RemoveTag(fileId, tag, transaction);
+                }
+            }
+
         }
 
         public IList<string> GetFilesOfTag(string tag)
@@ -161,7 +174,7 @@ namespace TCSystem.MetaDataDB
                 {
                     command.Transaction = transaction;
                     command.Connection = _instance.Connection;
-                    command.CommandText = $"DELETE From {TableFileTags} WHERE {IdTagId}=@{IdTagId};";
+                    command.CommandText = $"DELETE From {TableTags} WHERE {IdTagId}=@{IdTagId};";
                     command.Parameters.AddWithValue($"@{IdTagId}", id);
                     command.ExecuteNonQuery();
                 }
@@ -220,11 +233,32 @@ namespace TCSystem.MetaDataDB
                     command.Transaction = transaction;
                     command.Connection = _instance.Connection;
                     command.CommandText = $"INSERT INTO {TableFileTags} ({IdFileId}, {IdTagId}) VALUES(@{IdFileId}, @{IdTagId});";
-                    command.Parameters.AddWithValue($"@{IdFileId}", fileId);
-                    command.Parameters.AddWithValue($"@{IdTagId}", tagId);
+                    AddTagParameters(fileId, tagId, command);
                     command.ExecuteNonQuery();
                 }
             }
+        }
+
+        private void RemoveTag(long fileId, string tag, SqliteTransaction transaction)
+        {
+            long tagId = GetTagId(tag, transaction);
+            if (tagId != Constants.InvalidId)
+            {
+                using (var command = new SqliteCommand())
+                {
+                    command.Transaction = transaction;
+                    command.Connection = _instance.Connection;
+                    command.CommandText = $"DELETE FROM {TableFileTags} WHERE {IdFileId}=@{IdFileId} AND {IdTagId}=@{IdTagId};";
+                    AddTagParameters(fileId, tagId, command);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static void AddTagParameters(long fileId, long tagId, SqliteCommand command)
+        {
+            command.Parameters.AddWithValue($"@{IdFileId}", fileId);
+            command.Parameters.AddWithValue($"@{IdTagId}", tagId);
         }
 
         private readonly DB2Instance _instance;

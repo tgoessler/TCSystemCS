@@ -203,7 +203,7 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public Image AddMetaData(Image data, DateTimeOffset dateModified)
+        public Image AddMetaData(Image newMetaData, DateTimeOffset dateModified)
         {
             Image oldData = null;
             using (var acquiredInstance = new InstanceAcquire(this))
@@ -211,38 +211,58 @@ namespace TCSystem.MetaDataDB
                 using (SqliteTransaction transaction = acquiredInstance.Instance.BeginTransaction())
                 {
                     var files = acquiredInstance.Instance.Files;
-                    long fileId = files.GetFileId(data.FileName, transaction);
-                    // to make sure that we only store the information once per file
-                    if (fileId != Constants.InvalidId)
+                    long fileId = files.GetFileId(newMetaData.FileName, transaction);
+                    Image removedMetaData = null;
+
+                    // no id available should be added as new file
+                    if (newMetaData.Id == Constants.InvalidId)
                     {
-                        oldData = GetMetaData(fileId, acquiredInstance.Instance, transaction);
-                        files.RemoveFile(fileId, transaction);
+                        if (fileId != Constants.InvalidId)
+                        {
+                            removedMetaData = GetMetaData(fileId, acquiredInstance.Instance, transaction);
+                            files.RemoveFile(fileId, transaction);
+                        }
                     }
+                    else
+                    {
+                        if (fileId != newMetaData.Id)
+                        {
+                            Log.Instance.Fatal($"File Id is not matching {fileId} != {newMetaData.Id}");
+                            throw new ArgumentOutOfRangeException(nameof(newMetaData));
+                        }
 
-                    fileId = files.AddFile(data, dateModified, transaction);
-                    acquiredInstance.Instance.Persons.AddPersonTags(fileId, data.PersonTags, transaction);
-                    acquiredInstance.Instance.Tags.AddTags(fileId, data.Tags, transaction);
-                    acquiredInstance.Instance.Locations.AddLocation(fileId, data.Location, transaction);
-                    acquiredInstance.Instance.Data.AddMetaData(fileId, data, transaction);
+                        oldData = GetMetaData(fileId, acquiredInstance.Instance, transaction);
+                    }
+                    
+                    fileId = files.SetFile(newMetaData, oldData, dateModified, transaction);
+                    acquiredInstance.Instance.Persons.SetPersonTags(fileId, newMetaData.PersonTags, oldData?.PersonTags ?? Array.Empty<PersonTag>(), transaction);
+                    acquiredInstance.Instance.Tags.SetTags(fileId, newMetaData.Tags, oldData?.Tags ?? Array.Empty<string>(), transaction);
+                    acquiredInstance.Instance.Locations.SetLocation(fileId, newMetaData.Location, oldData?.Location, transaction);
+                    acquiredInstance.Instance.Data.SetMetaData(fileId, newMetaData, oldData, transaction);
 
-                    // get really save data for calling changed callback with correct data
-                    data = GetMetaData(fileId, acquiredInstance.Instance, transaction);
+                    // get really save newMetaData for calling changed callback with correct newMetaData
+                    newMetaData = GetMetaData(fileId, acquiredInstance.Instance, transaction);
 
                     transaction.Commit();
+
+                    if (removedMetaData != null)
+                    {
+                        oldData = removedMetaData;
+                    }
                 }
             }
 
-            // call event handler new meta data was added
+            // call event handler new meta newMetaData was added
             if (oldData != null)
             {
-                MetaDataChanged?.Invoke((data, oldData));
+                MetaDataChanged?.Invoke((newMetaData, oldData));
             }
             else
             {
-                MetaDataAdded?.Invoke(data);
+                MetaDataAdded?.Invoke(newMetaData);
             }
 
-            return data;
+            return newMetaData;
         }
 
         public void RemoveMetaData(string fileName)

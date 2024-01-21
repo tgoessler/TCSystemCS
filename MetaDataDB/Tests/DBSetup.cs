@@ -47,12 +47,23 @@ namespace TCSystem.MetaDataDB.Tests
             File.Delete(dbFileName);
         }
 
-        public static void AsserImageDataNotEqual(Image data1, Image data2)
+#endregion
+
+#region Protected
+
+        protected static void AssertImageDataNotEqual(Image data1, Image data2)
         {
+            data1 = data1.InvalidateId();
+            data2 = data2.InvalidateId();
+
+            Assert.That(data1.Tags, Is.EquivalentTo(data2.Tags));
+            Assert.That(data1.PersonTags, Is.EquivalentTo(data2.PersonTags));
+            Assert.That(data1.Location, Is.EqualTo(data2.Location));
+            Assert.That(data1.DateTaken, Is.EqualTo(data2.DateTaken));
             Assert.That(data1.InvalidateId(), Is.EqualTo(data2.InvalidateId()));
         }
 
-        public static IDB2 DB => _db;
+        protected static IDB2 DB => _db;
 
 #endregion
 

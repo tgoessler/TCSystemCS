@@ -249,7 +249,7 @@ namespace TCSystem.MetaDataDB
                 command.CommandText = $"CREATE TABLE IF NOT EXISTS {TableFileTags}" +
                                       "( " +
                                       $"{IdFileId} REFERENCES {TableFiles}({IdFileId}) ON DELETE CASCADE, " +
-                                      $"{IdTagId} INTEGER NOT NULL " +
+                                      $"{IdTagId} INTEGER NOT NULL REFERENCES {TableTags}({IdTagId}) ON DELETE CASCADE" +
                                       ");";
                 command.ExecuteNonQuery();
             }

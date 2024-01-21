@@ -33,18 +33,70 @@ namespace TCSystem.MetaDataDB.Tests
         [Test]
         public void AddMetaData()
         {
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(0));
+
+            DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(1));
+
+            DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(2));
+
+            DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(3));
+
+            var data = DB.GetMetaData(TestData.ImageZero.FileName);
+            AssertImageDataNotEqual(TestData.ImageZero, data);
+
+            data = DB.GetMetaData(TestData.Image1.FileName);
+            AssertImageDataNotEqual(TestData.Image1, data);
+
+            data = DB.GetMetaData(TestData.Image2.FileName);
+            AssertImageDataNotEqual(TestData.Image2, data);
+        }
+
+        [Test]
+        public void RemoveMetaData()
+        {
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(0));
+
             DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
             DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
             DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
 
+            DB.RemoveMetaData(TestData.ImageZero.FileName);
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(2));
+
             var data = DB.GetMetaData(TestData.ImageZero.FileName);
-            AsserImageDataNotEqual(TestData.ImageZero, data);
+            Assert.That(data, Is.EqualTo(null));
 
             data = DB.GetMetaData(TestData.Image1.FileName);
-            AsserImageDataNotEqual(TestData.Image1, data);
+            AssertImageDataNotEqual(TestData.Image1, data);
 
             data = DB.GetMetaData(TestData.Image2.FileName);
-            AsserImageDataNotEqual(TestData.Image2, data);
+            AssertImageDataNotEqual(TestData.Image2, data);
         }
+
+        [Test]
+        public void AddSameMetaData()
+        {
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(0));
+
+            var imageZero = DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+            var image1 = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+            var image2 = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+
+            DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(3));
+            AssertImageDataNotEqual(imageZero, DB.GetMetaData(TestData.ImageZero.FileName));
+
+            DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(3));
+            AssertImageDataNotEqual(image1, DB.GetMetaData(TestData.Image1.FileName));
+
+            DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(3));
+            AssertImageDataNotEqual(image2, DB.GetMetaData(TestData.Image2.FileName));
+        }
+
     }
 }

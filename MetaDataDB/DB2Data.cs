@@ -76,7 +76,22 @@ namespace TCSystem.MetaDataDB
             }
         }
 
-        public void AddMetaData(long fileId, Image data, SqliteTransaction transaction)
+        public void SetMetaData(long fileId, Image newData, Image oldData, SqliteTransaction transaction)
+        {
+            if (oldData == null)
+            {
+                AddMetaData(fileId, newData, transaction);
+            }
+            else if (newData.Width != oldData.Width ||
+                     newData.Height != oldData.Height ||
+                     newData.Orientation != oldData.Orientation ||
+                     newData.DateTaken != oldData.DateTaken)
+            {
+                UpdateMetaData(fileId, newData, transaction);
+            }
+        }
+
+        private void AddMetaData(long fileId, Image newData, SqliteTransaction transaction)
         {
             using (var command = new SqliteCommand())
             {
@@ -90,13 +105,35 @@ namespace TCSystem.MetaDataDB
                                       $"@{IdOrientation}, " +
                                       $"@{IdDateTaken}" +
                                       ");";
-                command.Parameters.AddWithValue($"@{IdFileId}", fileId);
-                command.Parameters.AddWithValue($"@{IdWidth}", data.Width);
-                command.Parameters.AddWithValue($"@{IdHeight}", data.Height);
-                command.Parameters.AddWithValue($"@{IdOrientation}", (int)data.Orientation);
-                command.Parameters.AddWithValue($"@{IdDateTaken}", data.DateTaken.ToString("s"));
+                SetFileParameters(fileId, newData, command);
                 command.ExecuteNonQuery();
             }
+        }
+
+        private void UpdateMetaData(long fileId, Image newData, SqliteTransaction transaction)
+        {
+            using (var command = new SqliteCommand())
+            {
+                command.Transaction = transaction;
+                command.Connection = _instance.Connection;
+                command.CommandText = $"UPDATE {TableFileData} " +
+                                      $"SET {IdWidth}=@{IdWidth}," +
+                                      $"    {IdHeight}=@{IdHeight}," +
+                                      $"    {IdOrientation}=@{IdOrientation}," +
+                                      $"    {IdDateTaken}=@{IdDateTaken} " +
+                                      $"WHERE {IdFileId}=@{IdFileId}";
+                SetFileParameters(fileId, newData, command);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private static void SetFileParameters(long fileId, Image data, SqliteCommand command)
+        {
+            command.Parameters.AddWithValue($"@{IdFileId}", fileId);
+            command.Parameters.AddWithValue($"@{IdWidth}", data.Width);
+            command.Parameters.AddWithValue($"@{IdHeight}", data.Height);
+            command.Parameters.AddWithValue($"@{IdOrientation}", (int)data.Orientation);
+            command.Parameters.AddWithValue($"@{IdDateTaken}", data.DateTaken.ToString("s"));
         }
 
         public IList<DateTimeOffset> GetAllYears()
