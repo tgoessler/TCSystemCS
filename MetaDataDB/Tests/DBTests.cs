@@ -31,6 +31,20 @@ namespace TCSystem.MetaDataDB.Tests
     public sealed class DBTests : DBSetup
     {
         [Test]
+        public void ModeChange()
+        {
+            DB.EnableUnsafeMode();
+
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(0));
+            DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(1));
+
+            DB.EnableDefaultMode();
+
+            Assert.That(DB.GetNumFiles(), Is.EqualTo(1));
+        }
+
+        [Test]
         public void AddMetaData()
         {
             Assert.That(DB.GetNumFiles(), Is.EqualTo(0));

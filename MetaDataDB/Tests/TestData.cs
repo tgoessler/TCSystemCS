@@ -34,7 +34,7 @@ namespace TCSystem.MetaDataDB.Tests
 #region Public
 
         public static readonly Face Face1 = new(Constants.InvalidId, Rectangle.FromFloat(10, 10, 100, 100), FaceMode.DlibFront, true, Enumerable.Repeat(new FixedPoint64(1), 128));
-        public static readonly Face Face2 = new(Constants.InvalidId, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, true, Enumerable.Repeat(new FixedPoint64(2), 128));
+        public static readonly Face Face2 = new(Constants.InvalidId, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, false, Enumerable.Repeat(new FixedPoint64(2), 128));
         public static readonly Face Face3 = new(Constants.InvalidId, Rectangle.FromFloat(17, 15, 70, 90), FaceMode.DlibCnn, true, Enumerable.Repeat(new FixedPoint64(3), 128));
 
         public static readonly Person Person1 = new(Constants.InvalidId, "Thomas", "thomas@email.com", "123", "456");

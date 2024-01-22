@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using TCSystem.MetaData;
 
@@ -32,7 +33,7 @@ namespace TCSystem.MetaDataDB.Tests;
 public class PersonTagTests : DBSetup
 {
     [Test]
-    public void NumPersons()
+    public void GetNumPersons()
     {
         Assert.That(DB.GetNumPersons(), Is.EqualTo(1));
 
@@ -51,6 +52,93 @@ public class PersonTagTests : DBSetup
         DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
         Assert.That(DB.GetNumPersons(), Is.EqualTo(3));
     }
+
+    [Test]
+    public void GetNumFaces()
+    {
+        Assert.That(DB.GetNumFaces(), Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+        Assert.That(DB.GetNumFaces(), Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetNumFaces(), Is.EqualTo(1));
+
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DB.GetNumPersons(), Is.EqualTo(3));
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DB.GetNumFaces(), Is.EqualTo(2));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetNumPersons(), Is.EqualTo(3));
+    }
+
+    [Test]
+    public void GetNumAutoDetectedFaces()
+    {
+        Assert.That(DB.GetNumAutoDetectedFaces(), Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+        Assert.That(DB.GetNumAutoDetectedFaces(), Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetNumAutoDetectedFaces(), Is.EqualTo(1));
+
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DB.GetNumAutoDetectedFaces(), Is.EqualTo(2));
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DB.GetNumAutoDetectedFaces(), Is.EqualTo(1));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetNumAutoDetectedFaces(), Is.EqualTo(2));
+    }
+
+    [Test]
+    public void GetAllPersonNamesLike()
+    {
+        Assert.That(DB.GetAllPersonNamesLike().Count, Is.EqualTo(1));
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == ""), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("abc").FirstOrDefault(n => n == ""), Is.Null);
+
+        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+        Assert.That(DB.GetAllPersonNamesLike().Count, Is.EqualTo(1));
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == ""), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("abc").FirstOrDefault(n => n == ""), Is.Null);
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetAllPersonNamesLike().Count, Is.EqualTo(2));
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == ""), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == TestData.Person1.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("Tho").FirstOrDefault(n => n == TestData.Person1.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("abc").FirstOrDefault(n => n == ""), Is.Null);
+
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DB.GetAllPersonNamesLike().Count, Is.EqualTo(3));
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == ""), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == TestData.Person1.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == TestData.Person2.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("Tho").FirstOrDefault(n => n == TestData.Person1.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("abc").FirstOrDefault(n => n == ""), Is.Null);
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DB.GetAllPersonNamesLike().Count, Is.EqualTo(3));
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == ""), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == TestData.Person1.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == TestData.Person2.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("Tho").FirstOrDefault(n => n == TestData.Person1.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("abc").FirstOrDefault(n => n == ""), Is.Null);
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetAllPersonNamesLike().Count, Is.EqualTo(3));
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == ""), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == TestData.Person1.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike().FirstOrDefault(n => n == TestData.Person2.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("Tho").FirstOrDefault(n => n == TestData.Person1.Name), Is.Not.Null);
+        Assert.That(DB.GetAllPersonNamesLike("abc").FirstOrDefault(n => n == ""), Is.Null);
+    }
+
 
     [Test]
     public void AddPersonTag()
@@ -99,7 +187,7 @@ public class PersonTagTests : DBSetup
         var data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
 
         var personTag = data.PersonTags[1];
-        data = Image.ChangePersonTagVisible(data, personTag, false);
+        data = Image.ChangePersonTagVisible(data, personTag, true);
         DB.AddMetaData(data, DateTimeOffset.Now);
 
         Assert.That(DB.GetNumFiles(), Is.EqualTo(1));
@@ -120,4 +208,42 @@ public class PersonTagTests : DBSetup
         AssertImageDataNotEqual(data, DB.GetMetaData(TestData.Image2.FileName));
     }
 
+    [Test]
+    public void GetAllFaceInfos()
+    {
+        Assert.That(DB.GetAllFaceInfos(true).Count, Is.EqualTo(0));
+        Assert.That(DB.GetAllFaceInfos(false).Count, Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+        Assert.That(DB.GetAllFaceInfos(true).Count, Is.EqualTo(0));
+        Assert.That(DB.GetAllFaceInfos(false).Count, Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetAllFaceInfos(true).Count, Is.EqualTo(1));
+        Assert.That(DB.GetAllFaceInfos(false).Count, Is.EqualTo(1));
+
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DB.GetAllFaceInfos(true).Count, Is.EqualTo(2));
+        Assert.That(DB.GetAllFaceInfos(false).Count, Is.EqualTo(3));
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DB.GetAllFaceInfos(true).Count, Is.EqualTo(1));
+        Assert.That(DB.GetAllFaceInfos(false).Count, Is.EqualTo(2));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetAllFaceInfos(true).Count, Is.EqualTo(2));
+        Assert.That(DB.GetAllFaceInfos(false).Count, Is.EqualTo(3));
+    }
+
+    [Test]
+    public void GetPersonFromName()
+    {
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DB.GetPersonFromName(TestData.Person1.Name).InvalidateId(), Is.EqualTo(TestData.Person1));
+        Assert.That(DB.GetPersonFromName(TestData.Person2.Name), Is.Null);
+
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DB.GetPersonFromName(TestData.Person1.Name).InvalidateId(), Is.EqualTo(TestData.Person1));
+        Assert.That(DB.GetPersonFromName(TestData.Person2.Name).InvalidateId(), Is.EqualTo(TestData.Person2));
+    }
 }
