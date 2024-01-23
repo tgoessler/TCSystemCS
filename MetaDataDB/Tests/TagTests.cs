@@ -36,37 +36,37 @@ public class TagTests : DBSetup
     public void AddFileTag()
     {
         DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
-        var data = DB.GetMetaData(TestData.Image1.FileName);
+        var data = DBReadOnly.GetMetaData(TestData.Image1.FileName);
 
         data = Image.AddTag(data, "Hello1");
 
         DB.AddMetaData(data, DateTimeOffset.Now);
-        AssertImageDataNotEqual(DB.GetMetaData(data.FileName), data);
+        AssertImageDataNotEqual(DBReadOnly.GetMetaData(data.FileName), data);
 
         data = Image.AddTag(data, "Hello2");
         data = Image.AddTag(data, "Hello3");
 
         DB.AddMetaData(data, DateTimeOffset.Now);
-        AssertImageDataNotEqual(DB.GetMetaData(data.FileName), data);
+        AssertImageDataNotEqual(DBReadOnly.GetMetaData(data.FileName), data);
     }
 
     [Test]
     public void RemoveFileTag()
     {
         DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
-        var data = DB.GetMetaData(TestData.Image2.FileName);
+        var data = DBReadOnly.GetMetaData(TestData.Image2.FileName);
 
         data = Image.RemoveTag(data, "test2");
         DB.AddMetaData(data, DateTimeOffset.Now);
-        AssertImageDataNotEqual(DB.GetMetaData(data.FileName), data);
+        AssertImageDataNotEqual(DBReadOnly.GetMetaData(data.FileName), data);
 
         data = Image.RemoveTag(data, "test3");
         DB.AddMetaData(data, DateTimeOffset.Now);
-        AssertImageDataNotEqual(DB.GetMetaData(data.FileName), data);
+        AssertImageDataNotEqual(DBReadOnly.GetMetaData(data.FileName), data);
 
         data = Image.RemoveTag(data, "test1");
         DB.AddMetaData(data, DateTimeOffset.Now);
-        AssertImageDataNotEqual(DB.GetMetaData(data.FileName), data);
+        AssertImageDataNotEqual(DBReadOnly.GetMetaData(data.FileName), data);
     }
 
     [Test]
@@ -74,12 +74,12 @@ public class TagTests : DBSetup
     {
         DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
             
-        Assert.That(DB.GetNumTags(), Is.EqualTo(2));
-        Assert.That(DB.GetAllTagsLike().Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetNumTags(), Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetAllTagsLike().Count, Is.EqualTo(2));
 
         DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
-        Assert.That(DB.GetNumTags(), Is.EqualTo(3));
-        Assert.That(DB.GetAllTagsLike().Count, Is.EqualTo(3));
+        Assert.That(DBReadOnly.GetNumTags(), Is.EqualTo(3));
+        Assert.That(DBReadOnly.GetAllTagsLike().Count, Is.EqualTo(3));
     }
 
     [Test]
@@ -87,12 +87,12 @@ public class TagTests : DBSetup
     {
         DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
 
-        var tags = DB.GetAllTagsLike().OrderBy(s => s).ToArray();
+        var tags = DBReadOnly.GetAllTagsLike().OrderBy(s => s).ToArray();
         Assert.That(tags[0], Is.EqualTo("test1"));
         Assert.That(tags[1], Is.EqualTo("test2"));
 
         DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
-        tags = DB.GetAllTagsLike().OrderBy(s => s).ToArray();
+        tags = DBReadOnly.GetAllTagsLike().OrderBy(s => s).ToArray();
         Assert.That(tags[0], Is.EqualTo("test1"));
         Assert.That(tags[1], Is.EqualTo("test2"));
         Assert.That(tags[2], Is.EqualTo("test3"));

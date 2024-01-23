@@ -35,8 +35,8 @@ public class TestFile : DBSetup
         var newDateModified = dateTimeNow.AddSeconds(5).Trim(TimeSpan.TicksPerSecond);
         DB.AddMetaData(data, newDateModified);
 
-        Assert.That(newDateModified, Is.EqualTo(DB.GetDateModified(data.FileName)));
-        Assert.That(data.Id, Is.EqualTo(DB.GetMetaData(data.FileName).Id));
+        Assert.That(newDateModified, Is.EqualTo(DBReadOnly.GetDateModified(data.FileName)));
+        Assert.That(data.Id, Is.EqualTo(DBReadOnly.GetMetaData(data.FileName).Id));
     }
 
     [Test]
@@ -47,7 +47,7 @@ public class TestFile : DBSetup
         data = Image.ChangeProcessingInfo(data, ProcessingInfos.DlibCnnFaceDetection1000 | ProcessingInfos.DlibCnnFaceDetection2000);
         DB.AddMetaData(data, DateTimeOffset.Now);
 
-        Assert.That(data.ProcessingInfos, Is.EqualTo(DB.GetMetaData(data.FileName).ProcessingInfos));
-        Assert.That(data.Id, Is.EqualTo(DB.GetMetaData(data.FileName).Id));
+        Assert.That(data.ProcessingInfos, Is.EqualTo(DBReadOnly.GetMetaData(data.FileName).ProcessingInfos));
+        Assert.That(data.Id, Is.EqualTo(DBReadOnly.GetMetaData(data.FileName).Id));
     }
 }

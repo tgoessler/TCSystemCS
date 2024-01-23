@@ -37,12 +37,14 @@ namespace TCSystem.MetaDataDB.Tests
         {
             var dbFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             _db = Factory.CreateReadWrite(dbFileName);
+            _dbReadOnly = Factory.CreateRead(dbFileName);
         }
 
         [TearDown]
         public static void DeInitTestDB()
         {
             Factory.Destroy(ref _db);
+            Factory.Destroy(ref _dbReadOnly);
             var dbFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             File.Delete(dbFileName);
         }
@@ -51,7 +53,7 @@ namespace TCSystem.MetaDataDB.Tests
 
 #region Protected
 
-        protected static void AssertImageDataNotEqual(Image data1, Image data2)
+        protected void AssertImageDataNotEqual(Image data1, Image data2)
         {
             data1 = data1.InvalidateId();
             data2 = data2.InvalidateId();
@@ -63,13 +65,15 @@ namespace TCSystem.MetaDataDB.Tests
             Assert.That(data1.InvalidateId(), Is.EqualTo(data2.InvalidateId()));
         }
 
-        protected static IDB2 DB => _db;
+        protected IDB2 DB => _db;
+        protected IDB2Read DBReadOnly => _dbReadOnly;
 
 #endregion
 
 #region Private
 
         private static IDB2 _db;
+        private static IDB2Read _dbReadOnly;
 
 #endregion
     }

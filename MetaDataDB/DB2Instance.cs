@@ -73,17 +73,6 @@ namespace TCSystem.MetaDataDB
             Log.Instance.Info($"Open Database '{fileName}' done.");
         }
 
-        public void OpenConnection()
-        {
-            Connection.Open();
-            ApplyDbSetting();
-        }
-
-        public void CloseConnection()
-        {
-            Connection.Close();
-        }
-
         public void Close()
         {
             DestroyConnection();
