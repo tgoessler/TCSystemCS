@@ -199,9 +199,9 @@ namespace TCSystem.MetaDataDB
             {
                 var updatedPerson = new Person(existingPerson.Id,
                     existingPerson.Name,
-                    string.IsNullOrEmpty(existingPerson.EmailDigest) ? person.EmailDigest : existingPerson.EmailDigest,
-                    string.IsNullOrEmpty(existingPerson.LiveId) ? person.LiveId : existingPerson.LiveId,
-                    string.IsNullOrEmpty(existingPerson.SourceId) ? person.SourceId : existingPerson.SourceId
+                    !string.IsNullOrEmpty(person.EmailDigest) ? person.EmailDigest : existingPerson.EmailDigest,
+                    !string.IsNullOrEmpty(person.LiveId) ? person.LiveId : existingPerson.LiveId,
+                    !string.IsNullOrEmpty(person.SourceId) ? person.SourceId : existingPerson.SourceId
                 );
                 if (!updatedPerson.Equals(existingPerson))
                 {

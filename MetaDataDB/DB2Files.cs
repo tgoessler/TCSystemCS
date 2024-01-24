@@ -354,27 +354,6 @@ namespace TCSystem.MetaDataDB
             command.Parameters.AddWithValue($"@{IdProcessingInfo}", (long)data.ProcessingInfos);
         }
 
-        private DateTimeOffset GetDateModified(long fileId, SqliteTransaction transaction)
-        {
-            using (var command = new SqliteCommand())
-            {
-                command.Transaction = transaction;
-                command.Connection = _instance.Connection;
-                command.CommandText = $"SELECT {IdDateModified} FROM {TableFiles} " +
-                                      $"WHERE {IdFileId}=@{IdFileId};";
-                command.Parameters.AddWithValue($"@{IdFileId}", fileId);
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows && reader.Read())
-                    {
-                        return reader.GetDateTimeOffset(0);
-                    }
-
-                    return DateTimeOffset.MinValue;
-                }
-            }
-        }
-
         private static IReadOnlyList<(string Key, string Value, bool IsAdd)> PrepareFilters(string searchFilterString)
         {
             var searchFiltersList = new List<(string Key, string Value, bool IsAdd)>();

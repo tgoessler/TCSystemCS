@@ -37,16 +37,16 @@ namespace TCSystem.MetaDataDB.Tests
         public static readonly Face Face2 = new(Constants.InvalidId, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, false, Enumerable.Repeat(new FixedPoint64(2), 128));
         public static readonly Face Face3 = new(Constants.InvalidId, Rectangle.FromFloat(17, 15, 70, 90), FaceMode.DlibCnn, true, Enumerable.Repeat(new FixedPoint64(3), 128));
 
-        public static readonly Person Person1 = new(Constants.InvalidId, "Thomas", "thomas@email.com", "123", "456");
-        public static readonly Person Person2 = new(Constants.InvalidId, "Sabine", "sabine@email.com", "789", "012");
-        public static readonly Person Person3 = new(Constants.InvalidId, "Laura", "Laura@email.com", "456", "234");
+        public static readonly Person Person1 = new(Constants.InvalidId, "01 Thomas", "thomas@email.com", "123", "456");
+        public static readonly Person Person2 = new(Constants.InvalidId, "02 Sabine", "sabine@email.com", "789", "012");
+        public static readonly Person Person3 = new(Constants.InvalidId, "03 Laura", "Laura@email.com", "456", "234");
 
         public static readonly PersonTag PersonTag1 = new(Person1, Face1);
         public static readonly PersonTag PersonTag2 = new(Person2, Face2);
 
-        public const string FileNameZero = "foto0.jpeg";
-        public const string FileName1 = "foto1.jpeg";
-        public const string FileName2 = "foto2.jpeg";
+        public const string FileNameZero = "01 foto.jpeg";
+        public const string FileName1 = "02 foto.jpeg";
+        public const string FileName2 = "03 foto.jpeg";
 
         public const string Tag1 = "01 Urlaub";
         public const string Tag2 = "02 Geburtstag";

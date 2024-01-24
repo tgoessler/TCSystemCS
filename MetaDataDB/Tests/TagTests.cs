@@ -199,8 +199,8 @@ public class TagTests : DBSetup
     public void RemoveTag()
     {
         DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetNumTags(), Is.EqualTo(2));
         Assert.That(DBReadOnly.GetNumFilesOfTag(TestData.Tag1), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumTags(), Is.EqualTo(2));
 
         DB.RemoveMetaData(TestData.Image1.FileName);
         Assert.That(DBReadOnly.GetNumFilesOfTag(TestData.Tag1), Is.EqualTo(0));
@@ -211,6 +211,5 @@ public class TagTests : DBSetup
         Assert.That(DB.GetNumTags(), Is.EqualTo(1));
         Assert.That(DB.GetNumFilesOfTag(TestData.Tag2), Is.EqualTo(0));
         Assert.That(DB.GetNumTags(), Is.EqualTo(0));
-
     }
 }

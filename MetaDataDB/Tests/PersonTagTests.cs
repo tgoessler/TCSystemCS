@@ -168,6 +168,20 @@ public class PersonTagTests : DBSetup
     }
 
     [Test]
+    public void UpdatePerson()
+    {
+        var data =DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+
+        var p = data.PersonTags[0].Person;
+        data = Image.ChangePerson(data, new Person(p.Id, p.Name, "new@email.com", p.LiveId, p.SourceId));
+        DB.AddMetaData(data, DateTimeOffset.Now);
+
+        Assert.That(DBReadOnly.GetNumFiles(), Is.EqualTo(1));
+        Assert.That(data.PersonTags[0].Person.Id, Is.EqualTo(DBReadOnly.GetMetaData(TestData.Image1.FileName).PersonTags[0].Person.Id));
+        AssertImageDataNotEqual(data, DBReadOnly.GetMetaData(TestData.Image1.FileName));
+    }
+
+    [Test]
     public void ChangeFaceToNewFace()
     {
         var data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
@@ -246,4 +260,164 @@ public class PersonTagTests : DBSetup
         Assert.That(DBReadOnly.GetPersonFromName(TestData.Person1.Name).InvalidateId(), Is.EqualTo(TestData.Person1));
         Assert.That(DBReadOnly.GetPersonFromName(TestData.Person2.Name).InvalidateId(), Is.EqualTo(TestData.Person2));
     }
+
+    [Test]
+    public void GetPersonFromId()
+    {
+        var data1 = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetPersonFromId(data1.PersonTags[0].Person.Id).InvalidateId(), Is.EqualTo(TestData.Person1));
+
+        var data2 = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(data2, Is.EqualTo(data2));
+        Assert.That(DBReadOnly.GetPersonFromId(data2.PersonTags[0].Person.Id).InvalidateId(), Is.EqualTo(TestData.Person1));
+        Assert.That(DBReadOnly.GetPersonFromId(data2.PersonTags[1].Person.Id).InvalidateId(), Is.EqualTo(TestData.Person2));
+    }
+
+    [Test]
+    public void GetNumFilesOfPerson()
+    {
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person3.Name), Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person3.Name), Is.EqualTo(0));
+
+        var data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person3.Name), Is.EqualTo(0));
+
+        DB.AddMetaData(data, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person3.Name), Is.EqualTo(0));
+
+        DB.RemoveMetaData(TestData.Image2.FileName);
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person3.Name), Is.EqualTo(0));
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person3.Name), Is.EqualTo(0));
+    }
+
+    [Test]
+    public void GetFilesOfPerson()
+    {
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person2.Name).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person3.Name).Count, Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName1), Is.True);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person2.Name).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person3.Name).Count, Is.EqualTo(0));
+
+        var data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName1), Is.True);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName2), Is.True);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person2.Name).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName1), Is.True);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person3.Name).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName2), Is.True);
+
+        data = DB.AddMetaData(data, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName1), Is.True);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName2), Is.True);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person2.Name).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName1), Is.True);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person3.Name).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName2), Is.True);
+
+        DB.RemoveMetaData(data.FileName);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Contains(TestData.FileName1), Is.True);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person2.Name).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person3.Name).Count, Is.EqualTo(0));
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person1.Name).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person2.Name).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFilesOfPerson(TestData.Person3.Name).Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void GetFileAndPersonTags()
+    {
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, false).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, false).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, false).Count, Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, true).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, false).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, false).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, false).Count, Is.EqualTo(0));
+
+        var data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, true).Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, false).Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, false).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, false).Count, Is.EqualTo(0));
+
+        data = DB.AddMetaData(data, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, true).Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, false).Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, false).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, false).Count, Is.EqualTo(0));
+
+        DB.RemoveMetaData(data.FileName);
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, true).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, false).Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, false).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, false).Count, Is.EqualTo(0));
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person1.Name, false).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person2.Name, false).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, true).Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetFileAndPersonTagsOfPerson(TestData.Person3.Name, false).Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void RemovePerson()
+    {
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetNumPersons(), Is.EqualTo(3));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(1));
+
+        DB.RemoveMetaData(TestData.Image2.FileName);
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumPersons(), Is.EqualTo(3));
+
+        // this now should remove the tags because we use write access
+        Assert.That(DB.GetNumFilesOfPerson(TestData.Person1.Name), Is.EqualTo(0));
+        Assert.That(DB.GetNumPersons(), Is.EqualTo(2));
+        Assert.That(DB.GetNumFilesOfPerson(TestData.Person2.Name), Is.EqualTo(0));
+        Assert.That(DB.GetNumPersons(), Is.EqualTo(1));
+    }
+
 }

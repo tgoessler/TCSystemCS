@@ -174,6 +174,24 @@ namespace TCSystem.MetaData
             return image;
         }
 
+        public static Image ChangePerson(Image image, Person person)
+        {
+            if (image.GetPersonTag(person.Name) is var pt)
+            {
+                var pts = image._personTags.ToList();
+                pts.Remove(pt);
+                pt = new PersonTag(person, pt.Face);
+                pts.Add(pt);
+
+                image = new Image(image.Id, image.FileName, image.ProcessingInfos,
+                    image.Width, image.Height, image.Orientation,
+                    image.DateTaken, image.Title, image.Location,
+                    pts, image._tags);
+            }
+
+            return image;
+        }
+
         public static Image RemovePersonWithName(Image image, string name)
         {
             var person = image.GetPersonTag(name);
