@@ -98,20 +98,9 @@ namespace TCSystem.MetaDataDB
 
         public long SetFile(Image newMetaData, Image oldMetaData, DateTimeOffset dateModified, SqliteTransaction transaction)
         {
-            if (newMetaData.Id == Constants.InvalidId)
-            {
-                return AddFile(newMetaData, dateModified, transaction);
-            }
-            
-            if (oldMetaData == null ||
-                newMetaData.FileName != oldMetaData.FileName ||
-                newMetaData.ProcessingInfos != oldMetaData.ProcessingInfos ||
-                dateModified != GetDateModified(newMetaData.Id, transaction))
-            {
-                return UpdateFile(newMetaData, dateModified, transaction);
-            }
-
-            return newMetaData.Id;
+            return newMetaData.Id == Constants.InvalidId ?
+                AddFile(newMetaData, dateModified, transaction) :
+                UpdateFile(newMetaData, dateModified, transaction);
         }
 
         public void RemoveFile(long fileId, SqliteTransaction transaction)

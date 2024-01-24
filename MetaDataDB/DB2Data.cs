@@ -82,10 +82,7 @@ namespace TCSystem.MetaDataDB
             {
                 AddMetaData(fileId, newData, transaction);
             }
-            else if (newData.Width != oldData.Width ||
-                     newData.Height != oldData.Height ||
-                     newData.Orientation != oldData.Orientation ||
-                     newData.DateTaken != oldData.DateTaken)
+            else
             {
                 UpdateMetaData(fileId, newData, transaction);
             }

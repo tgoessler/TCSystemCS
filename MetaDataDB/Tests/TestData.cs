@@ -44,14 +44,22 @@ namespace TCSystem.MetaDataDB.Tests
         public static readonly PersonTag PersonTag1 = new(Person1, Face1);
         public static readonly PersonTag PersonTag2 = new(Person2, Face2);
 
-        public static readonly Image ImageZero = new(Constants.InvalidId, "test", ProcessingInfos.None, 0, 0, OrientationMode.Normal,
+        public const string FileNameZero = "foto0.jpeg";
+        public const string FileName1 = "foto1.jpeg";
+        public const string FileName2 = "foto2.jpeg";
+
+        public const string Tag1 = "01 Urlaub";
+        public const string Tag2 = "02 Geburtstag";
+        public const string Tag3 = "03 Ostern";
+
+        public static readonly Image ImageZero = new(Constants.InvalidId, FileNameZero, ProcessingInfos.None, 0, 0, OrientationMode.Normal,
             DateTimeOffset.Now, "", null, Array.Empty<PersonTag>(), Array.Empty<string>());
 
-        public static readonly Image Image1 = new(Constants.InvalidId, "test1", ProcessingInfos.DlibCnnFaceDetection1000, 100, 100, OrientationMode.Normal,
-            DateTimeOffset.Now, "", Location1, new[] { PersonTag1 }, new[] { "test1", "test2" });
+        public static readonly Image Image1 = new(Constants.InvalidId, FileName1, ProcessingInfos.DlibCnnFaceDetection1000, 100, 100, OrientationMode.Normal,
+            DateTimeOffset.Now, "", Location1, new[] { PersonTag1 }, new[] { Tag1, Tag2 });
 
-        public static readonly Image Image2 = new(Constants.InvalidId, "test2", ProcessingInfos.DlibCnnFaceDetection2000, 200, 200, OrientationMode.MirrorHorizontal,
-            DateTimeOffset.Now, "", Location2, new[] { PersonTag1, PersonTag2 }, new[] { "test1", "test2", "test3" });
+        public static readonly Image Image2 = new(Constants.InvalidId, FileName2, ProcessingInfos.DlibCnnFaceDetection2000, 200, 200, OrientationMode.MirrorHorizontal,
+            DateTimeOffset.Now, "", Location2, new[] { PersonTag1, PersonTag2 }, new[] { Tag1, Tag2, Tag3 });
 
 #endregion
     }

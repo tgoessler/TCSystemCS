@@ -183,10 +183,7 @@ namespace TCSystem.MetaDataDB
             }
             else
             {
-                if (newLocationId != AddLocation(oldLocation, transaction))
-                {
-                    UpdateLocation(fileId, newLocation, newLocationId, transaction);
-                }
+                UpdateLocation(fileId, newLocation, newLocationId, transaction);
             }
         }
 
