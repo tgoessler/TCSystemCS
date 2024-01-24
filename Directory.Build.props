@@ -5,10 +5,10 @@
     <ProduceReferenceAssembly Condition="'$(ProduceReferenceAssembly)'==''">true</ProduceReferenceAssembly>
     <TargetFramework Condition="'$(TargetFramework)'==''">netstandard2.0</TargetFramework>
     <LangVersion Condition="'$(LangVersion)'==''">10</LangVersion>
-    <WarningLevel>5</WarningLevel>
+	<WarningLevel>9999</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisLevel>latest</AnalysisLevel>
+	<AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
