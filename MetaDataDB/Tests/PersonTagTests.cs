@@ -420,4 +420,17 @@ public class PersonTagTests : DBSetup
         Assert.That(DB.GetNumPersons(), Is.EqualTo(1));
     }
 
+    [Test]
+    public void GetFileAndPersonTagFromFaceId()
+    {
+        var data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetFileAndPersonTagFromFaceId(data.PersonTags[0].Face.Id, false).PersonTag, Is.EqualTo(data.PersonTags[0]));
+        Assert.That(DBReadOnly.GetFileAndPersonTagFromFaceId(data.PersonTags[0].Face.Id, false).FileName, Is.EqualTo(data.FileName));
+        Assert.That(DBReadOnly.GetFileAndPersonTagFromFaceId(data.PersonTags[1].Face.Id, false).PersonTag, Is.EqualTo(data.PersonTags[1]));
+        Assert.That(DBReadOnly.GetFileAndPersonTagFromFaceId(data.PersonTags[1].Face.Id, false).FileName, Is.EqualTo(data.FileName));
+
+        Assert.That(DBReadOnly.GetFileAndPersonTagFromFaceId(data.PersonTags[0].Face.Id, true).PersonTag, Is.EqualTo(data.PersonTags[0]));
+        Assert.That(DBReadOnly.GetFileAndPersonTagFromFaceId(data.PersonTags[0].Face.Id, true).FileName, Is.EqualTo(data.FileName));
+        Assert.That(DBReadOnly.GetFileAndPersonTagFromFaceId(data.PersonTags[1].Face.Id, true), Is.Null);
+    }
 }
