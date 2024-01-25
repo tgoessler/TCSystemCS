@@ -18,6 +18,10 @@
 // 
 // *******************************************************************************
 
+#region Usings
+
 using System.Runtime.CompilerServices;
+
+#endregion
 
 [assembly: InternalsVisibleTo("TCSystem.MetaData.Tests")]

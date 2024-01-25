@@ -18,21 +18,27 @@
 // 
 // *******************************************************************************
 
-using NUnit.Framework;
+#region Usings
+
 using System;
+using NUnit.Framework;
 using TCSystem.MetaData;
+
+#endregion
 
 namespace TCSystem.MetaDataDB.Tests;
 
 public class TestFile : DBSetup
 {
+#region Public
+
     [Test]
     public void ChangeDateModified()
     {
-        var data = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Image data = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
 
-        var dateTimeNow = DateTimeOffset.Now;
-        var newDateModified = dateTimeNow.AddSeconds(5).Trim(TimeSpan.TicksPerSecond);
+        DateTimeOffset dateTimeNow = DateTimeOffset.Now;
+        DateTimeOffset newDateModified = dateTimeNow.AddSeconds(5).Trim(TimeSpan.TicksPerSecond);
         DB.AddMetaData(data, newDateModified);
 
         Assert.That(newDateModified, Is.EqualTo(DBReadOnly.GetDateModified(data.FileName)));
@@ -42,7 +48,7 @@ public class TestFile : DBSetup
     [Test]
     public void ChangeProcessingInfo()
     {
-        var data = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Image data = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
 
         data = Image.ChangeProcessingInfo(data, ProcessingInfos.DlibCnnFaceDetection1000 | ProcessingInfos.DlibCnnFaceDetection2000);
         DB.AddMetaData(data, DateTimeOffset.Now);
@@ -50,4 +56,6 @@ public class TestFile : DBSetup
         Assert.That(data.ProcessingInfos, Is.EqualTo(DBReadOnly.GetMetaData(data.FileName).ProcessingInfos));
         Assert.That(data.Id, Is.EqualTo(DBReadOnly.GetMetaData(data.FileName).Id));
     }
+
+#endregion
 }

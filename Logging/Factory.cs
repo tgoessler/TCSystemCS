@@ -26,137 +26,138 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 #endregion
 
-namespace TCSystem.Logging
+namespace TCSystem.Logging;
+
+public static class Factory
 {
-    public static class Factory
-    {
 #region Public
 
-        [Flags]
-        public enum LoggingOptions
-        {
-            File = 1,
-            Debugger = 2,
-            Console = 4,
-        }
+    [Flags]
+    public enum LoggingOptions
+    {
+        File = 1,
+        Debugger = 2,
+        Console = 4,
+    }
 
-        public static Logger GetLogger(Type type)
-        {
-            return new LoggerSerilog(type);
-        }
+    public static Logger GetLogger(Type type)
+    {
+        return new LoggerSerilog(type);
+    }
 
-        public static bool InitLogging(LoggingOptions options, Action<LoggerConfiguration> configure = null)
-        {
-            return InternalInitLogging(options, null, 0, 0, configure);
-        }
+    public static bool InitLogging(LoggingOptions options, Action<LoggerConfiguration> configure = null)
+    {
+        return InternalInitLogging(options, null, 0, 0, configure);
+    }
 
-        public static bool InitLogging(LoggingOptions options, string loggingFile, int maxFiles = 2, int maxFileSizeKb = 1024,
-                                       Action<LoggerConfiguration> configure = null)
-        {
-            return InternalInitLogging(options, loggingFile, maxFiles, maxFileSizeKb, configure);
-        }
+    public static bool InitLogging(LoggingOptions options, string loggingFile, int maxFiles = 2, int maxFileSizeKb = 1024,
+                                   Action<LoggerConfiguration> configure = null)
+    {
+        return InternalInitLogging(options, loggingFile, maxFiles, maxFileSizeKb, configure);
+    }
 
-        public static void DeInitLogging()
+    public static void DeInitLogging()
+    {
+        if (--_initCount == 0)
         {
-            if (--_initCount == 0)
-            {
-                Log.Instance.Info("Logging stopped");
-                Serilog.Log.CloseAndFlush();
-            }
+            Log.Instance.Info("Logging stopped");
+            Serilog.Log.CloseAndFlush();
         }
+    }
 
 #endregion
 
 #region Internal
 
-        internal static event Action LoggingInitialized;
+    internal static event Action LoggingInitialized;
 
-        internal static bool IsLoggingInitialized { get; private set; }
+    internal static bool IsLoggingInitialized { get; private set; }
 
 #endregion
 
 #region Private
 
-        private const string OutputTemplate = "[{Timestamp:o}, {Level:u3}] {SourceContext}({ThreadId}): {Message:lj}{NewLine}{Exception}";
+    private const string OutputTemplate = "[{Timestamp:o}, {Level:u3}] {SourceContext}({ThreadId}): {Message:lj}{NewLine}{Exception}";
 
-        private static bool InternalInitLogging(LoggingOptions options, string loggingFile, int maxFiles, int maxFileSizeKb, Action<LoggerConfiguration> configure)
+    private static bool InternalInitLogging(LoggingOptions options, string loggingFile, int maxFiles, int maxFileSizeKb,
+                                            Action<LoggerConfiguration> configure)
+    {
+        if (_initCount++ != 0)
         {
-            if (_initCount++ != 0)
-            {
-                Log.Instance.Info($"Logging init already done, _initCount={_initCount}'");
-                return true;
-            }
-
-            LoggerConfiguration loggerConfiguration = CreateDefaultLoggerConfiguration();
-            loggerConfiguration = AddDebuggerLoggerConfiguration(options, loggerConfiguration);
-            loggerConfiguration = AddConsoleLoggerConfiguration(options, loggerConfiguration);
-            loggerConfiguration = AddFileLoggerConfiguration(options, loggingFile, maxFiles, maxFileSizeKb, loggerConfiguration);
-
-            configure?.Invoke(loggerConfiguration);
-
-            Serilog.Log.Logger = loggerConfiguration.CreateLogger();
-
-            IsLoggingInitialized = true;
-            LoggingInitialized?.Invoke();
-            LoggingInitialized = null;
-
-            Log.Instance.Info("Logging started");
+            Log.Instance.Info($"Logging init already done, _initCount={_initCount}'");
             return true;
         }
 
-        private static LoggerConfiguration CreateDefaultLoggerConfiguration()
-        {
-            LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
-                .Enrich.WithThreadId()
-                .Enrich.FromLogContext()
+        LoggerConfiguration loggerConfiguration = CreateDefaultLoggerConfiguration();
+        loggerConfiguration = AddDebuggerLoggerConfiguration(options, loggerConfiguration);
+        loggerConfiguration = AddConsoleLoggerConfiguration(options, loggerConfiguration);
+        loggerConfiguration = AddFileLoggerConfiguration(options, loggingFile, maxFiles, maxFileSizeKb, loggerConfiguration);
+
+        configure?.Invoke(loggerConfiguration);
+
+        Serilog.Log.Logger = loggerConfiguration.CreateLogger();
+
+        IsLoggingInitialized = true;
+        LoggingInitialized?.Invoke();
+        LoggingInitialized = null;
+
+        Log.Instance.Info("Logging started");
+        return true;
+    }
+
+    private static LoggerConfiguration CreateDefaultLoggerConfiguration()
+    {
+        LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
+            .Enrich.WithThreadId()
+            .Enrich.FromLogContext()
 #if DEBUG
-                .MinimumLevel.Debug();
+            .MinimumLevel.Debug();
 #else
                 .MinimumLevel.Information();
 #endif
-            return loggerConfiguration;
-        }
+        return loggerConfiguration;
+    }
 
-        private static LoggerConfiguration AddFileLoggerConfiguration(LoggingOptions options, string loggingFile, int maxFiles, int maxFileSizeKb,
-                                                                      LoggerConfiguration loggerConfiguration)
+    private static LoggerConfiguration AddFileLoggerConfiguration(LoggingOptions options, string loggingFile, int maxFiles,
+                                                                  int maxFileSizeKb,
+                                                                  LoggerConfiguration loggerConfiguration)
+    {
+        if ((options & LoggingOptions.File) == LoggingOptions.File)
         {
-            if ((options & LoggingOptions.File) == LoggingOptions.File)
+            loggerConfiguration = loggerConfiguration.WriteTo.Async(a =>
             {
-                loggerConfiguration = loggerConfiguration.WriteTo.Async(a =>
-                {
-                    a.File($"{loggingFile}",
-                        fileSizeLimitBytes: maxFileSizeKb * 1024,
-                        retainedFileCountLimit: maxFiles,
-                        rollOnFileSizeLimit: true,
-                        outputTemplate: OutputTemplate);
-                });
-            }
-
-            return loggerConfiguration;
+                a.File($"{loggingFile}",
+                    fileSizeLimitBytes: maxFileSizeKb * 1024,
+                    retainedFileCountLimit: maxFiles,
+                    rollOnFileSizeLimit: true,
+                    outputTemplate: OutputTemplate);
+            });
         }
 
-        private static LoggerConfiguration AddConsoleLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
+        return loggerConfiguration;
+    }
+
+    private static LoggerConfiguration AddConsoleLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
+    {
+        if ((options & LoggingOptions.Console) == LoggingOptions.Console)
         {
-            if ((options & LoggingOptions.Console) == LoggingOptions.Console)
-            {
-                loggerConfiguration = loggerConfiguration.WriteTo.Console(outputTemplate: OutputTemplate, theme: AnsiConsoleTheme.Literate);
-            }
-
-            return loggerConfiguration;
+            loggerConfiguration = loggerConfiguration.WriteTo.Console(outputTemplate: OutputTemplate, theme: AnsiConsoleTheme.Literate);
         }
 
-        private static LoggerConfiguration AddDebuggerLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
+        return loggerConfiguration;
+    }
+
+    private static LoggerConfiguration AddDebuggerLoggerConfiguration(LoggingOptions options, LoggerConfiguration loggerConfiguration)
+    {
+        if ((options & LoggingOptions.Debugger) == LoggingOptions.Debugger)
         {
-            if ((options & LoggingOptions.Debugger) == LoggingOptions.Debugger)
-            {
-                loggerConfiguration = loggerConfiguration.WriteTo.Debug(outputTemplate: OutputTemplate);
-            }
-
-            return loggerConfiguration;
+            loggerConfiguration = loggerConfiguration.WriteTo.Debug(outputTemplate: OutputTemplate);
         }
 
-        private static int _initCount;
+        return loggerConfiguration;
+    }
+
+    private static int _initCount;
 
 #endregion
-    }
 }

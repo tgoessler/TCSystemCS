@@ -26,20 +26,19 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Util
+namespace TCSystem.Util;
+
+public static class AsyncExt
 {
-    public static class AsyncExt
-    {
 #region Public
 
-        public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+    public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+    {
+        foreach (T item in source)
         {
-            foreach (var item in source)
-            {
-                await action(item);
-            }
+            await action(item);
         }
+    }
 
 #endregion
-    }
 }

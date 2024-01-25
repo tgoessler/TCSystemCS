@@ -18,7 +18,6 @@
 // 
 // *******************************************************************************
 
-namespace TCSystem.MetaDataDB
-{
-    public interface IDB2 : IDB2Read, IDB2Write { }
-}
+namespace TCSystem.MetaDataDB;
+
+public interface IDB2 : IDB2Read, IDB2Write { }

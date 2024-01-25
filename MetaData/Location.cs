@@ -27,98 +27,97 @@ using TCSystem.Util;
 
 #endregion
 
-namespace TCSystem.MetaData
+namespace TCSystem.MetaData;
+
+public sealed class Location : IEquatable<Location>
 {
-    public sealed class Location : IEquatable<Location>
-    {
 #region Public
 
-        public Location(Address address, GpsPoint point)
+    public Location(Address address, GpsPoint point)
+    {
+        Address = address ?? Address.Undefined;
+        Point = point ?? GpsPoint.Undefined;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return EqualsUtil.Equals(this, obj as Location, EqualsImp);
+    }
+
+    public bool Equals(Location other)
+    {
+        return EqualsUtil.Equals(this, other, EqualsImp);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
         {
-            Address = address ?? Address.Undefined;
-            Point = point ?? GpsPoint.Undefined;
+            int hashCode = Address.GetHashCode();
+            hashCode = (hashCode * 397) ^ Point.GetHashCode();
+            return hashCode;
         }
+    }
 
-        public override bool Equals(object obj)
-        {
-            return EqualsUtil.Equals(this, obj as Location, EqualsImp);
-        }
+    public string ToJsonString()
+    {
+        return ToJson().ToString(Formatting.None);
+    }
 
-        public bool Equals(Location other)
-        {
-            return EqualsUtil.Equals(this, other, EqualsImp);
-        }
+    public override string ToString()
+    {
+        return ToJson().ToString(Formatting.Indented);
+    }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = Address.GetHashCode();
-                hashCode = (hashCode * 397) ^ Point.GetHashCode();
-                return hashCode;
-            }
-        }
+    public static Location FromJsonString(string jsonString)
+    {
+        return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
+    }
 
-        public string ToJsonString()
-        {
-            return ToJson().ToString(Formatting.None);
-        }
-
-        public override string ToString()
-        {
-            return ToJson().ToString(Formatting.Indented);
-        }
-
-        public static Location FromJsonString(string jsonString)
-        {
-            return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
-        }
-
-        public Address Address { get; }
-        public GpsPoint Point { get; }
+    public Address Address { get; }
+    public GpsPoint Point { get; }
 
 
-        public bool IsAllSet => Point.IsSet && Address.IsSet;
-        public bool IsSet => Point.IsSet || Address.IsSet;
+    public bool IsAllSet => Point.IsSet && Address.IsSet;
+    public bool IsSet => Point.IsSet || Address.IsSet;
 
-        public static Location NoLocation { get; } = new(Address.Undefined, GpsPoint.Undefined);
+    public static Location NoLocation { get; } = new(Address.Undefined, GpsPoint.Undefined);
 
 #endregion
 
 #region Internal
 
-        internal static Location FromJson(JObject jsonObject)
+    internal static Location FromJson(JObject jsonObject)
+    {
+        if (jsonObject != null)
         {
-            if (jsonObject != null)
-            {
-                return new Location(
-                    Address.FromJson(jsonObject),
-                    GpsPoint.FromJson(jsonObject)
-                );
-            }
-
-            return null;
+            return new(
+                Address.FromJson(jsonObject),
+                GpsPoint.FromJson(jsonObject)
+            );
         }
 
-        internal JObject ToJson()
-        {
-            var obj = Address.ToJson();
-            var pos = Point.ToJson();
-            obj.Merge(pos);
+        return null;
+    }
 
-            return obj;
-        }
+    internal JObject ToJson()
+    {
+        JObject obj = Address.ToJson();
+        JObject pos = Point.ToJson();
+        obj.Merge(pos);
+
+        return obj;
+    }
 
 #endregion
 
 #region Private
 
-        private bool EqualsImp(Location other)
-        {
-            return Equals(Point, other.Point) &&
-                   Equals(Address, other.Address);
-        }
+    private bool EqualsImp(Location other)
+    {
+        return Equals(Point, other.Point) &&
+               Equals(Address, other.Address);
+    }
 
 #endregion
-    }
 }

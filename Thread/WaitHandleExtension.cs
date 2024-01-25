@@ -25,22 +25,21 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+internal static class WaitHandleExt
 {
-    internal static class WaitHandleExt
-    {
 #region Public
 
-        public static async Task WaitOneAsync(this WaitHandle waitHandle)
-        {
-            await Task.Run(waitHandle.WaitOne);
-        }
+    public static async Task WaitOneAsync(this WaitHandle waitHandle)
+    {
+        await Task.Run(waitHandle.WaitOne);
+    }
 
-        public static async Task WaitOneAsync(this WaitHandle waitHandle, CancellationToken cancellationToken)
-        {
-            await Task.Run(waitHandle.WaitOne, cancellationToken);
-        }
+    public static async Task WaitOneAsync(this WaitHandle waitHandle, CancellationToken cancellationToken)
+    {
+        await Task.Run(waitHandle.WaitOne, cancellationToken);
+    }
 
 #endregion
-    }
 }

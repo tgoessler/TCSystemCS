@@ -26,30 +26,29 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+public interface IWorkerThread
 {
-    public interface IWorkerThread
-    {
 #region Public
 
-        void ExecuteCommand(Action action);
-        void ExecuteCommand(Action action, string message);
-        void ClearOpenCommands();
+    void ExecuteCommand(Action action);
+    void ExecuteCommand(Action action, string message);
+    void ClearOpenCommands();
 
-        Task ExecuteCommandAsync(Action action);
-        Task ExecuteCommandAsync(Action action, string message);
-        Task ClearOpenCommandsAsync();
+    Task ExecuteCommandAsync(Action action);
+    Task ExecuteCommandAsync(Action action, string message);
+    Task ClearOpenCommandsAsync();
 
-        void StopThread(TimeSpan? timeOut=null);
+    void StopThread(TimeSpan? timeOut = null);
 
-        int NumOpenActions { get; }
-        bool IsBusy { get; }
-        CancellationToken CancellationToken { get; }
+    event Action OnInitThread;
+    event Action OnDeInitThread;
+    event Action<bool> IdleEvent;
 
-        event Action OnInitThread;
-        event Action OnDeInitThread;
-        event Action<bool> IdleEvent;
+    int NumOpenActions { get; }
+    bool IsBusy { get; }
+    CancellationToken CancellationToken { get; }
 
 #endregion
-    }
 }

@@ -27,222 +27,220 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+internal sealed class WorkerThread : IWorkerThread
 {
-    internal sealed class WorkerThread : IWorkerThread
-    {
 #region Public
 
-        public WorkerThread(string name, ThreadPriority priority)
+    public WorkerThread(string name, ThreadPriority priority)
+    {
+        _thread = new(RunThread)
         {
-            _thread = new System.Threading.Thread(RunThread)
-            {
-                Name = name,
-                Priority = priority
-            };
-            _running = true;
-            _thread.Start();
-        }
+            Name = name,
+            Priority = priority
+        };
+        _running = true;
+        _thread.Start();
+    }
 
-        public void ExecuteCommand(Action action)
-        {
-            ExecuteCommand(action, null);
-        }
+    public void ExecuteCommand(Action action)
+    {
+        ExecuteCommand(action, null);
+    }
 
-        public void ExecuteCommand(Action action, string message)
+    public void ExecuteCommand(Action action, string message)
+    {
+        using (_semaphoreSlim.Lock())
         {
-            using (_semaphoreSlim.Lock())
-            {
-                _workerActions.Enqueue((action, message));
-                _event.Set();
-            }
+            _workerActions.Enqueue((action, message));
+            _event.Set();
         }
+    }
 
-        public void ClearOpenCommands()
+    public void ClearOpenCommands()
+    {
+        using (_semaphoreSlim.Lock())
         {
+            _workerActions.Clear();
+        }
+    }
+
+    public async Task ExecuteCommandAsync(Action action)
+    {
+        await ExecuteCommandAsync(action, null);
+    }
+
+    public async Task ExecuteCommandAsync(Action action, string message)
+    {
+        using (await _semaphoreSlim.LockAsync())
+        {
+            _workerActions.Enqueue((action, message));
+            _event.Set();
+        }
+    }
+
+    public async Task ClearOpenCommandsAsync()
+    {
+        using (await _semaphoreSlim.LockAsync())
+        {
+            _workerActions.Clear();
+        }
+    }
+
+    public void StopThread(TimeSpan? timeOut = null)
+    {
+        if (_thread is { IsAlive: true })
+        {
+            Log.Instance.Info($"Stopping Thread '{_thread.Name}'");
+
             using (_semaphoreSlim.Lock())
             {
                 _workerActions.Clear();
-            }
-        }
-
-        public async Task ExecuteCommandAsync(Action action)
-        {
-            await ExecuteCommandAsync(action, null);
-        }
-
-        public async Task ExecuteCommandAsync(Action action, string message)
-        {
-            using (await _semaphoreSlim.LockAsync())
-            {
-                _workerActions.Enqueue((action, message));
+                _running = false;
+                _cancellationTokenSource.Cancel();
                 _event.Set();
             }
-        }
 
-        public async Task ClearOpenCommandsAsync()
-        {
-            using (await _semaphoreSlim.LockAsync())
+            if (timeOut == null)
             {
-                _workerActions.Clear();
+                _thread.Join();
+            }
+            else
+            {
+                _thread.Join(timeOut.Value);
+            }
+
+            Log.Instance.Info($"Stopping Thread '{_thread.Name} done'");
+        }
+    }
+
+    public event Action OnInitThread;
+    public event Action OnDeInitThread;
+    public event Action<bool> IdleEvent;
+
+    public int NumOpenActions
+    {
+        get
+        {
+            using (_semaphoreSlim.Lock())
+            {
+                return _workerActions.Count;
             }
         }
+    }
 
-        public void StopThread(TimeSpan? timeOut=null)
+    public bool IsBusy
+    {
+        get
         {
-            if (_thread is { IsAlive: true })
+            using (_semaphoreSlim.Lock())
             {
-                Log.Instance.Info($"Stopping Thread '{_thread.Name}'");
-
-                using (_semaphoreSlim.Lock())
-                {
-                    _workerActions.Clear();
-                    _running = false;
-                    _cancellationTokenSource.Cancel();
-                    _event.Set();
-                }
-
-                if (timeOut == null)
-                {
-                    _thread.Join();
-                }
-                else
-                {
-                    _thread.Join(timeOut.Value);
-                }
-
-                Log.Instance.Info($"Stopping Thread '{_thread.Name} done'");
+                return _isBusy || _workerActions.Count > 0;
             }
         }
+    }
 
-        public int NumOpenActions
-        {
-            get
-            {
-                using (_semaphoreSlim.Lock())
-                {
-                    return _workerActions.Count;
-                }
-            }
-        }
-
-        public bool IsBusy
-        {
-            get
-            {
-                using (_semaphoreSlim.Lock())
-                {
-                    return _isBusy || _workerActions.Count > 0;
-                }
-            }
-        }
-
-        public CancellationToken CancellationToken => _cancellationTokenSource.Token;
-
-        public event Action OnInitThread;
-        public event Action OnDeInitThread;
-        public event Action<bool> IdleEvent;
+    public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
 #endregion
 
 #region Private
 
-        private void RunThread()
-        {
-            (Action Action, string Message)? action = null;
+    private void RunThread()
+    {
+        (Action Action, string Message)? action = null;
 
-            GoToIdle(false);
-            while (_running)
-            {
-                try
-                {
-                    action = GetNextAction();
-                    if (action == null)
-                    {
-                        GoToIdle(true);
-
-                        _event.WaitOne();
-
-                        GoToIdle(false);
-                    }
-                    else
-                    {
-                        ExecuteAction(action.Value);
-                    }
-                }
-                catch (ThreadAbortException e)
-                {
-                    if (_isBusy)
-                    {
-                        Log.Instance.Error($"Error executing {action?.Message}", e);
-                    }
-
-                    _running = false;
-                }
-                catch (Exception e)
-                {
-                    Log.Instance.Error($"Error executing {action?.Message}", e);
-                }
-            }
-
-            if (_init)
-            {
-                OnDeInitThread?.Invoke();
-                _init = false;
-            }
-
-        }
-
-        private void ExecuteAction((Action Action, string Message) action)
+        GoToIdle(false);
+        while (_running)
         {
             try
             {
-                if (!_init)
+                action = GetNextAction();
+                if (action == null)
                 {
-                    OnInitThread?.Invoke();
-                    _init = true;
+                    GoToIdle(true);
+
+                    _event.WaitOne();
+
+                    GoToIdle(false);
+                }
+                else
+                {
+                    ExecuteAction(action.Value);
+                }
+            }
+            catch (ThreadAbortException e)
+            {
+                if (_isBusy)
+                {
+                    Log.Instance.Error($"Error executing {action?.Message}", e);
                 }
 
-                action.Action();
-            }
-            catch (OperationCanceledException)
-            {
-                Log.Instance.Info($"Thread '{_thread.Name}' canceled");
+                _running = false;
             }
             catch (Exception e)
             {
-                Log.Instance.Error($"Thread '{_thread.Name}' failed.", e);
+                Log.Instance.Error($"Error executing {action?.Message}", e);
             }
         }
 
-        private void GoToIdle(bool idle)
+        if (_init)
         {
-            _isBusy = !idle;
-            IdleEvent?.Invoke(idle);
+            OnDeInitThread?.Invoke();
+            _init = false;
         }
+    }
 
-        private (Action Action, string Message)? GetNextAction()
+    private void ExecuteAction((Action Action, string Message) action)
+    {
+        try
         {
-            using (_semaphoreSlim.Lock())
+            if (!_init)
             {
-                if (_workerActions.Count > 0)
-                {
-                    return _workerActions.Dequeue();
-                }
+                OnInitThread?.Invoke();
+                _init = true;
             }
 
-            return null;
+            action.Action();
+        }
+        catch (OperationCanceledException)
+        {
+            Log.Instance.Info($"Thread '{_thread.Name}' canceled");
+        }
+        catch (Exception e)
+        {
+            Log.Instance.Error($"Thread '{_thread.Name}' failed.", e);
+        }
+    }
+
+    private void GoToIdle(bool idle)
+    {
+        _isBusy = !idle;
+        IdleEvent?.Invoke(idle);
+    }
+
+    private (Action Action, string Message)? GetNextAction()
+    {
+        using (_semaphoreSlim.Lock())
+        {
+            if (_workerActions.Count > 0)
+            {
+                return _workerActions.Dequeue();
+            }
         }
 
-        private bool _running;
-        private bool _init = false;
-        private readonly System.Threading.Thread _thread;
-        private readonly SemaphoreSlim _semaphoreSlim = new(1);
-        private readonly EventWaitHandle _event = new(false, EventResetMode.AutoReset);
-        private readonly Queue<(Action Action, string Message)> _workerActions = new();
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private bool _isBusy;
+        return null;
+    }
+
+    private bool _running;
+    private bool _init;
+    private readonly System.Threading.Thread _thread;
+    private readonly SemaphoreSlim _semaphoreSlim = new(1);
+    private readonly EventWaitHandle _event = new(false, EventResetMode.AutoReset);
+    private readonly Queue<(Action Action, string Message)> _workerActions = new();
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private bool _isBusy;
 
 #endregion
-    }
 }

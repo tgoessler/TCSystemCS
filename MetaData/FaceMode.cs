@@ -18,12 +18,11 @@
 // 
 // *******************************************************************************
 
-namespace TCSystem.MetaData
+namespace TCSystem.MetaData;
+
+public enum FaceMode
 {
-    public enum FaceMode
-    {
-        Undefined = 0,
-        DlibFront = 1,
-        DlibCnn = 2
-    }
+    Undefined = 0,
+    DlibFront = 1,
+    DlibCnn = 2
 }

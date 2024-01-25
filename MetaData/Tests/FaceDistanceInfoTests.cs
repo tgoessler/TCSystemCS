@@ -25,50 +25,49 @@ using NUnit.Framework;
 
 #endregion
 
-namespace TCSystem.MetaData.Tests
+namespace TCSystem.MetaData.Tests;
+
+[TestFixture]
+public class FaceDistanceInfoTests
 {
-    [TestFixture]
-    public class FaceDistanceInfoTests
+    [Test]
+    public void EqualsTest()
     {
-        [Test]
-        public void EqualsTest()
+        FaceDistanceInfo faceDistanceInfo = TestData.FaceDistanceInfo1;
+        Assert.That(faceDistanceInfo.Equals(TestData.FaceDistanceInfo1), Is.True);
+        Assert.That(faceDistanceInfo.Equals(TestData.FaceDistanceInfo2), Is.False);
+        Assert.That(faceDistanceInfo.Equals(TestData.FaceDistanceInfoZero), Is.False);
+        Assert.That(faceDistanceInfo.Equals(null), Is.False);
+        Assert.That(faceDistanceInfo, Is.Not.EqualTo(string.Empty));
+    }
+
+    [Test]
+    public void FromJsonStringArrayTest() { }
+
+    [Test]
+    public void FromJsonStringTest() { }
+
+    [Test]
+    public void GetHashCodeTest()
+    {
+        FaceDistanceInfo data1 = TestData.FaceDistanceInfo1;
+        var copyOfData1 = new FaceDistanceInfo(data1.FaceId1, data1.FaceId1, data1.Distance);
+
+        TestUtil.GetHashCodeTest(TestData.FaceDistanceInfoZero, TestData.FaceDistanceInfo1,
+            TestData.FaceDistanceInfo2, copyOfData1);
+    }
+
+    [Test]
+    public void ToJsonStringTest()
+    {
+        string ToJson(FaceDistanceInfo d)
         {
-            var faceDistanceInfo = TestData.FaceDistanceInfo1;
-            Assert.That(faceDistanceInfo.Equals(TestData.FaceDistanceInfo1), Is.True);
-            Assert.That(faceDistanceInfo.Equals(TestData.FaceDistanceInfo2), Is.False);
-            Assert.That(faceDistanceInfo.Equals(TestData.FaceDistanceInfoZero), Is.False);
-            Assert.That(faceDistanceInfo.Equals(null), Is.False);
-            Assert.That(faceDistanceInfo, Is.Not.EqualTo(string.Empty));
+            return d.ToJsonString();
         }
 
-        [Test]
-        public void FromJsonStringArrayTest()
-        {
-        }
+        Func<string, FaceDistanceInfo> fromJson = FaceDistanceInfo.FromJsonString;
 
-        [Test]
-        public void FromJsonStringTest()
-        {
-        }
-
-        [Test]
-        public void GetHashCodeTest()
-        {
-            var data1 = TestData.FaceDistanceInfo1;
-            var copyOfData1 = new FaceDistanceInfo(data1.FaceId1, data1.FaceId1, data1.Distance);
-
-            TestUtil.GetHashCodeTest(TestData.FaceDistanceInfoZero, TestData.FaceDistanceInfo1,
-                TestData.FaceDistanceInfo2, copyOfData1);
-        }
-
-        [Test]
-        public void ToJsonStringTest()
-        {
-            string ToJson(FaceDistanceInfo d) => d.ToJsonString();
-            Func<string, FaceDistanceInfo> fromJson = FaceDistanceInfo.FromJsonString;
-
-            TestUtil.FromJsonStringTest(TestData.FaceDistanceInfo1, ToJson, fromJson);
-            TestUtil.FromJsonStringTest(TestData.FaceDistanceInfo2, ToJson, fromJson);
-        }
+        TestUtil.FromJsonStringTest(TestData.FaceDistanceInfo1, ToJson, fromJson);
+        TestUtil.FromJsonStringTest(TestData.FaceDistanceInfo2, ToJson, fromJson);
     }
 }

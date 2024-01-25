@@ -27,88 +27,87 @@ using TCSystem.Util;
 
 #endregion
 
-namespace TCSystem.MetaData
+namespace TCSystem.MetaData;
+
+public sealed class PersonTag : IEquatable<PersonTag>
 {
-    public sealed class PersonTag : IEquatable<PersonTag>
-    {
 #region Public
 
-        public PersonTag(Person person, Face face)
-        {
-            Person = person;
-            Face = face;
-        }
+    public PersonTag(Person person, Face face)
+    {
+        Person = person;
+        Face = face;
+    }
 
-        public override bool Equals(object obj)
-        {
-            return EqualsUtil.Equals(this, obj as PersonTag, EqualsImp);
-        }
+    public override bool Equals(object obj)
+    {
+        return EqualsUtil.Equals(this, obj as PersonTag, EqualsImp);
+    }
 
-        public bool Equals(PersonTag other)
-        {
-            return EqualsUtil.Equals(this, other, EqualsImp);
-        }
+    public bool Equals(PersonTag other)
+    {
+        return EqualsUtil.Equals(this, other, EqualsImp);
+    }
 
-        public override int GetHashCode()
+    public override int GetHashCode()
+    {
+        unchecked
         {
-            unchecked
-            {
-                var hashCode = Person.GetHashCode();
-                hashCode = (hashCode * 397) ^ Face.GetHashCode();
-                return hashCode;
-            }
+            int hashCode = Person.GetHashCode();
+            hashCode = (hashCode * 397) ^ Face.GetHashCode();
+            return hashCode;
         }
+    }
 
-        public override string ToString()
-        {
-            return ToJson().ToString(Formatting.Indented);
-        }
+    public override string ToString()
+    {
+        return ToJson().ToString(Formatting.Indented);
+    }
 
-        public string ToJsonString()
-        {
-            return ToJson().ToString(Formatting.None);
-        }
+    public string ToJsonString()
+    {
+        return ToJson().ToString(Formatting.None);
+    }
 
-        public static PersonTag FromJsonString(string jsonString)
-        {
-            return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
-        }
+    public static PersonTag FromJsonString(string jsonString)
+    {
+        return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
+    }
 
-        public Person Person { get; }
-        public Face Face { get; }
+    public Person Person { get; }
+    public Face Face { get; }
 
 #endregion
 
 #region Internal
 
-        internal static PersonTag FromJson(JObject jsonObject)
-        {
-            return new(Person.FromJson((JObject) jsonObject["person"]),
-                Face.FromJson((JObject) jsonObject["face"])
-            );
-        }
+    internal static PersonTag FromJson(JObject jsonObject)
+    {
+        return new(Person.FromJson((JObject)jsonObject["person"]),
+            Face.FromJson((JObject)jsonObject["face"])
+        );
+    }
 
-        internal JObject ToJson()
+    internal JObject ToJson()
+    {
+        var obj = new JObject
         {
-            var obj = new JObject
-            {
-                ["person"] = Person.ToJson(),
-                ["face"] = Face.ToJson()
-            };
+            ["person"] = Person.ToJson(),
+            ["face"] = Face.ToJson()
+        };
 
-            return obj;
-        }
+        return obj;
+    }
 
 #endregion
 
 #region Private
 
-        private bool EqualsImp(PersonTag other)
-        {
-            return Equals(Person, other.Person) &&
-                   Equals(Face, other.Face);
-        }
+    private bool EqualsImp(PersonTag other)
+    {
+        return Equals(Person, other.Person) &&
+               Equals(Face, other.Face);
+    }
 
 #endregion
-    }
 }

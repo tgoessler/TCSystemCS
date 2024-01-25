@@ -18,28 +18,27 @@
 // 
 // *******************************************************************************
 
-namespace TCSystem.Util
+namespace TCSystem.Util;
+
+public static class MathExt
 {
-    public static class MathExt
-    {
 #region Public
 
-        public static int ToNextPowerOf2(this int x)
+    public static int ToNextPowerOf2(this int x)
+    {
+        if (x < 0)
         {
-            if (x < 0)
-            {
-                return 0;
-            }
-
-            --x;
-            x |= x >> 1;
-            x |= x >> 2;
-            x |= x >> 4;
-            x |= x >> 8;
-            x |= x >> 16;
-            return x + 1;
+            return 0;
         }
 
-#endregion
+        --x;
+        x |= x >> 1;
+        x |= x >> 2;
+        x |= x >> 4;
+        x |= x >> 8;
+        x |= x >> 16;
+        return x + 1;
     }
+
+#endregion
 }

@@ -25,32 +25,31 @@ using System.Threading;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+internal readonly struct SemaphoreSlimLock : IDisposable
 {
-    internal readonly struct SemaphoreSlimLock : IDisposable
-    {
 #region Public
 
-        public void Dispose()
-        {
-            _semaphore?.Release();
-        }
+    public void Dispose()
+    {
+        _semaphore?.Release();
+    }
 
 #endregion
 
 #region Internal
 
-        internal SemaphoreSlimLock(SemaphoreSlim semaphore)
-        {
-            _semaphore = semaphore;
-        }
+    internal SemaphoreSlimLock(SemaphoreSlim semaphore)
+    {
+        _semaphore = semaphore;
+    }
 
 #endregion
 
 #region Private
 
-        private readonly SemaphoreSlim _semaphore;
+    private readonly SemaphoreSlim _semaphore;
 
 #endregion
-    }
 }

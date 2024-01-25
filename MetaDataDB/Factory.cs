@@ -18,57 +18,56 @@
 // 
 // *******************************************************************************
 
-namespace TCSystem.MetaDataDB
+namespace TCSystem.MetaDataDB;
+
+public static class Factory
 {
-    public static class Factory
-    {
 #region Public
 
-        public static IDB2 CreateReadWrite(string fileName)
-        {
-            return new DB2(fileName, false);
-        }
-
-        public static IDB2Read CreateRead(string fileName)
-        {
-            return new DB2(fileName, true);
-        }
-
-        public static IDB2Write CreateWrite(string fileName)
-        {
-            return new DB2(fileName, false);
-        }
-
-        public static void Destroy(ref IDB2 db)
-        {
-            if (db is DB2 db2)
-            {
-                db2.Close();
-            }
-
-            db = null;
-        }
-
-        public static void Destroy(ref IDB2Read db)
-        {
-            if (db is DB2 db2)
-            {
-                db2.Close();
-            }
-
-            db = null;
-        }
-
-        public static void Destroy(ref IDB2Write db)
-        {
-            if (db is DB2 db2)
-            {
-                db2.Close();
-            }
-
-            db = null;
-        }
-
-        #endregion
+    public static IDB2 CreateReadWrite(string fileName)
+    {
+        return new DB2(fileName, false);
     }
+
+    public static IDB2Read CreateRead(string fileName)
+    {
+        return new DB2(fileName, true);
+    }
+
+    public static IDB2Write CreateWrite(string fileName)
+    {
+        return new DB2(fileName, false);
+    }
+
+    public static void Destroy(ref IDB2 db)
+    {
+        if (db is DB2 db2)
+        {
+            db2.Close();
+        }
+
+        db = null;
+    }
+
+    public static void Destroy(ref IDB2Read db)
+    {
+        if (db is DB2 db2)
+        {
+            db2.Close();
+        }
+
+        db = null;
+    }
+
+    public static void Destroy(ref IDB2Write db)
+    {
+        if (db is DB2 db2)
+        {
+            db2.Close();
+        }
+
+        db = null;
+    }
+
+#endregion
 }

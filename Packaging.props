@@ -1,37 +1,37 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
-    <GeneratePackageOnBuild Condition="'$(GeneratePackageOnBuild)' == ''">true</GeneratePackageOnBuild>
-    <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</PackageProjectUrl>
-    <RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</RepositoryUrl>
-    <RepositoryType Condition="'$(RepositoryType)' == ''">Git</RepositoryType>
-    <PackageLicenseFile Condition="'$(PackageLicenseFile)' == ''">LICENSE</PackageLicenseFile>
-    <NuGetPushSource Condition="'$(NuGetPushSource)' == ''">https://api.nuget.org/v3/index.json</NuGetPushSource>
-    <NuGetPushFolder Condition="'$(NuGetPushFolder)' == ''">D:\Source\NuGetPackages\</NuGetPushFolder>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(GeneratePackageOnBuild)' == ''">true</GeneratePackageOnBuild>
+		<PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</PackageProjectUrl>
+		<RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</RepositoryUrl>
+		<RepositoryType Condition="'$(RepositoryType)' == ''">Git</RepositoryType>
+		<PackageLicenseFile Condition="'$(PackageLicenseFile)' == ''">LICENSE</PackageLicenseFile>
+		<NuGetPushSource Condition="'$(NuGetPushSource)' == ''">https://api.nuget.org/v3/index.json</NuGetPushSource>
+		<NuGetPushFolder Condition="'$(NuGetPushFolder)' == ''">D:\Source\NuGetPackages\</NuGetPushFolder>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)\README.md">
-	  <Pack>True</Pack>
-	  <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="$(MSBuildThisFileDirectory)\README.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
-  <Target Name="NugetPush" Condition="'$(Configuration)'=='Release'"
-          DependsOnTargets="Rebuild">
-    <Exec WorkingDirectory="$(OutputPath)"
-          Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate" />
-  </Target>
+	<Target Name="NugetPush" Condition="'$(Configuration)'=='Release'"
+	        DependsOnTargets="Rebuild">
+		<Exec WorkingDirectory="$(OutputPath)"
+		      Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate" />
+	</Target>
 
-  <Target Name="NugetCopy" DependsOnTargets="Rebuild">
-    <Exec WorkingDirectory="$(OutputPath)"
-          Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushFolder)" />
-  </Target>
+	<Target Name="NugetCopy" DependsOnTargets="Rebuild">
+		<Exec WorkingDirectory="$(OutputPath)"
+		      Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushFolder)" />
+	</Target>
 
 </Project>

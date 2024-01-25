@@ -24,22 +24,21 @@ using System.Threading;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+public static class Factory
 {
-    public static class Factory
-    {
 #region Public
 
-        public static IWorkerThread CreateWorkerThread(string name, ThreadPriority priority)
-        {
-            return new WorkerThread(name, priority);
-        }
+    public static IWorkerThread CreateWorkerThread(string name, ThreadPriority priority)
+    {
+        return new WorkerThread(name, priority);
+    }
 
-        public static IAsyncUpdateHelper CreateAsyncUpdateHelper()
-        {
-            return new AsyncUpdateHelper();
-        }
+    public static IAsyncUpdateHelper CreateAsyncUpdateHelper()
+    {
+        return new AsyncUpdateHelper();
+    }
 
 #endregion
-    }
 }

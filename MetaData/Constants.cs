@@ -18,16 +18,15 @@
 // 
 // *******************************************************************************
 
-namespace TCSystem.MetaData
+namespace TCSystem.MetaData;
+
+public static class Constants
 {
-    public static class Constants
-    {
 #region Public
 
-        public const long InvalidId = -1L;
-        public const long EmptyPersonId = 1;
-        public const long EmptyLocationId = 1;
+    public const long InvalidId = -1L;
+    public const long EmptyPersonId = 1;
+    public const long EmptyLocationId = 1;
 
 #endregion
-    }
 }

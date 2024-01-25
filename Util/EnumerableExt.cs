@@ -26,23 +26,22 @@ using System.Linq;
 
 #endregion
 
-namespace TCSystem.Util
+namespace TCSystem.Util;
+
+public static class EnumerableExt
 {
-    public static class EnumerableExt
-    {
 #region Public
 
-        public static IEnumerable<TYpe> OrderRandom<TYpe>(this IEnumerable<TYpe> values)
-        {
-            return values.OrderBy(_ => _sRandom.Next());
-        }
+    public static IEnumerable<TYpe> OrderRandom<TYpe>(this IEnumerable<TYpe> values)
+    {
+        return values.OrderBy(_ => _sRandom.Next());
+    }
 
 #endregion
 
 #region Private
 
-        private static readonly Random _sRandom = new Random();
+    private static readonly Random _sRandom = new();
 
 #endregion
-    }
 }

@@ -24,18 +24,17 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+public interface IAsyncUpdateHelper
 {
-    public interface IAsyncUpdateHelper
-    {
 #region Public
 
-        Task BeginUpdateAsync();
-        Task WaitAsync();
-        void EndUpdate();
-        bool ShouldStop { get; }
-        bool IsUpdatePending { get; }
+    Task BeginUpdateAsync();
+    Task WaitAsync();
+    void EndUpdate();
+    bool ShouldStop { get; }
+    bool IsUpdatePending { get; }
 
 #endregion
-    }
 }

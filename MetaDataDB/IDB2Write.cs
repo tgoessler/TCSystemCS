@@ -25,19 +25,19 @@ using TCSystem.MetaData;
 
 #endregion
 
-namespace TCSystem.MetaDataDB
+namespace TCSystem.MetaDataDB;
+
+public interface IDB2Write
 {
-    public interface IDB2Write
-    {
 #region Public
 
-        Image AddMetaData(Image newMetaData, DateTimeOffset dateModified);
-        void RemoveMetaData(string fileName);
-        void RemoveAllFilesOfFolder(string folder);
+    Image AddMetaData(Image newMetaData, DateTimeOffset dateModified);
+    void RemoveMetaData(string fileName);
+    void RemoveAllFilesOfFolder(string folder);
 
-        event Action<Image> MetaDataAdded;
-        event Action<Image> MetaDataRemoved;
-        event Action<(Image NewData, Image OldData)> MetaDataChanged;
+    event Action<Image> MetaDataAdded;
+    event Action<Image> MetaDataRemoved;
+    event Action<(Image NewData, Image OldData)> MetaDataChanged;
+
 #endregion
-    }
 }

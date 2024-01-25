@@ -28,14 +28,13 @@ using TCSystem.Logging;
 
 #endregion
 
-namespace TCSystem.MetaDataDB
+namespace TCSystem.MetaDataDB;
+
+internal static class Log
 {
-    internal static class Log
-    {
 #region Public
 
-        public static Logger Instance { get; } = Logging.Factory.GetLogger(typeof(Log));
+    public static Logger Instance { get; } = Logging.Factory.GetLogger(typeof(Log));
 
 #endregion
-    }
 }

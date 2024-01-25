@@ -24,28 +24,27 @@ using System;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+internal readonly struct AsyncUpdateScope : IDisposable
 {
-    internal readonly struct AsyncUpdateScope : IDisposable
-    {
 #region Public
 
-        public AsyncUpdateScope(IAsyncUpdateHelper asyncUpdateHelper)
-        {
-            _asyncUpdateHelper = asyncUpdateHelper;
-        }
+    public AsyncUpdateScope(IAsyncUpdateHelper asyncUpdateHelper)
+    {
+        _asyncUpdateHelper = asyncUpdateHelper;
+    }
 
-        public void Dispose()
-        {
-            _asyncUpdateHelper.EndUpdate();
-        }
+    public void Dispose()
+    {
+        _asyncUpdateHelper.EndUpdate();
+    }
 
 #endregion
 
 #region Private
 
-        private readonly IAsyncUpdateHelper _asyncUpdateHelper;
+    private readonly IAsyncUpdateHelper _asyncUpdateHelper;
 
 #endregion
-    }
 }

@@ -25,24 +25,23 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+public static class AsyncUpdateHelperExt
 {
-    public static class AsyncUpdateHelperExt
-    {
 #region Public
 
-        public static async Task<IDisposable> BeginUpdateScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
-        {
-            await asyncUpdateHelper.BeginUpdateAsync();
-            return new AsyncUpdateScope(asyncUpdateHelper);
-        }
+    public static async Task<IDisposable> BeginUpdateScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
+    {
+        await asyncUpdateHelper.BeginUpdateAsync();
+        return new AsyncUpdateScope(asyncUpdateHelper);
+    }
 
-        public static async Task<IDisposable> WaitScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
-        {
-            await asyncUpdateHelper.WaitAsync();
-            return new AsyncUpdateScope(asyncUpdateHelper);
-        }
+    public static async Task<IDisposable> WaitScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
+    {
+        await asyncUpdateHelper.WaitAsync();
+        return new AsyncUpdateScope(asyncUpdateHelper);
+    }
 
 #endregion
-    }
 }
