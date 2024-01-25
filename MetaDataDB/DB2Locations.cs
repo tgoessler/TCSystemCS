@@ -80,7 +80,7 @@ internal sealed class DB2Locations : DB2Constants
         string filterCommand = filter != null ? filterLocationCommand : "";
         if (filter != null)
         {
-            filter = "%" + filter.Replace(' ', '%') + "% ";
+            filter = "%" + filter.Replace(' ', '%') + "%";
         }
 
         using (var command = new SqliteCommand())

@@ -64,6 +64,10 @@ public static class TestData
         OrientationMode.Normal,
         DateTimeOffset.Now, "", Location1, new[] { PersonTag1 }, new[] { Tag1, Tag2 });
 
+    public static readonly Image Image11 = new(Constants.InvalidId, FileName1 + "1", ProcessingInfos.DlibCnnFaceDetection1000, 100, 100,
+        OrientationMode.Normal,
+        DateTimeOffset.Now, "", Location1, new[] { PersonTag1 }, new[] { Tag1, Tag2 });
+
     public static readonly Image Image2 = new(Constants.InvalidId, FileName2, ProcessingInfos.DlibCnnFaceDetection2000, 200, 200,
         OrientationMode.MirrorHorizontal,
         DateTimeOffset.Now, "", Location2, new[] { PersonTag1, PersonTag2 }, new[] { Tag1, Tag2, Tag3 });
