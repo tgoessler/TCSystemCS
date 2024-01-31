@@ -152,7 +152,7 @@ internal sealed class DB2Data : DB2Constants
                     return (OrientationMode)reader.GetInt32(0);
                 }
 
-                return OrientationMode.Normal;
+                return OrientationMode.Undefined;
             }
         }
     }
