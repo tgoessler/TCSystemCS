@@ -197,4 +197,40 @@ public sealed class LocationTests : DBSetup
 
     }
     
+        [Test]
+    public void GetLocation()
+    {
+        Assert.That(DBReadOnly.GetLocation("XXX"), Is.EqualTo(null));
+
+        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetLocation(TestData.ImageZero.FileName), Is.EqualTo(TestData.ImageZero.Location));
+        Assert.That(DBReadOnly.GetLocation("XXX"), Is.EqualTo(null));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetLocation(TestData.ImageZero.FileName), Is.EqualTo(TestData.ImageZero.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image1.FileName), Is.EqualTo(TestData.Image1.Location));
+        Assert.That(DBReadOnly.GetLocation("XXX"), Is.EqualTo(null));
+
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetLocation(TestData.ImageZero.FileName), Is.EqualTo(TestData.ImageZero.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image1.FileName), Is.EqualTo(TestData.Image1.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image2.FileName), Is.EqualTo(TestData.Image2.Location));
+        Assert.That(DBReadOnly.GetLocation("XXX"), Is.EqualTo(null));
+
+        DB.AddMetaData(TestData.Image11, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetLocation(TestData.ImageZero.FileName), Is.EqualTo(TestData.ImageZero.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image1.FileName), Is.EqualTo(TestData.Image1.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image2.FileName), Is.EqualTo(TestData.Image2.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image11.FileName), Is.EqualTo(TestData.Image11.Location));
+        Assert.That(DBReadOnly.GetLocation("XXX"), Is.EqualTo(null));
+
+        DB.AddMetaData(TestData.Image21, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetLocation(TestData.ImageZero.FileName), Is.EqualTo(TestData.ImageZero.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image1.FileName), Is.EqualTo(TestData.Image1.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image2.FileName), Is.EqualTo(TestData.Image2.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image11.FileName), Is.EqualTo(TestData.Image11.Location));
+        Assert.That(DBReadOnly.GetLocation(TestData.Image21.FileName), Is.EqualTo(TestData.Image21.Location));
+        Assert.That(DBReadOnly.GetLocation("XXX"), Is.EqualTo(null));
+    }
+
 }
