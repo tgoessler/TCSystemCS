@@ -41,7 +41,7 @@ public class DBSetup
     }
 
     [TearDown]
-    public static void DeInitTestDB()
+    public void DeInitTestDB()
     {
         Factory.Destroy(ref _db);
         Factory.Destroy(ref _dbReadOnly);
@@ -53,7 +53,7 @@ public class DBSetup
 
 #region Protected
 
-    protected void AssertImageDataNotEqual(Image data1, Image data2)
+    protected static void AssertImageDataNotEqual(Image data1, Image data2)
     {
         data1 = data1.InvalidateId();
         data2 = data2.InvalidateId();
@@ -72,8 +72,8 @@ public class DBSetup
 
 #region Private
 
-    private static IDB2 _db;
-    private static IDB2Read _dbReadOnly;
+    private IDB2 _db;
+    private IDB2Read _dbReadOnly;
 
 #endregion
 }

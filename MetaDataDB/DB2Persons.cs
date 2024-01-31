@@ -170,12 +170,11 @@ internal sealed class DB2Persons : DB2Constants
         }
 
         // remove deleted faces
-        foreach (PersonTag pt in oldPersonTags)
+        foreach (long id in oldPersonTags
+                     .Select(pt => pt.Face.Id)
+                     .Where(id => newPersonTags.GetFace(id) == null))
         {
-            if (newPersonTags.GetFace(pt.Face.Id) == null)
-            {
-                RemoveFace(pt.Face.Id, transaction);
-            }
+            RemoveFace(id, transaction);
         }
     }
 

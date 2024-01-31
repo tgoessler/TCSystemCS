@@ -85,7 +85,7 @@ public static class Util
 
     public static DateTimeOffset Trim(this DateTimeOffset date, long ticks)
     {
-        return new DateTime(date.Ticks - date.Ticks % ticks);
+        return new DateTime(date.Ticks - date.Ticks % ticks, DateTimeKind.Local);
     }
 
     public static IEnumerable<string> SupportedFileTypes => _sExtensions;

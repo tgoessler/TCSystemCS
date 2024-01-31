@@ -111,6 +111,7 @@ internal sealed class WorkerThread : IWorkerThread
                 _thread.Join(timeOut.Value);
             }
 
+            _cancellationTokenSource.Dispose();
             Log.Instance.Info($"Stopping Thread '{_thread.Name} done'");
         }
     }
