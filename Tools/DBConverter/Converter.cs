@@ -111,18 +111,10 @@ internal sealed class Converter
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            IList<string> files = _fromDB.GetAllFilesLike();
-            Log.Instance.Info($"Converting old database format to new format: {files.Count} Entries");
-
-            foreach (string fileName in files)
-            {
-                Image originalData = ConvertFile(fileName);
-                CheckConvertedData(fileName, originalData);
-            }
+            _converter.Convert(_fromDB, _toDB);
 
             stopWatch.Stop();
             Log.Instance.Info($"ConvertDB done in {stopWatch.ElapsedMilliseconds}ms.");
-
 
             Log.Instance.Info("Checking DB");
             stopWatch.Start();
@@ -206,6 +198,9 @@ internal sealed class Converter
             {
                 throw new InvalidProgramException($"Location of {fileName} not equal. l1={l1}, l2={l2}");
             }
+
+            CheckConvertedData(fileName);
+
         }
 
         foreach (string folder in files1.Select(Path.GetDirectoryName).Distinct())
@@ -440,27 +435,17 @@ internal sealed class Converter
         }
     }
 
-    private void CheckConvertedData(string file, Image originalData)
+    private void CheckConvertedData(string file)
     {
-        Image convertedData = _toDB.GetMetaData(file);
-        convertedData = convertedData.InvalidateId();
+        Image originalData = _fromDB.GetMetaData(file).InvalidateId();
+        Image convertedData = _toDB.GetMetaData(file).InvalidateId();
         if (!originalData.Equals(convertedData))
         {
             throw new InvalidProgramException($"Converting data of {file} failed\n\n{originalData}\n\n{convertedData}");
         }
     }
 
-    private Image ConvertFile(string file)
-    {
-        Image data = _fromDB.GetMetaData(file);
-        data = data.InvalidateId();
-        DateTimeOffset dateModified = _fromDB.GetDateModified(file);
-
-        _toDB.AddMetaData(data, dateModified);
-
-        return data;
-    }
-
+    private readonly IDB2Converter _converter = MetaDataDB.Factory.CreateConverter();
     private IDB2Read _fromDB;
     private IDB2 _toDB;
 
