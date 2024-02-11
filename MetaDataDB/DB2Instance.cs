@@ -22,13 +22,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Microsoft.Data.Sqlite;
 using TCSystem.MetaData;
 
 #endregion
-
-[assembly: InternalsVisibleTo("TCPhotoGalleryConvertDB")]
 
 namespace TCSystem.MetaDataDB;
 
