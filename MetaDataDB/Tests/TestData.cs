@@ -33,9 +33,9 @@ public static class TestData
 {
 #region Public
 
-    public const string FileNameZero = "01 foto.jpeg";
-    public const string FileName1 = "02 foto.jpeg";
-    public const string FileName2 = "03 foto.jpeg";
+    public const string FileNameZero = "C:\\Photos\\Folder1\\01 foto.jpeg";
+    public const string FileName1 = "C:\\Photos\\Folder1\\02 foto.jpeg";
+    public const string FileName2 = "C:\\Photos\\Folder2\\03 foto.jpeg";
 
     public const string Tag1 = "01 Urlaub";
     public const string Tag2 = "02 Geburtstag";
