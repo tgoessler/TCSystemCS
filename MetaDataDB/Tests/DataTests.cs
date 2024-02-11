@@ -18,9 +18,13 @@
 // 
 // *******************************************************************************
 
+#region Usings
+
 using System;
 using NUnit.Framework;
 using TCSystem.MetaData;
+
+#endregion
 
 namespace TCSystem.MetaDataDB.Tests;
 
@@ -55,59 +59,6 @@ public class DataTests : DBSetup
 
         DB.RemoveMetaData(TestData.Image11.FileName);
         Assert.That(DBReadOnly.GetAllYears().Count, Is.EqualTo(0));
-
-    }
-
-        [Test]
-    public void GetNumFilesOfYear()
-    {
-        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
-        
-
-        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
-
-        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
-
-        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(1));
-
-        DB.AddMetaData(TestData.Image11, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(2));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(1));
-
-        DB.RemoveMetaData(TestData.ImageZero.FileName);
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(2));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(1));
-
-        DB.RemoveMetaData(TestData.Image2.FileName);
-        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(2));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
-
-        DB.RemoveMetaData(TestData.Image1.FileName);
-        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(0));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
     }
 
     [Test]
@@ -151,6 +102,58 @@ public class DataTests : DBSetup
         Assert.That(DBReadOnly.GetFilesOfYear(TestData.DateZero).Count, Is.EqualTo(0));
         Assert.That(DBReadOnly.GetFilesOfYear(TestData.Date1).Count, Is.EqualTo(1));
         Assert.That(DBReadOnly.GetFilesOfYear(TestData.Date2).Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void GetNumFilesOfYear()
+    {
+        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
+
+
+        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(1));
+
+        DB.AddMetaData(TestData.Image11, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(1));
+
+        DB.RemoveMetaData(TestData.ImageZero.FileName);
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(1));
+
+        DB.RemoveMetaData(TestData.Image2.FileName);
+        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DBReadOnly.GetNumFilesOfYear(new DateTime(1900, 1, 1)), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.DateZero), Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date1), Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetNumFilesOfYear(TestData.Date2), Is.EqualTo(0));
     }
 
     [Test]

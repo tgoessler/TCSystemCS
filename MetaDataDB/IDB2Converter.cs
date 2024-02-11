@@ -22,5 +22,9 @@ namespace TCSystem.MetaDataDB;
 
 public interface IDB2Converter
 {
+#region Public
+
     void Convert(IDB2Read from, IDB2 to);
+
+#endregion
 }

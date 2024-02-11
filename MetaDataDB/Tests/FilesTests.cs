@@ -18,10 +18,14 @@
 // 
 // *******************************************************************************
 
+#region Usings
+
 using System;
 using System.Linq;
 using NUnit.Framework;
 using TCSystem.MetaData;
+
+#endregion
 
 namespace TCSystem.MetaDataDB.Tests;
 
@@ -29,38 +33,28 @@ namespace TCSystem.MetaDataDB.Tests;
 public class FilesTests : DBSetup
 {
     [Test]
-    public void GetAllProcessingInformation()
+    public void ChangeDateModified()
     {
-        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(0));
+        Image data = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
 
-        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetAllProcessingInformation()[0].FileName, Is.EqualTo(TestData.ImageZero.FileName));
-        Assert.That(DBReadOnly.GetAllProcessingInformation()[0].ProcessingInfo, Is.EqualTo(TestData.ImageZero.ProcessingInfos));
+        DateTimeOffset dateTimeNow = DateTimeOffset.Now;
+        DateTimeOffset newDateModified = dateTimeNow.AddSeconds(5).Trim(TimeSpan.TicksPerSecond);
+        DB.AddMetaData(data, newDateModified);
 
-        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(2));
-        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.ImageZero.FileName).ProcessingInfo, Is.EqualTo(TestData.ImageZero.ProcessingInfos));
-        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.Image1.FileName).ProcessingInfo, Is.EqualTo(TestData.Image1.ProcessingInfos));
+        Assert.That(newDateModified, Is.EqualTo(DBReadOnly.GetDateModified(data.FileName)));
+        Assert.That(data.Id, Is.EqualTo(DBReadOnly.GetMetaData(data.FileName).Id));
+    }
 
-        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(3));
-        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.ImageZero.FileName).ProcessingInfo, Is.EqualTo(TestData.ImageZero.ProcessingInfos));
-        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.Image1.FileName).ProcessingInfo, Is.EqualTo(TestData.Image1.ProcessingInfos));
-        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.Image2.FileName).ProcessingInfo, Is.EqualTo(TestData.Image2.ProcessingInfos));
+    [Test]
+    public void ChangeProcessingInfo()
+    {
+        Image data = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
 
-        DB.RemoveMetaData(TestData.Image1.FileName);
-        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(2));
-        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.ImageZero.FileName).ProcessingInfo, Is.EqualTo(TestData.ImageZero.ProcessingInfos));
-        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.Image2.FileName).ProcessingInfo, Is.EqualTo(TestData.Image2.ProcessingInfos));
+        data = Image.ChangeProcessingInfo(data, ProcessingInfos.DlibCnnFaceDetection1000 | ProcessingInfos.DlibCnnFaceDetection2000);
+        DB.AddMetaData(data, DateTimeOffset.Now);
 
-        DB.RemoveMetaData(TestData.Image2.FileName);
-        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetAllProcessingInformation()[0].FileName, Is.EqualTo(TestData.ImageZero.FileName));
-        Assert.That(DBReadOnly.GetAllProcessingInformation()[0].ProcessingInfo, Is.EqualTo(TestData.ImageZero.ProcessingInfos));
-
-        DB.RemoveMetaData(TestData.ImageZero.FileName);
-        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(0));
+        Assert.That(data.ProcessingInfos, Is.EqualTo(DBReadOnly.GetMetaData(data.FileName).ProcessingInfos));
+        Assert.That(data.Id, Is.EqualTo(DBReadOnly.GetMetaData(data.FileName).Id));
     }
 
     [Test]
@@ -68,18 +62,18 @@ public class FilesTests : DBSetup
     {
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates().Count, Is.EqualTo(0));
 
-        var modifiedZero = DateTimeOffset.Now.Trim(TimeSpan.TicksPerSecond);
+        DateTimeOffset modifiedZero = DateTimeOffset.Now.Trim(TimeSpan.TicksPerSecond);
         DB.AddMetaData(TestData.ImageZero, modifiedZero);
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates().Count, Is.EqualTo(1));
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates()[TestData.ImageZero.FileName], Is.EqualTo(modifiedZero));
 
-        var modified1 = DateTimeOffset.Now.Trim(TimeSpan.TicksPerSecond);
+        DateTimeOffset modified1 = DateTimeOffset.Now.Trim(TimeSpan.TicksPerSecond);
         DB.AddMetaData(TestData.Image1, modified1);
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates().Count, Is.EqualTo(2));
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates()[TestData.ImageZero.FileName], Is.EqualTo(modifiedZero));
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates()[TestData.Image1.FileName], Is.EqualTo(modified1));
 
-        var modified2 = DateTimeOffset.Now.Trim(TimeSpan.TicksPerSecond);
+        DateTimeOffset modified2 = DateTimeOffset.Now.Trim(TimeSpan.TicksPerSecond);
         DB.AddMetaData(TestData.Image2, modified2);
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates().Count, Is.EqualTo(3));
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates()[TestData.ImageZero.FileName], Is.EqualTo(modifiedZero));
@@ -97,5 +91,47 @@ public class FilesTests : DBSetup
 
         DB.RemoveMetaData(TestData.ImageZero.FileName);
         Assert.That(DBReadOnly.GetAllFileAndModifiedDates().Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void GetAllProcessingInformation()
+    {
+        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(0));
+
+        DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetAllProcessingInformation()[0].FileName, Is.EqualTo(TestData.ImageZero.FileName));
+        Assert.That(DBReadOnly.GetAllProcessingInformation()[0].ProcessingInfo, Is.EqualTo(TestData.ImageZero.ProcessingInfos));
+
+        DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.ImageZero.FileName).ProcessingInfo,
+            Is.EqualTo(TestData.ImageZero.ProcessingInfos));
+        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.Image1.FileName).ProcessingInfo,
+            Is.EqualTo(TestData.Image1.ProcessingInfos));
+
+        DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(3));
+        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.ImageZero.FileName).ProcessingInfo,
+            Is.EqualTo(TestData.ImageZero.ProcessingInfos));
+        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.Image1.FileName).ProcessingInfo,
+            Is.EqualTo(TestData.Image1.ProcessingInfos));
+        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.Image2.FileName).ProcessingInfo,
+            Is.EqualTo(TestData.Image2.ProcessingInfos));
+
+        DB.RemoveMetaData(TestData.Image1.FileName);
+        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.ImageZero.FileName).ProcessingInfo,
+            Is.EqualTo(TestData.ImageZero.ProcessingInfos));
+        Assert.That(DBReadOnly.GetAllProcessingInformation().FirstOrDefault(v => v.FileName == TestData.Image2.FileName).ProcessingInfo,
+            Is.EqualTo(TestData.Image2.ProcessingInfos));
+
+        DB.RemoveMetaData(TestData.Image2.FileName);
+        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetAllProcessingInformation()[0].FileName, Is.EqualTo(TestData.ImageZero.FileName));
+        Assert.That(DBReadOnly.GetAllProcessingInformation()[0].ProcessingInfo, Is.EqualTo(TestData.ImageZero.ProcessingInfos));
+
+        DB.RemoveMetaData(TestData.ImageZero.FileName);
+        Assert.That(DBReadOnly.GetAllProcessingInformation().Count, Is.EqualTo(0));
     }
 }

@@ -200,7 +200,6 @@ internal sealed class Converter
             }
 
             CheckConvertedData(fileName);
-
         }
 
         foreach (string folder in files1.Select(Path.GetDirectoryName).Distinct())

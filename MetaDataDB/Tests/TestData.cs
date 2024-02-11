@@ -58,9 +58,9 @@ public static class TestData
     public static readonly PersonTag PersonTag1 = new(Person1, Face1);
     public static readonly PersonTag PersonTag2 = new(Person2, Face2);
 
-    public static readonly DateTimeOffset DateZero = new DateTime(1970, 1, 1,  0, 0,  0, DateTimeKind.Local);
-    public static readonly DateTimeOffset Date1 = new DateTime(1972, 11, 23,  8, 10,  1, DateTimeKind.Local);
-    public static readonly DateTimeOffset Date2 = new DateTime(1975,  5, 12, 16, 50, 27, DateTimeKind.Local);
+    public static readonly DateTimeOffset DateZero = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local);
+    public static readonly DateTimeOffset Date1 = new DateTime(1972, 11, 23, 8, 10, 1, DateTimeKind.Local);
+    public static readonly DateTimeOffset Date2 = new DateTime(1975, 5, 12, 16, 50, 27, DateTimeKind.Local);
 
     public static readonly Image ImageZero = new(Constants.InvalidId, FileNameZero, ProcessingInfos.None, 0, 0, OrientationMode.Normal,
         DateZero, "", null, Array.Empty<PersonTag>(), Array.Empty<string>());
@@ -75,7 +75,7 @@ public static class TestData
         OrientationMode.MirrorHorizontal,
         Date2, "", Location2, new[] { PersonTag1, PersonTag2 }, new[] { Tag1, Tag2, Tag3 });
 
-    public static readonly Image Image21 = new(Constants.InvalidId, FileName2+ "1", ProcessingInfos.DlibCnnFaceDetection2000, 200, 200,
+    public static readonly Image Image21 = new(Constants.InvalidId, FileName2 + "1", ProcessingInfos.DlibCnnFaceDetection2000, 200, 200,
         OrientationMode.MirrorHorizontal,
         Date2, "", Location2, new[] { PersonTag1, PersonTag2 }, new[] { Tag1, Tag2, Tag3 });
 
