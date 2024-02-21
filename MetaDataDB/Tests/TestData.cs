@@ -58,9 +58,12 @@ public static class TestData
     public static readonly PersonTag PersonTag1 = new(Person1, Face1);
     public static readonly PersonTag PersonTag2 = new(Person2, Face2);
 
-    public static readonly DateTimeOffset DateZero = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local);
+    public static readonly DateTimeOffset DateZero = new DateTime(1971, 1, 1, 0, 0, 0, DateTimeKind.Local);
     public static readonly DateTimeOffset Date1 = new DateTime(1972, 11, 23, 8, 10, 1, DateTimeKind.Local);
     public static readonly DateTimeOffset Date2 = new DateTime(1975, 5, 12, 16, 50, 27, DateTimeKind.Local);
+
+    public static readonly Image ImageInvalidDate = new(Constants.InvalidId, FileNameZero + "Invalid", ProcessingInfos.None, 0, 0, OrientationMode.Normal,
+        Image.InvalidDateTaken, "", null, Array.Empty<PersonTag>(), Array.Empty<string>());
 
     public static readonly Image ImageZero = new(Constants.InvalidId, FileNameZero, ProcessingInfos.None, 0, 0, OrientationMode.Normal,
         DateZero, "", null, Array.Empty<PersonTag>(), Array.Empty<string>());
