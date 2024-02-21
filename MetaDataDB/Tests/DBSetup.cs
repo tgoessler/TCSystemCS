@@ -35,9 +35,9 @@ public class DBSetup
     [SetUp]
     public void InitTestDB()
     {
-        string dbFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        _db = Factory.CreateReadWrite(dbFileName);
-        _dbReadOnly = Factory.CreateRead(dbFileName);
+        _dbFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        _db = Factory.CreateReadWrite(_dbFileName);
+        _dbReadOnly = Factory.CreateRead(_dbFileName);
     }
 
     [TearDown]
@@ -45,8 +45,7 @@ public class DBSetup
     {
         Factory.Destroy(ref _db);
         Factory.Destroy(ref _dbReadOnly);
-        string dbFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        File.Delete(dbFileName);
+        File.Delete(_dbFileName);
     }
 
 #endregion
@@ -74,6 +73,7 @@ public class DBSetup
 
     private IDB2 _db;
     private IDB2Read _dbReadOnly;
+    private string _dbFileName;
 
 #endregion
 }
