@@ -56,22 +56,28 @@ public class ConverterTests
         };
 
         string testDataDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "TestData");
-
-        foreach (string file in files)
+        if (Directory.Exists(testDataDir))
         {
-            string fileName = Path.Combine(testDataDir, file);
-            _dbFileName1 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            _dbFileName2 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            foreach (string file in files)
+            {
+                string fileName = Path.Combine(testDataDir, file);
+                _dbFileName1 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                _dbFileName2 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
-            File.Copy(fileName, _dbFileName1);
+                File.Copy(fileName, _dbFileName1);
 
-            _db1 = Factory.CreateReadWrite(_dbFileName1);
-            _db2 = Factory.CreateReadWrite(_dbFileName2);
+                _db1 = Factory.CreateReadWrite(_dbFileName1);
+                _db2 = Factory.CreateReadWrite(_dbFileName2);
 
-            IDB2Converter converter = Factory.CreateConverter();
-            converter.Convert(_db1, _db2);
+                IDB2Converter converter = Factory.CreateConverter();
+                converter.Convert(_db1, _db2);
 
-            DeInitTestDB();
+                DeInitTestDB();
+            }
+        }
+        else
+        {
+            Assert.Ignore("Test files not available");
         }
     }
 
