@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -25,22 +25,21 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+internal static class WaitHandleExt
 {
-    internal static class WaitHandleExt
-    {
 #region Public
 
-        public static async Task WaitOneAsync(this WaitHandle waitHandle)
-        {
-            await Task.Run(waitHandle.WaitOne);
-        }
+    public static async Task WaitOneAsync(this WaitHandle waitHandle)
+    {
+        await Task.Run(waitHandle.WaitOne);
+    }
 
-        public static async Task WaitOneAsync(this WaitHandle waitHandle, CancellationToken cancellationToken)
-        {
-            await Task.Run(waitHandle.WaitOne, cancellationToken);
-        }
+    public static async Task WaitOneAsync(this WaitHandle waitHandle, CancellationToken cancellationToken)
+    {
+        await Task.Run(waitHandle.WaitOne, cancellationToken);
+    }
 
 #endregion
-    }
 }

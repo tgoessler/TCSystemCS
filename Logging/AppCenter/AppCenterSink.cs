@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -28,49 +28,48 @@ using Serilog.Events;
 
 #endregion
 
-namespace TCSystem.Logging.AppCenter
+namespace TCSystem.Logging.AppCenter;
+
+internal sealed class AppCenterSink : ILogEventSink
 {
-    internal sealed class AppCenterSink : ILogEventSink
-    {
 #region Public
 
-        public AppCenterSink(IFormatProvider formatProvider)
-        {
-            _formatProvider = formatProvider;
-        }
+    public AppCenterSink(IFormatProvider formatProvider)
+    {
+        _formatProvider = formatProvider;
+    }
 
-        public async void Emit(LogEvent logEvent)
+    public async void Emit(LogEvent logEvent)
+    {
+        if ((logEvent.Level == LogEventLevel.Error || logEvent.Level == LogEventLevel.Fatal) &&
+            await Analytics.IsEnabledAsync())
         {
-            if ((logEvent.Level == LogEventLevel.Error || logEvent.Level == LogEventLevel.Fatal) &&
-                await Analytics.IsEnabledAsync())
+            var logData = new Dictionary<string, string>
             {
-                var logData = new Dictionary<string, string>
-                {
-                    {"Message", logEvent.RenderMessage(_formatProvider)},
-                    {"TimeStamp", logEvent.Timestamp.ToString()},
-                    {"Level", logEvent.Level.ToString()},
-                };
+                { "Message", logEvent.RenderMessage(_formatProvider) },
+                { "TimeStamp", logEvent.Timestamp.ToString() },
+                { "Level", logEvent.Level.ToString() },
+            };
 
-                if (logEvent.Exception != null)
-                {
-                    logData["Exception"] = logEvent.Exception.ToString();
-                }
-
-                foreach (var keyValuePair in logEvent.Properties)
-                {
-                    logData[keyValuePair.Key] = keyValuePair.Value.ToString();
-                }
-
-                Analytics.TrackEvent("LogEntry", logData);
+            if (logEvent.Exception != null)
+            {
+                logData["Exception"] = logEvent.Exception.ToString();
             }
+
+            foreach (KeyValuePair<string, LogEventPropertyValue> keyValuePair in logEvent.Properties)
+            {
+                logData[keyValuePair.Key] = keyValuePair.Value.ToString();
+            }
+
+            Analytics.TrackEvent("LogEntry", logData);
         }
+    }
 
 #endregion
 
 #region Private
 
-        private readonly IFormatProvider _formatProvider;
+    private readonly IFormatProvider _formatProvider;
 
 #endregion
-    }
 }

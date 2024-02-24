@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -26,20 +26,19 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Util
+namespace TCSystem.Util;
+
+public static class AsyncExt
 {
-    public static class AsyncExt
-    {
 #region Public
 
-        public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+    public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+    {
+        foreach (T item in source)
         {
-            foreach (var item in source)
-            {
-                await action(item);
-            }
+            await action(item);
         }
+    }
 
 #endregion
-    }
 }

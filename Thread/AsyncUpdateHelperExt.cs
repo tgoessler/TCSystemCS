@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -25,24 +25,23 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+public static class AsyncUpdateHelperExt
 {
-    public static class AsyncUpdateHelperExt
-    {
 #region Public
 
-        public static async Task<IDisposable> BeginUpdateScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
-        {
-            await asyncUpdateHelper.BeginUpdateAsync();
-            return new AsyncUpdateScope(asyncUpdateHelper);
-        }
+    public static async Task<IDisposable> BeginUpdateScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
+    {
+        await asyncUpdateHelper.BeginUpdateAsync();
+        return new AsyncUpdateScope(asyncUpdateHelper);
+    }
 
-        public static async Task<IDisposable> WaitScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
-        {
-            await asyncUpdateHelper.WaitAsync();
-            return new AsyncUpdateScope(asyncUpdateHelper);
-        }
+    public static async Task<IDisposable> WaitScopeAsync(this IAsyncUpdateHelper asyncUpdateHelper)
+    {
+        await asyncUpdateHelper.WaitAsync();
+        return new AsyncUpdateScope(asyncUpdateHelper);
+    }
 
 #endregion
-    }
 }

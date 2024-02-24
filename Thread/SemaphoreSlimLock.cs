@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -25,32 +25,31 @@ using System.Threading;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+internal readonly struct SemaphoreSlimLock : IDisposable
 {
-    internal readonly struct SemaphoreSlimLock : IDisposable
-    {
 #region Public
 
-        public void Dispose()
-        {
-            _semaphore?.Release();
-        }
+    public void Dispose()
+    {
+        _semaphore?.Release();
+    }
 
 #endregion
 
 #region Internal
 
-        internal SemaphoreSlimLock(SemaphoreSlim semaphore)
-        {
-            _semaphore = semaphore;
-        }
+    internal SemaphoreSlimLock(SemaphoreSlim semaphore)
+    {
+        _semaphore = semaphore;
+    }
 
 #endregion
 
 #region Private
 
-        private readonly SemaphoreSlim _semaphore;
+    private readonly SemaphoreSlim _semaphore;
 
 #endregion
-    }
 }

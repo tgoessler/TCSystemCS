@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -26,24 +26,23 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+public static class SemaphoreSlimExt
 {
-    public static class SemaphoreSlimExt
-    {
 #region Public
 
-        public static IDisposable Lock(this SemaphoreSlim semaphore)
-        {
-            semaphore.Wait();
-            return new SemaphoreSlimLock(semaphore);
-        }
+    public static IDisposable Lock(this SemaphoreSlim semaphore)
+    {
+        semaphore.Wait();
+        return new SemaphoreSlimLock(semaphore);
+    }
 
-        public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
-        {
-            await semaphore.WaitAsync();
-            return new SemaphoreSlimLock(semaphore);
-        }
+    public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
+    {
+        await semaphore.WaitAsync();
+        return new SemaphoreSlimLock(semaphore);
+    }
 
 #endregion
-    }
 }

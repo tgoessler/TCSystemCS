@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -22,37 +22,52 @@
 
 #endregion
 
+#region Usings
+
+using System.Collections.Generic;
 using System.Linq;
 
-namespace TCSystem.MetaData
+#endregion
+
+namespace TCSystem.MetaData;
+
+public static class ImageExt
 {
-    public static class ImageExt
-    {
 #region Public
-        public static Image InvalidateId(this Image image)
+
+    public static Image InvalidateId(this Image image)
+    {
+        PersonTag[] personTags = image.PersonTags.Select(InvalidateId).ToArray();
+        return new(Constants.InvalidId, image.FileName, image.ProcessingInfos,
+            image.Width, image.Height, image.Orientation,
+            image.DateTaken, image.Title, image.Location,
+            personTags, image.Tags);
+    }
+
+    public static Person InvalidateId(this Person person)
+    {
+        return new(Constants.InvalidId, person.Name, person.EmailDigest, person.LiveId, person.SourceId);
+    }
+
+    public static Face InvalidateId(this Face face)
+    {
+        return new(Constants.InvalidId, face.Rectangle, face.FaceMode, face.Visible, face.FaceDescriptor);
+    }
+
+    public static PersonTag InvalidateId(this PersonTag personTag)
+    {
+        return new(personTag.Person.InvalidateId(), personTag.Face.InvalidateId());
+    }
+
+    public static Face GetFace(this IEnumerable<PersonTag> personTags, long faceId)
+    {
+        if (personTags != null && faceId != Constants.InvalidId)
         {
-            var personTags = image.PersonTags.Select(ImageExt.InvalidateId).ToArray();
-            return new Image(Constants.InvalidId, image.FileName, image.ProcessingInfos,
-                image.Width, image.Height, image.Orientation,
-                image.DateTaken, image.Title, image.Location,
-                personTags, image.Tags);
+            return personTags.FirstOrDefault(p => p.Face.Id == faceId)?.Face;
         }
 
-        public static Person InvalidateId(this Person person)
-        {
-            return new(Constants.InvalidId, person.Name, person.EmailDigest, person.LiveId, person.SourceId);
-        }
-
-        public static Face InvalidateId(this Face face)
-        {
-            return new(Constants.InvalidId, face.Rectangle, face.FaceMode, face.Visible, face.FaceDescriptor);
-        }
-
-        public static PersonTag InvalidateId(this PersonTag personTag)
-        {
-            return new(personTag.Person.InvalidateId(), personTag.Face.InvalidateId());
-        }
+        return null;
+    }
 
 #endregion
-    }
 }

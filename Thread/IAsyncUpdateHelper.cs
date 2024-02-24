@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -24,18 +24,17 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread
+namespace TCSystem.Thread;
+
+public interface IAsyncUpdateHelper
 {
-    public interface IAsyncUpdateHelper
-    {
 #region Public
 
-        Task BeginUpdateAsync();
-        Task WaitAsync();
-        void EndUpdate();
-        bool ShouldStop { get; }
-        bool IsUpdatePending { get; }
+    Task BeginUpdateAsync();
+    Task WaitAsync();
+    void EndUpdate();
+    bool ShouldStop { get; }
+    bool IsUpdatePending { get; }
 
 #endregion
-    }
 }

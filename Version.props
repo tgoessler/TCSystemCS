@@ -3,10 +3,10 @@
 	<PropertyGroup>
 		<Company>TCSystem</Company>
 		<Authors>Thomas Gößler</Authors>
-		<!--<DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''">-alpha.19.b</DevlopmentVersionSuffix>-->
-		<Version>3.0.0$(DevlopmentVersionSuffix)</Version>
+		<DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''"></DevlopmentVersionSuffix>
+		<Version>4.0.0$(DevlopmentVersionSuffix)</Version>
 		<NamespaceName>at.tcsystem</NamespaceName>
-		<Copyright>Copyright © $(Authors) 2023</Copyright>
+		<Copyright>Copyright © $(Authors) 2024</Copyright>
 	</PropertyGroup>
 
 </Project>

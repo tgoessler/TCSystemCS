@@ -1,30 +1,30 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
-    <DefaultLanguage Condition="'$(DefaultLanguage)'==''">en-US</DefaultLanguage>
-    <ProduceReferenceAssembly Condition="'$(ProduceReferenceAssembly)'==''">true</ProduceReferenceAssembly>
-    <TargetFramework Condition="'$(TargetFramework)'==''">netstandard2.0</TargetFramework>
-    <LangVersion Condition="'$(LangVersion)'==''">10</LangVersion>
-    <WarningLevel>5</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisLevel>latest</AnalysisLevel>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en-US</DefaultLanguage>
+		<ProduceReferenceAssembly Condition="'$(ProduceReferenceAssembly)'==''">true</ProduceReferenceAssembly>
+		<TargetFramework Condition="'$(TargetFramework)'==''">netstandard2.0</TargetFramework>
+		<LangVersion Condition="'$(LangVersion)'==''">10</LangVersion>
+		<WarningLevel>9999</WarningLevel>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisLevel>latest</AnalysisLevel>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <VSTestResultsDirectory>$(SolutionDir)</VSTestResultsDirectory>
-  </PropertyGroup>
+	<PropertyGroup>
+		<VSTestResultsDirectory>$(SolutionDir)</VSTestResultsDirectory>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>DEBUG</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<DefineConstants>DEBUG</DefineConstants>
+	</PropertyGroup>
 
 </Project>

@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -18,38 +18,37 @@
 // 
 // *******************************************************************************
 
-namespace TCSystem.MetaData
+namespace TCSystem.MetaData;
+
+public static class ProcessingInfosExt
 {
-    public static class ProcessingInfosExt
-    {
 #region Public
 
-        public static bool AreAllFaceDetectionsDone(this ProcessingInfos processingInfos)
-        {
-            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 &&
-                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0 &&
-                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection1000) != 0 &&
-                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection2000) != 0;
-        }
+    public static bool AreAllFaceDetectionsDone(this ProcessingInfos processingInfos)
+    {
+        return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 &&
+               (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0 &&
+               (processingInfos & ProcessingInfos.DlibCnnFaceDetection1000) != 0 &&
+               (processingInfos & ProcessingInfos.DlibCnnFaceDetection2000) != 0;
+    }
 
-        public static bool AreAllFrontalFaceDetectionsDone(this ProcessingInfos processingInfos)
-        {
-            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 &&
-                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0;
-        }
+    public static bool AreAllFrontalFaceDetectionsDone(this ProcessingInfos processingInfos)
+    {
+        return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 &&
+               (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0;
+    }
 
-        public static bool IsFrontalFaceDetection(this ProcessingInfos processingInfos)
-        {
-            return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 ||
-                   (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0;
-        }
+    public static bool IsFrontalFaceDetection(this ProcessingInfos processingInfos)
+    {
+        return (processingInfos & ProcessingInfos.DlibFrontalFaceDetection2000) != 0 ||
+               (processingInfos & ProcessingInfos.DlibFrontalFaceDetection3000) != 0;
+    }
 
-        public static bool IsCnnFaceDetection(this ProcessingInfos processingInfos)
-        {
-            return (processingInfos & ProcessingInfos.DlibCnnFaceDetection1000) != 0 ||
-                   (processingInfos & ProcessingInfos.DlibCnnFaceDetection2000) != 0;
-        }
+    public static bool IsCnnFaceDetection(this ProcessingInfos processingInfos)
+    {
+        return (processingInfos & ProcessingInfos.DlibCnnFaceDetection1000) != 0 ||
+               (processingInfos & ProcessingInfos.DlibCnnFaceDetection2000) != 0;
+    }
 
 #endregion
-    }
 }

@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -20,115 +20,118 @@
 
 #region Usings
 
-using NUnit.Framework;
 using System;
+using NUnit.Framework;
 
 #endregion
 
-namespace TCSystem.MetaData.Tests
+namespace TCSystem.MetaData.Tests;
+
+[TestFixture]
+public class GpsPositionTests
 {
-    [TestFixture]
-    public class GpsPositionTests
+    [Test]
+    public void EqualsTest()
     {
-        [Test]
-        public void EqualsTest()
+        GpsPosition point1 = TestData.GpsPositionZero;
+        GpsPosition point2 = point1;
+        Assert.That(point1.Equals(null), Is.False);
+        Assert.That(point1, Is.Not.EqualTo(TestData.Address1));
+        Assert.That(point1.Equals(point2), Is.True);
+
+        point2 = new(0, 0, 0, 0, false);
+        Assert.That(point1, Is.EqualTo(point2));
+
+        point2 = new(1, 0, 0, 0, false);
+        Assert.That(point1, Is.Not.EqualTo(point2));
+
+        point2 = new(0, 1, 0, 0, false);
+        Assert.That(point1, Is.Not.EqualTo(point2));
+
+        point2 = new(0, 0, 1, 0, false);
+        Assert.That(point1, Is.Not.EqualTo(point2));
+
+        point2 = new(0, 0, 0, 1, false);
+        Assert.That(point1, Is.Not.EqualTo(point2));
+
+        point2 = new(0, 0, 0, 0, true);
+        Assert.That(point1, Is.Not.EqualTo(point2));
+    }
+
+    [Test]
+    public void FromDoublePositionTest()
+    {
+        GpsPosition point1 = TestData.GpsPosition1;
+        var pos = point1.ToDouble();
+        GpsPosition point2 = GpsPosition.FromDoublePosition(pos);
+        Assert.That(point1, Is.EqualTo(point2));
+
+        point1 = TestData.GpsPosition2;
+        pos = point1.ToDouble();
+        point2 = GpsPosition.FromDoublePosition(pos);
+        Assert.That(point1, Is.EqualTo(point2));
+    }
+
+    [Test]
+    public void FromJsonStringTest()
+    {
+        string ToJson(GpsPosition d)
         {
-            var point1 = TestData.GpsPositionZero;
-            var point2 = point1;
-            Assert.That(point1.Equals(null), Is.False);
-            Assert.That(point1, Is.Not.EqualTo(TestData.Address1));
-            Assert.That(point1.Equals(point2), Is.True);
-
-            point2 = new GpsPosition(0, 0, 0, 0, false);
-            Assert.That(point1, Is.EqualTo(point2));
-
-            point2 = new GpsPosition(1, 0, 0, 0, false);
-            Assert.That(point1, Is.Not.EqualTo(point2));
-
-            point2 = new GpsPosition(0, 1, 0, 0, false);
-            Assert.That(point1, Is.Not.EqualTo(point2));
-
-            point2 = new GpsPosition(0, 0, 1, 0, false);
-            Assert.That(point1, Is.Not.EqualTo(point2));
-
-            point2 = new GpsPosition(0, 0, 0, 1, false);
-            Assert.That(point1, Is.Not.EqualTo(point2));
-
-            point2 = new GpsPosition(0, 0, 0, 0, true);
-            Assert.That(point1, Is.Not.EqualTo(point2));
+            return d.ToJsonString();
         }
 
-        [Test]
-        public void FromDoublePositionTest()
-        {
-            var point1 = TestData.GpsPosition1;
-            var pos = point1.ToDouble();
-            var point2 = GpsPosition.FromDoublePosition(pos);
-            Assert.That(point1, Is.EqualTo(point2));
+        Func<string, GpsPosition> fromJson = GpsPosition.FromJsonString;
 
-            point1 = TestData.GpsPosition2;
-            pos = point1.ToDouble();
-            point2 = GpsPosition.FromDoublePosition(pos);
-            Assert.That(point1, Is.EqualTo(point2));
-        }
+        TestUtil.FromJsonStringTest(TestData.GpsPosition1, ToJson, fromJson);
+        TestUtil.FromJsonStringTest(TestData.GpsPosition2, ToJson, fromJson);
+        TestUtil.FromJsonStringTest(TestData.GpsPositionZero, ToJson, fromJson);
+    }
 
-        [Test]
-        public void FromJsonStringTest()
-        {
-            string ToJson(GpsPosition d) => d.ToJsonString();
-            Func<string, GpsPosition> fromJson = GpsPosition.FromJsonString;
+    [Test]
+    public void FromStringTest()
+    {
+        GpsPosition point1 = TestData.GpsPosition1;
+        var jsonString = point1.ToString();
+        GpsPosition point2 = GpsPosition.FromString(jsonString);
+        Assert.That(point1, Is.EqualTo(point2));
 
-            TestUtil.FromJsonStringTest(TestData.GpsPosition1, ToJson, fromJson);
-            TestUtil.FromJsonStringTest(TestData.GpsPosition2, ToJson, fromJson);
-            TestUtil.FromJsonStringTest(TestData.GpsPositionZero, ToJson, fromJson);
-        }
+        point1 = TestData.GpsPosition2;
+        jsonString = point1.ToString();
+        point2 = GpsPosition.FromString(jsonString);
+        Assert.That(point1, Is.EqualTo(point2));
 
-        [Test]
-        public void FromStringTest()
-        {
-            var point1 = TestData.GpsPosition1;
-            var jsonString = point1.ToString();
-            var point2 = GpsPosition.FromString(jsonString);
-            Assert.That(point1, Is.EqualTo(point2));
+        point2 = GpsPosition.FromString("fsdf");
+        Assert.That(point1, Is.Not.EqualTo(point2));
 
-            point1 = TestData.GpsPosition2;
-            jsonString = point1.ToString();
-            point2 = GpsPosition.FromString(jsonString);
-            Assert.That(point1, Is.EqualTo(point2));
+        point2 = GpsPosition.FromString("");
+        Assert.That(point1, Is.Not.EqualTo(point2));
 
-            point2 = GpsPosition.FromString("fsdf");
-            Assert.That(point1, Is.Not.EqualTo(point2));
+        point2 = GpsPosition.FromString(null);
+        Assert.That(point1, Is.Not.EqualTo(point2));
+    }
 
-            point2 = GpsPosition.FromString("");
-            Assert.That(point1, Is.Not.EqualTo(point2));
+    [Test]
+    public void GetHashCodeTest()
+    {
+        GpsPosition data1 = TestData.GpsPosition1;
+        var copyOfData1 = new GpsPosition(data1.Degrees,
+            data1.Minutes, data1.Seconds, data1.SubSeconds, data1.Negative);
 
-            point2 = GpsPosition.FromString(null);
-            Assert.That(point1, Is.Not.EqualTo(point2));
-        }
+        TestUtil.GetHashCodeTest(TestData.GpsPositionZero, TestData.GpsPosition1,
+            TestData.GpsPosition2, copyOfData1);
+    }
 
-        [Test]
-        public void GetHashCodeTest()
-        {
-            var data1 = TestData.GpsPosition1;
-            var copyOfData1 = new GpsPosition(data1.Degrees,
-                data1.Minutes, data1.Seconds, data1.SubSeconds, data1.Negative);
+    [Test]
+    public void GpsPositionTest()
+    {
+        GpsPosition point = TestData.GpsPosition2;
+        Assert.That(point.Degrees, Is.EqualTo(47));
+        Assert.That(point.Minutes, Is.EqualTo(4));
+        Assert.That(point.Seconds, Is.EqualTo(15));
+        Assert.That(point.SubSeconds, Is.EqualTo(16));
+        Assert.That(point.Negative, Is.EqualTo(true));
 
-            TestUtil.GetHashCodeTest(TestData.GpsPositionZero, TestData.GpsPosition1,
-                TestData.GpsPosition2, copyOfData1);
-        }
-
-        [Test]
-        public void GpsPositionTest()
-        {
-            var point = TestData.GpsPosition2;
-            Assert.That(point.Degrees, Is.EqualTo(47));
-            Assert.That(point.Minutes, Is.EqualTo(4));
-            Assert.That(point.Seconds, Is.EqualTo(15));
-            Assert.That(point.SubSeconds, Is.EqualTo(16));
-            Assert.That(point.Negative, Is.EqualTo(true));
-
-            point = TestData.GpsPosition1;
-            Assert.That(point.Negative, Is.EqualTo(false));
-        }
+        point = TestData.GpsPosition1;
+        Assert.That(point.Negative, Is.EqualTo(false));
     }
 }

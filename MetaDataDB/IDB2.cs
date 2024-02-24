@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -18,7 +18,6 @@
 // 
 // *******************************************************************************
 
-namespace TCSystem.MetaDataDB
-{
-    public interface IDB2 : IDB2Read, IDB2Write { }
-}
+namespace TCSystem.MetaDataDB;
+
+public interface IDB2 : IDB2Read, IDB2Write { }

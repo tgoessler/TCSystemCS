@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -18,12 +18,11 @@
 // 
 // *******************************************************************************
 
-namespace TCSystem.MetaData
+namespace TCSystem.MetaData;
+
+public enum FaceMode
 {
-    public enum FaceMode
-    {
-        Undefined = 0,
-        DlibFront = 1,
-        DlibCnn = 2
-    }
+    Undefined = 0,
+    DlibFront = 1,
+    DlibCnn = 2
 }

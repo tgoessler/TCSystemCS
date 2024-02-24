@@ -10,7 +10,7 @@
 //                         *
 // *******************************************************************************
 //  see https://github.com/ThE-TiGeR/TCSystemCS for details.
-//  Copyright (C) 2003 - 2023 Thomas Goessler. All Rights Reserved.
+//  Copyright (C) 2003 - 2024 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
 //  TCSystem is the legal property of its developers.
@@ -29,102 +29,105 @@ using TCSystem.Util;
 
 #endregion
 
-namespace TCSystem.MetaData
+namespace TCSystem.MetaData;
+
+public sealed class FileAndPersonTag : IEquatable<FileAndPersonTag>
 {
-    public sealed class FileAndPersonTag : IEquatable<FileAndPersonTag>
-    {
 #region Public
 
-        public FileAndPersonTag(string fileName, PersonTag personTag)
+    public FileAndPersonTag(string fileName, PersonTag personTag)
+    {
+        FileName = fileName ?? string.Empty;
+        PersonTag = personTag;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return EqualsUtil.Equals(this, obj as FileAndPersonTag, EqualsImp);
+    }
+
+    public bool Equals(FileAndPersonTag other)
+    {
+        return EqualsUtil.Equals(this, other, EqualsImp);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
         {
-            FileName = fileName ?? string.Empty;
-            PersonTag = personTag;
+            int hashCode = FileName.GetHashCode();
+            hashCode = (hashCode * 397) ^ PersonTag.GetHashCode();
+            return hashCode;
+        }
+    }
+
+    public string ToJsonString()
+    {
+        return ToJson().ToString(Formatting.None);
+    }
+
+    public override string ToString()
+    {
+        return ToJson().ToString(Formatting.Indented);
+    }
+
+    public static FileAndPersonTag FromJsonString(string jsonString)
+    {
+        return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
+    }
+
+    public static string ToJsonStringArray(IEnumerable<FileAndPersonTag> fileAndPersonTags)
+    {
+        var array = new JArray(fileAndPersonTags.Select(fpt => fpt.ToJson()));
+        return array.ToString(Formatting.None);
+    }
+
+    public static IEnumerable<FileAndPersonTag> FromJsonStringArray(string jsonString)
+    {
+        if (string.IsNullOrEmpty(jsonString))
+        {
+            return Array.Empty<FileAndPersonTag>();
         }
 
-        public override bool Equals(object obj)
-        {
-            return EqualsUtil.Equals(this, obj as FileAndPersonTag, EqualsImp);
-        }
+        JArray array = JArray.Parse(jsonString);
+        return array.Select(v => FromJson((JObject)v));
+    }
 
-        public bool Equals(FileAndPersonTag other)
-        {
-            return EqualsUtil.Equals(this, other, EqualsImp);
-        }
-
-        private bool EqualsImp(FileAndPersonTag other)
-        {
-            return string.Equals(FileName, other.FileName, StringComparison.InvariantCulture) &&
-                   Equals(PersonTag, other.PersonTag);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = FileName.GetHashCode();
-                hashCode = (hashCode * 397) ^ PersonTag.GetHashCode();
-                return hashCode;
-            }
-        }
-
-        public string ToJsonString()
-        {
-            return ToJson().ToString(Formatting.None);
-        }
-
-        public override string ToString()
-        {
-            return ToJson().ToString(Formatting.Indented);
-        }
-
-        public static FileAndPersonTag FromJsonString(string jsonString)
-        {
-            return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
-        }
-
-        public static string ToJsonStringArray(IEnumerable<FileAndPersonTag> fileAndPersonTags)
-        {
-            var array = new JArray(fileAndPersonTags.Select(fpt => fpt.ToJson()));
-            return array.ToString(Formatting.None);
-        }
-
-        public static IEnumerable<FileAndPersonTag> FromJsonStringArray(string jsonString)
-        {
-            if (string.IsNullOrEmpty(jsonString))
-            {
-                return Array.Empty<FileAndPersonTag>();
-            }
-
-            var array = JArray.Parse(jsonString);
-            return array.Select(v => FromJson((JObject) v));
-        }
-
-        public string FileName { get; }
-        public PersonTag PersonTag { get; }
+    public string FileName { get; }
+    public PersonTag PersonTag { get; }
 
 #endregion
 
 #region Internal
 
-        internal static FileAndPersonTag FromJson(JObject jsonObject)
-        {
-            return new(
-                (string) jsonObject["file_name"],
-                PersonTag.FromJson((JObject) jsonObject["person_tag"])
-            );
-        }
+    internal static FileAndPersonTag FromJson(JObject jsonObject)
+    {
+        return new(
+            (string)jsonObject["file_name"],
+            PersonTag.FromJson((JObject)jsonObject["person_tag"])
+        );
+    }
 
-        internal JObject ToJson()
+    internal JObject ToJson()
+    {
+        var obj = new JObject
         {
-            var obj = new JObject
-            {
-                ["file_name"] = FileName,
-                ["person_tag"] = PersonTag?.ToJson()
-            };
+            ["file_name"] = FileName,
+            ["person_tag"] = PersonTag?.ToJson()
+        };
 
-            return obj;
-        }
+        return obj;
+    }
 
 #endregion
+
+#region Private
+
+    private bool EqualsImp(FileAndPersonTag other)
+    {
+        return string.Equals(FileName, other.FileName, StringComparison.InvariantCulture) &&
+               Equals(PersonTag, other.PersonTag);
     }
+
+#endregion
 }
