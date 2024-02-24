@@ -6,6 +6,7 @@
 		<RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</RepositoryUrl>
 		<RepositoryType Condition="'$(RepositoryType)' == ''">Git</RepositoryType>
 		<PackageLicenseFile Condition="'$(PackageLicenseFile)' == ''">LICENSE</PackageLicenseFile>
+		<PackageReadmeFile Condition="'$(PackageReadmeFile)' == ''">README.md</PackageReadmeFile>
 		<NuGetPushSource Condition="'$(NuGetPushSource)' == ''">https://api.nuget.org/v3/index.json</NuGetPushSource>
 		<NuGetPushFolder Condition="'$(NuGetPushFolder)' == ''">D:\Source\NuGetPackages\</NuGetPushFolder>
 		<IncludeSymbols>true</IncludeSymbols>
