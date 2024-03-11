@@ -33,8 +33,9 @@ jobs:
     - name: Tests
       run: dotnet test -c Release --no-restore
 
-    - name: Pack
-      run: dotnet pack -c Release --no-restore
+    - name: Setup timestamp
+      id: timestamp
+      run: echo "::set-output name=timestamp::$(date +'%Y%m%d%H%M')"
 
     - name: Deploy
-      run: dotnet msbuild TCSystem.sln -t:NugetPush -p:Configuration=Release
+      run: dotnet msbuild TCSystem.sln -t:Pack,NugetPush -p:Configuration=Release;DevlopmentVersionSuffix=-ci.${{ steps.timestamp.outputs.timestamp }}
