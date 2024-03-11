@@ -234,4 +234,29 @@ public sealed class LocationTests : DBSetup
         Assert.That(DB.GetNumFilesOfAddress(Address2, true), Is.EqualTo(0));
         Assert.That(DBReadOnly.GetNumLocations(), Is.EqualTo(1));
     }
+
+    [Test]
+    public void ChangeAddress()
+    {
+        var image1 = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        AssertImageDataNotEqual(image1, TestData.Image1);
+
+        // Change Location to null
+        var imageModified = Image.ChangeLocation(image1, null);
+        image1 = DB.AddMetaData(imageModified, DateTimeOffset.Now);
+        AssertImageDataNotEqual(image1, imageModified);
+
+        // Change Location to Location2
+        imageModified = Image.ChangeLocation(image1, Location2);
+        image1 = DB.AddMetaData(imageModified, DateTimeOffset.Now);
+        AssertImageDataNotEqual(image1, imageModified);
+
+        // Change Location back to Location1
+        imageModified = Image.ChangeLocation(image1, Location1);
+        AssertImageDataNotEqual(imageModified, TestData.Image1);
+        image1 = DB.AddMetaData(imageModified, DateTimeOffset.Now);
+        AssertImageDataNotEqual(image1, TestData.Image1);
+
+    }
+
 }

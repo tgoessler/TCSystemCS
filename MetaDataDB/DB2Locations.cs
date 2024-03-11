@@ -179,7 +179,7 @@ internal sealed class DB2Locations : DB2Constants
     public void SetLocation(long fileId, Location newLocation, Location oldLocation, SqliteTransaction transaction)
     {
         long newLocationId = AddLocation(newLocation, transaction);
-        if (oldLocation == null)
+        if (oldLocation == null && GetFileLocationId(fileId, transaction) == Constants.InvalidId)
         {
             AddLocation(fileId, newLocation, newLocationId, transaction);
         }
@@ -326,6 +326,27 @@ internal sealed class DB2Locations : DB2Constants
             object result = command.ExecuteScalar();
             return (long?)result ?? Constants.InvalidId;
         }
+    }
+    
+    private long GetFileLocationId(long fileId, SqliteTransaction transaction)
+    {
+        using (var command = new SqliteCommand())
+        {
+            command.Transaction = transaction;
+            command.Connection = _instance.Connection;
+            command.CommandText = $"SELECT {IdLocationId} FROM {TableFileLocations} WHERE {IdFileId}=@{IdFileId};";
+            command.Parameters.AddWithValue($"@{IdFileId}", fileId);
+
+            using (SqliteDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    return reader.GetInt64(0);
+                }
+            }
+        }
+
+        return Constants.InvalidId;
     }
 
     private static Address ReadAddress(SqliteDataReader reader, int startIndex)
