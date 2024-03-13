@@ -35,7 +35,7 @@ jobs:
 
     - name: Setup timestamp
       id: timestamp
-      run: echo "::set-output name=timestamp::$(date +'%Y%m%d%H%M')"
+      run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
 
     - name: Deploy
-      run: dotnet msbuild TCSystem.sln -t:Pack,NugetPush -p:Configuration=Release;DevlopmentVersionSuffix=-ci.${{ steps.timestamp.outputs.timestamp }}
+      run: dotnet msbuild TCSystem.sln -t:Pack,NugetPush -p:Configuration=Release,DevlopmentVersionSuffix=-ci.${{ steps.timestamp.outputs.timestamp }}
