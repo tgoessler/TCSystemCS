@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Print timestamp
-      run: echo "The timestamp is ${{ needs.setup_timestamp.outputs.timestamp }}""
+      run: echo "The timestamp is ${{ needs.setup_timestamp.outputs.timestamp }}"
 
     - name: Checkout
       uses: actions/checkout@v4
