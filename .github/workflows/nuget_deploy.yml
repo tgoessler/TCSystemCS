@@ -5,11 +5,22 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build:
-
+  setup_timestamp:
     runs-on: windows-latest
+    outputs:
+      timestamp: ${{ steps.get_timestamp.outputs.timestamp }}
+    steps:
+      - id: get_timestamp
+        run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    runs-on: windows-latest
+    needs: setup_timestamp
 
     steps:
+    - name: Print timestamp
+      run: echo "The timestamp is ${{ needs.setup_timestamp.outputs.timestamp }}""
+
     - name: Checkout
       uses: actions/checkout@v4
       
@@ -33,9 +44,5 @@ jobs:
     - name: Tests
       run: dotnet test -c Release --no-restore
 
-    - name: Setup timestamp
-      id: timestamp
-      run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> "$GITHUB_OUTPUT"
-
     - name: Deploy
-      run: dotnet msbuild TCSystem.sln -t:Pack,NugetPush -p:Configuration=Release,DevelopmentVersionSuffix=-ci.${{ steps.timestamp.outputs.timestamp }}
+      run: dotnet msbuild TCSystem.sln -t:Pack,NugetPush -p:Configuration=Release,DevelopmentVersionSuffix=-ci.${{ needs.setup_timestamp.outputs.timestamp }}
