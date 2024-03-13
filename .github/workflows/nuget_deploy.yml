@@ -11,7 +11,7 @@ jobs:
       timestamp: ${{ steps.get_timestamp.outputs.timestamp }}
     steps:
       - id: get_timestamp
-        run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> "$GITHUB_OUTPUT"
+        run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> $Env:GITHUB_OUTPUT
 
   deploy:
     runs-on: windows-latest
