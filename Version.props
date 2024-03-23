@@ -3,10 +3,14 @@
 	<PropertyGroup>
 		<Company>TCSystem</Company>
 		<Authors>Thomas Gößler</Authors>
-		<DevlopmentVersionSuffix Condition="'$(DevlopmentVersionSuffix)'==''"></DevlopmentVersionSuffix>
-		<Version>4.0.0$(DevlopmentVersionSuffix)</Version>
 		<NamespaceName>at.tcsystem</NamespaceName>
 		<Copyright>Copyright © $(Authors) 2024</Copyright>
+
+		<Timestamp>$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</Timestamp>
+		<DevelopmentVersionSuffix Condition="'$(DevelopmentVersionSuffix)'==''">-ci.$(Timestamp)</DevelopmentVersionSuffix>
+
+		<Version>4.1.0</Version>
+		<Version Condition="'$(IsCiBuild)'=='true'">$(Version)$(DevelopmentVersionSuffix)</Version>
 	</PropertyGroup>
 
 </Project>

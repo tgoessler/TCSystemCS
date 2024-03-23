@@ -61,7 +61,7 @@ public class DBSetup
         Assert.That(data1.PersonTags, Is.EquivalentTo(data2.PersonTags));
         Assert.That(data1.Location, Is.EqualTo(data2.Location));
         Assert.That(data1.DateTaken, Is.EqualTo(data2.DateTaken));
-        Assert.That(data1.InvalidateId(), Is.EqualTo(data2.InvalidateId()));
+        Assert.That(data1, Is.EqualTo(data2));
     }
 
     protected IDB2 DB => _db;

@@ -3,18 +3,34 @@ name: Deploy
 on:
   workflow_dispatch:
     branches: [ main, develop ]
-
+    inputs:
+      IsCiBuild:
+        description: 'Is Continues Integration Build'
+        required: true
+        default: true
+        type: boolean
 jobs:
-  build:
-
+  setup_timestamp:
     runs-on: windows-latest
+    outputs:
+      timestamp: ${{ steps.get_timestamp.outputs.timestamp }}
+    steps:
+      - id: get_timestamp
+        run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> $Env:GITHUB_OUTPUT
+
+  deploy:
+    runs-on: windows-latest
+    needs: setup_timestamp
 
     steps:
+    - name: Print timestamp
+      run: echo "The timestamp is ${{ needs.setup_timestamp.outputs.timestamp }}"
+
     - name: Checkout
       uses: actions/checkout@v4
       
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 6
     
@@ -33,8 +49,5 @@ jobs:
     - name: Tests
       run: dotnet test -c Release --no-restore
 
-    - name: Pack
-      run: dotnet pack -c Release --no-restore
-
     - name: Deploy
-      run: dotnet msbuild TCSystem.sln -t:NugetPush -p:Configuration=Release
+      run: dotnet msbuild TCSystem.sln -t:Pack,NugetPush -p:Configuration=Release,DevelopmentVersionSuffix=-ci.${{ needs.setup_timestamp.outputs.timestamp }},IsCiBuild=${{ github.event.inputs.IsCiBuild }}
