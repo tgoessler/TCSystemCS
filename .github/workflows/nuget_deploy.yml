@@ -3,7 +3,12 @@ name: Deploy
 on:
   workflow_dispatch:
     branches: [ main, develop ]
-
+    inputs:
+      IsCiBuild:
+        description: 'Is Continues Integration Build'
+        required: true
+        default: true
+        type: boolean
 jobs:
   setup_timestamp:
     runs-on: windows-latest
@@ -45,4 +50,4 @@ jobs:
       run: dotnet test -c Release --no-restore
 
     - name: Deploy
-      run: dotnet msbuild TCSystem.sln -t:Pack,NugetPush -p:Configuration=Release,DevelopmentVersionSuffix=-ci.${{ needs.setup_timestamp.outputs.timestamp }}
+      run: dotnet msbuild TCSystem.sln -t:Pack,NugetPush -p:Configuration=Release,DevelopmentVersionSuffix=-ci.${{ needs.setup_timestamp.outputs.timestamp }},IsCiBuild=${{ github.event.inputs.IsCiBuild }}
