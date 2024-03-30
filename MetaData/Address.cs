@@ -29,18 +29,9 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class Address : IEquatable<Address>
+public sealed class Address(string country = "", string province = "", string city = "", string street = "") : IEquatable<Address>
 {
 #region Public
-
-    public Address(string country = "", string province = "", string city = "",
-                   string street = "")
-    {
-        Country = country;
-        Province = province;
-        City = city;
-        Street = street;
-    }
 
     public override bool Equals(object obj)
     {
@@ -79,10 +70,10 @@ public sealed class Address : IEquatable<Address>
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public string Country { get; }
-    public string Province { get; }
-    public string City { get; }
-    public string Street { get; }
+    public string Country { get; } = country;
+    public string Province { get; } = province;
+    public string City { get; } = city;
+    public string Street { get; } = street;
 
     public string FormattedAddress
     {

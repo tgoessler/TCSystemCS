@@ -95,7 +95,7 @@ internal class DB2Constants
     protected DB2Constants() { }
 
     protected static readonly string[] _filters =
-    {
+    [
         FilterDate,
         FilterFaceId,
         FilterFile,
@@ -103,7 +103,7 @@ internal class DB2Constants
         FilterName,
         FilterTag,
         FilterNumPersons
-    };
+    ];
 
 #endregion
 }

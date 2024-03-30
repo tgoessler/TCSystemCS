@@ -113,7 +113,7 @@ public static class Factory
 #if DEBUG
             .MinimumLevel.Debug();
 #else
-                .MinimumLevel.Information();
+            .MinimumLevel.Information();
 #endif
         return loggerConfiguration;
     }

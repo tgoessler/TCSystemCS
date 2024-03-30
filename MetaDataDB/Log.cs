@@ -20,10 +20,6 @@
 
 #region Usings
 
-#endregion
-
-#region Usings
-
 using TCSystem.Logging;
 
 #endregion

@@ -30,16 +30,9 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
-public readonly struct FaceDistanceInfo : IEquatable<FaceDistanceInfo>
+public readonly struct FaceDistanceInfo(long faceId1, long faceId2, int distance) : IEquatable<FaceDistanceInfo>
 {
 #region Public
-
-    public FaceDistanceInfo(long faceId1, long faceId2, int distance)
-    {
-        FaceId1 = faceId1;
-        FaceId2 = faceId2;
-        Distance = distance;
-    }
 
     public override bool Equals(object obj)
     {
@@ -100,13 +93,13 @@ public readonly struct FaceDistanceInfo : IEquatable<FaceDistanceInfo>
         return !lhs.Equals(rhs);
     }
 
-    public long FaceId1 { get; }
-    public long FaceId2 { get; }
+    public long FaceId1 { get; } = faceId1;
+    public long FaceId2 { get; } = faceId2;
 
     /// <summary>
     ///     FaceId1 matches FaceId2 in percent
     /// </summary>
-    public int Distance { get; }
+    public int Distance { get; } = distance;
 
 #endregion
 

@@ -29,15 +29,9 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class PersonTag : IEquatable<PersonTag>
+public sealed class PersonTag(Person person, Face face) : IEquatable<PersonTag>
 {
 #region Public
-
-    public PersonTag(Person person, Face face)
-    {
-        Person = person;
-        Face = face;
-    }
 
     public override bool Equals(object obj)
     {
@@ -74,8 +68,8 @@ public sealed class PersonTag : IEquatable<PersonTag>
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public Person Person { get; }
-    public Face Face { get; }
+    public Person Person { get; } = person;
+    public Face Face { get; } = face;
 
 #endregion
 

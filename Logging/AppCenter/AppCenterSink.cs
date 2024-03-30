@@ -30,14 +30,9 @@ using Serilog.Events;
 
 namespace TCSystem.Logging.AppCenter;
 
-internal sealed class AppCenterSink : ILogEventSink
+internal sealed class AppCenterSink(IFormatProvider formatProvider) : ILogEventSink
 {
 #region Public
-
-    public AppCenterSink(IFormatProvider formatProvider)
-    {
-        _formatProvider = formatProvider;
-    }
 
     public async void Emit(LogEvent logEvent)
     {
@@ -69,7 +64,7 @@ internal sealed class AppCenterSink : ILogEventSink
 
 #region Private
 
-    private readonly IFormatProvider _formatProvider;
+    private readonly IFormatProvider _formatProvider = formatProvider;
 
 #endregion
 }

@@ -29,14 +29,9 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Locations : DB2Constants
+internal sealed class DB2Locations(DB2Instance instance) : DB2Constants
 {
 #region Public
-
-    public DB2Locations(DB2Instance instance)
-    {
-        _instance = instance;
-    }
 
     public IList<string> GetFilesOfAddress(Address address, bool useProvinceAlsoIfEmpty)
     {
@@ -327,7 +322,7 @@ internal sealed class DB2Locations : DB2Constants
             return (long?)result ?? Constants.InvalidId;
         }
     }
-    
+
     private long GetFileLocationId(long fileId, SqliteTransaction transaction)
     {
         using (var command = new SqliteCommand())
@@ -358,7 +353,7 @@ internal sealed class DB2Locations : DB2Constants
             reader.GetString(startIndex + 3));
     }
 
-    private readonly DB2Instance _instance;
+    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

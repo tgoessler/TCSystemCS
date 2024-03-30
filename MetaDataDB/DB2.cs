@@ -584,28 +584,22 @@ internal sealed class DB2 : IDB2
         _instances.Push(instance);
     }
 
-    private readonly struct InstanceAcquire : IDisposable
+    private readonly struct InstanceAcquire(DB2 db2) : IDisposable
     {
 #region Public
-
-        public InstanceAcquire(DB2 db2)
-        {
-            _db2 = db2;
-            Instance = db2.AcquireInstance();
-        }
 
         public void Dispose()
         {
             _db2.ReleaseInstance(Instance);
         }
 
-        public DB2Instance Instance { get; }
+        public DB2Instance Instance { get; } = db2.AcquireInstance();
 
 #endregion
 
 #region Private
 
-        private readonly DB2 _db2;
+        private readonly DB2 _db2 = db2;
 
 #endregion
     }

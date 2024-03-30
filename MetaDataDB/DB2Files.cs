@@ -30,14 +30,9 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Files : DB2Constants
+internal sealed class DB2Files(DB2Instance instance) : DB2Constants
 {
 #region Public
-
-    public DB2Files(DB2Instance instance)
-    {
-        _instance = instance;
-    }
 
     public long GetNumFiles()
     {
@@ -420,7 +415,7 @@ internal sealed class DB2Files : DB2Constants
             .Replace("'", "");
     }
 
-    private readonly DB2Instance _instance;
+    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

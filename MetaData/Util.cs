@@ -119,7 +119,7 @@ public static class Util
 
 #region Private
 
-    private static readonly string[] _sExtensions = { ".jpg", ".jpeg" };
+    private static readonly string[] _sExtensions = [".jpg", ".jpeg"];
 
 #endregion
 }

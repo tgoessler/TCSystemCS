@@ -31,18 +31,10 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class FaceInfo : IEquatable<FaceInfo>
+public sealed class FaceInfo(long fileId, long faceId, long personId, FaceMode faceMode,
+                             IEnumerable<FixedPoint64> faceDescriptor) : IEquatable<FaceInfo>
 {
 #region Public
-
-    public FaceInfo(long fileId, long faceId, long personId, FaceMode faceMode, IEnumerable<FixedPoint64> faceDescriptor)
-    {
-        FileId = fileId;
-        FaceId = faceId;
-        PersonId = personId == Constants.EmptyPersonId ? Constants.InvalidId : personId;
-        FaceMode = faceMode;
-        FaceDescriptor = (faceDescriptor ?? Array.Empty<FixedPoint64>()).ToArray();
-    }
 
     public override bool Equals(object obj)
     {
@@ -87,11 +79,11 @@ public sealed class FaceInfo : IEquatable<FaceInfo>
         return array.ToString(Formatting.None);
     }
 
-    public long FileId { get; }
-    public long FaceId { get; }
-    public long PersonId { get; }
-    public FaceMode FaceMode { get; }
-    public IReadOnlyCollection<FixedPoint64> FaceDescriptor { get; }
+    public long FileId { get; } = fileId;
+    public long FaceId { get; } = faceId;
+    public long PersonId { get; } = personId == Constants.EmptyPersonId ? Constants.InvalidId : personId;
+    public FaceMode FaceMode { get; } = faceMode;
+    public IReadOnlyCollection<FixedPoint64> FaceDescriptor { get; } = (faceDescriptor ?? Array.Empty<FixedPoint64>()).ToArray();
 
 #endregion
 

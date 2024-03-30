@@ -29,18 +29,10 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class GpsPosition : IEquatable<GpsPosition>
+public sealed class GpsPosition(int deg, int min, int sec, int subSec,
+                                bool neg) : IEquatable<GpsPosition>
 {
 #region Public
-
-    public GpsPosition(int deg, int min, int sec, int subSec, bool neg)
-    {
-        Degrees = deg;
-        Minutes = min;
-        Seconds = sec;
-        SubSeconds = subSec;
-        Negative = neg;
-    }
 
     public double ToDouble()
     {
@@ -119,11 +111,11 @@ public sealed class GpsPosition : IEquatable<GpsPosition>
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public int Degrees { get; }
-    public int Minutes { get; }
-    public int Seconds { get; }
-    public int SubSeconds { get; }
-    public bool Negative { get; }
+    public int Degrees { get; } = deg;
+    public int Minutes { get; } = min;
+    public int Seconds { get; } = sec;
+    public int SubSeconds { get; } = subSec;
+    public bool Negative { get; } = neg;
 
 #endregion
 

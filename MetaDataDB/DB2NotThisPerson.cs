@@ -18,20 +18,19 @@
 // 
 // *******************************************************************************
 
+#region Usings
+
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 
+#endregion
+
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2NotThisPerson: DB2Constants
+internal sealed class DB2NotThisPerson(DB2Instance instance) : DB2Constants
 {
-    private readonly DB2Instance _instance;
+#region Public
 
-    public DB2NotThisPerson(DB2Instance instance)
-    {
-        _instance = instance;
-    }
-   
     public void AddNotThisPerson(long faceId, long personId, SqliteTransaction transaction)
     {
         using (var command = new SqliteCommand())
@@ -59,11 +58,11 @@ internal sealed class DB2NotThisPerson: DB2Constants
 
                 while (reader.HasRows && reader.Read())
                 {
-                    var faceId = reader.GetInt64(0);
-                    var personId = reader.GetInt64(1);
-                    if (!notThisPersonInformation.TryGetValue(faceId, out var personIds))
+                    long faceId = reader.GetInt64(0);
+                    long personId = reader.GetInt64(1);
+                    if (!notThisPersonInformation.TryGetValue(faceId, out IList<long> personIds))
                     {
-                        notThisPersonInformation[faceId] = new List<long> { personId };
+                        notThisPersonInformation[faceId] = [personId];
                     }
                     else
                     {
@@ -88,4 +87,12 @@ internal sealed class DB2NotThisPerson: DB2Constants
             command.ExecuteNonQuery();
         }
     }
+
+#endregion
+
+#region Private
+
+    private readonly DB2Instance _instance = instance;
+
+#endregion
 }

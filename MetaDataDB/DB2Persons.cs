@@ -30,14 +30,9 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Persons : DB2Constants
+internal sealed class DB2Persons(DB2Instance instance) : DB2Constants
 {
 #region Public
-
-    public DB2Persons(DB2Instance instance)
-    {
-        _instance = instance;
-    }
 
     public long GetNumPersons(SqliteTransaction transaction)
     {
@@ -568,7 +563,7 @@ internal sealed class DB2Persons : DB2Constants
         command.Parameters.AddWithValue($"@{IdSourceId}", person.SourceId);
     }
 
-    private readonly DB2Instance _instance;
+    private readonly DB2Instance _instance = instance;
 
 #endregion
 }
