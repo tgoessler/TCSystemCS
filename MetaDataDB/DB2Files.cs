@@ -349,7 +349,7 @@ internal sealed class DB2Files(DB2Instance instance) : DB2Constants
         command.Parameters.AddWithValue($"@{IdProcessingInfo}", (long)data.ProcessingInfos);
     }
 
-    private static IReadOnlyList<(string Key, string Value, bool IsAdd)> PrepareFilters(string searchFilterString)
+    private static List<(string Key, string Value, bool IsAdd)> PrepareFilters(string searchFilterString)
     {
         var searchFiltersList = new List<(string Key, string Value, bool IsAdd)>();
 
