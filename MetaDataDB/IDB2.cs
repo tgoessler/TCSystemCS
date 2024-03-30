@@ -20,4 +20,4 @@
 
 namespace TCSystem.MetaDataDB;
 
-public interface IDB2 : IDB2Read, IDB2Write { }
+public interface IDB2 : IDB2Read, IDB2Write;
