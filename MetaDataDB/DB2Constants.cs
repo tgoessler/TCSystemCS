@@ -38,6 +38,7 @@ internal class DB2Constants
     protected const string TableFileFaces = "FileFaces";
     protected const string TableFileTags = "FileTags";
     protected const string TableFileLocations = "FileLocations";
+    protected const string TableNotThisPerson = "NotThisPerson";
 
     protected const string IdKey = "Key";
     protected const string IdValue = "Value";

@@ -31,7 +31,7 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-public sealed class DB2 : IDB2
+internal sealed class DB2 : IDB2
 {
 #region Public
 
@@ -460,6 +460,26 @@ public sealed class DB2 : IDB2
         using (var acquiredInstance = new InstanceAcquire(this))
         {
             return acquiredInstance.Instance.Persons.GetFileAndPersonTags(name, visibleOnly);
+        }
+    }
+
+    public void AddNotThisPerson(Face face, Person person)
+    {
+        using (var acquiredInstance = new InstanceAcquire(this))
+        {
+            using (SqliteTransaction transaction = acquiredInstance.Instance.BeginTransaction())
+            {
+                acquiredInstance.Instance.NotThisPerson.AddNotThisPerson(face.Id, person.Id, transaction);
+                transaction.Commit();
+            }
+        }
+    }
+
+    public IDictionary<long, IList<long>> GetNotThisPersonInformation()
+    {
+        using (var acquiredInstance = new InstanceAcquire(this))
+        {
+            return acquiredInstance.Instance.NotThisPerson.GetNotThisPersonInformation();
         }
     }
 

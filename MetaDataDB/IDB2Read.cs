@@ -74,6 +74,12 @@ public interface IDB2Read
 
     IList<FileAndPersonTag> GetFileAndPersonTagsOfPerson(string name, bool visibleOnly);
 
+    /// <summary>
+    ///     get for each face id which person id it is not
+    /// </summary>
+    /// <returns>dictionary from face id to person ids</returns>
+    IDictionary<long, IList<long>> GetNotThisPersonInformation();
+
     void EnableUnsafeMode();
     void EnableDefaultMode();
 

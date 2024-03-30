@@ -36,38 +36,48 @@ internal sealed class DB2Instance : DB2Constants
     public DB2Instance(string fileName, bool readOnly)
         : this(fileName, readOnly, false)
     {
-        Log.Instance.Info($"Open Database '{fileName}:readOnly={readOnly}'");
-
-        _fileName = fileName;
-        ReadOnly = readOnly;
-        CreateConnection();
-
-        if (readOnly)
+        try
         {
-            ReadDbVersion();
-        }
-        else
-        {
-            CreateTableIndex();
-            ReadDbVersion();
+            Log.Instance.Info($"Open Database '{fileName}:readOnly={readOnly}'");
 
-            using (SqliteTransaction transaction = WriteDbVersion())
+            _fileName = fileName;
+            ReadOnly = readOnly;
+            CreateConnection();
+
+            if (readOnly)
             {
-                CreateTableFiles(transaction);
-                CreateTablePersons(transaction);
-                CreateTableTags(transaction);
-                CreateTableLocation(transaction);
-
-                CreateTableFileData(transaction);
-                CreateTableFileFaces(transaction);
-                CreateTableFileTags(transaction);
-                CreateTableFileLocation(transaction);
-
-                transaction.Commit();
+                ReadDbVersion();
             }
-        }
+            else
+            {
+                CreateTableIndex();
+                ReadDbVersion();
 
-        Log.Instance.Info($"Open Database '{fileName}' done.");
+                using (SqliteTransaction transaction = WriteDbVersion())
+                {
+                    CreateTableFiles(transaction);
+                    CreateTablePersons(transaction);
+                    CreateTableTags(transaction);
+                    CreateTableLocation(transaction);
+
+                    CreateTableFileData(transaction);
+                    CreateTableFileFaces(transaction);
+                    CreateTableFileTags(transaction);
+                    CreateTableFileLocation(transaction);
+
+                    CreateTableNotThisPerson(transaction);
+
+                    transaction.Commit();
+                }
+            }
+
+            Log.Instance.Info($"Open Database '{fileName}:readOnly={readOnly}' done.");
+        }
+        catch (Exception e)
+        {
+            Log.Instance.Fatal($"Failed open DB {fileName}:readOnly={readOnly}", e);
+            throw;
+        }
     }
 
     public void Close()
@@ -127,6 +137,7 @@ internal sealed class DB2Instance : DB2Constants
     public DB2Locations Locations { get; }
     public DB2Persons Persons { get; }
     public DB2Tags Tags { get; }
+    public DB2NotThisPerson NotThisPerson { get; }
 
 #endregion
 
@@ -143,6 +154,7 @@ internal sealed class DB2Instance : DB2Constants
         Locations = new(this);
         Persons = new(this);
         Tags = new(this);
+        NotThisPerson = new(this);
     }
 
     private DB2Instance(string fileName, bool readOnly, string version, bool unsafeModeEnabled)
@@ -271,6 +283,29 @@ internal sealed class DB2Instance : DB2Constants
             command.Connection = Connection;
             command.Transaction = transaction;
             command.CommandText = $"CREATE INDEX IF NOT EXISTS index_fileid_to_locations ON {TableFileLocations}({IdFileId});";
+            command.ExecuteNonQuery();
+        }
+    }
+
+    private void CreateTableNotThisPerson(SqliteTransaction transaction)
+    {
+        using (var command = new SqliteCommand())
+        {
+            command.Connection = Connection;
+            command.Transaction = transaction;
+            command.CommandText = $"CREATE TABLE IF NOT EXISTS {TableNotThisPerson} " +
+                                  "( " +
+                                  $"{IdFaceId} REFERENCES {TableFileFaces}({IdFaceId}) ON DELETE CASCADE, " +
+                                  $"{IdPersonId} REFERENCES {TablePersons}({IdPersonId}) ON DELETE CASCADE" +
+                                  ");";
+            command.ExecuteNonQuery();
+        }
+
+        using (var command = new SqliteCommand())
+        {
+            command.Connection = Connection;
+            command.Transaction = transaction;
+            command.CommandText = $"CREATE INDEX IF NOT EXISTS index_fileid_to_tags ON {TableFileTags}({IdFileId});";
             command.ExecuteNonQuery();
         }
     }
