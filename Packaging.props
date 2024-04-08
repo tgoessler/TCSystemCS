@@ -26,13 +26,11 @@
 
 	<Target Name="NugetPush" Condition="'$(Configuration)'=='Release'"
 	        DependsOnTargets="Rebuild">
-		<Exec WorkingDirectory="$(OutputPath)"
-		      Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate" />
+		<Exec Command="dotnet nuget push $(OutputPath)$(AssemblyName).$(Version).nupkg --source $(NuGetPushSource) --skip-duplicate" />
 	</Target>
 
 	<Target Name="NugetCopy" DependsOnTargets="Rebuild">
-		<Exec WorkingDirectory="$(OutputPath)"
-		      Command="dotnet nuget push ..\$(AssemblyName).$(Version).nupkg --source $(NuGetPushFolder)" />
+		<Exec Command="dotnet nuget push $(OutputPath)$(AssemblyName).$(Version).nupkg --source $(NuGetPushFolder)" />
 	</Target>
 
 </Project>
