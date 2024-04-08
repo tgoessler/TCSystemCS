@@ -67,7 +67,11 @@ public static class Util
     public static bool IsSupportedFileType(string fileName)
     {
         string ext = Path.GetExtension(fileName)?.ToLower(CultureInfo.InvariantCulture);
+#if NET6_0_OR_GREATER
+        return !fileName.Contains("$RECYCLE.BIN", StringComparison.InvariantCultureIgnoreCase) &&
+#else
         return fileName.IndexOf("$RECYCLE.BIN", StringComparison.InvariantCultureIgnoreCase) == -1 &&
+#endif
                _sExtensions.FirstOrDefault(x => x.Equals(ext, StringComparison.InvariantCulture)) != default;
     }
 

@@ -267,7 +267,7 @@ public sealed class Image(long fileId, string fileName, ProcessingInfos processi
     }
 
     public long Id { get; } = fileId;
-    public string Name => FileName.Substring(FileName.LastIndexOf("\\", StringComparison.Ordinal) + 1);
+    public string Name => FileName.Substring(FileName.LastIndexOf('\\') + 1);
     public string FileName { get; } = fileName;
     public ProcessingInfos ProcessingInfos { get; } = processingInfos;
     public int Width { get; } = width;
