@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99 Build", "99 Build", "{6D
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		.github\dependabot.yml = .github\dependabot.yml
 		deploy.bat = deploy.bat
 		deploy_local.bat = deploy_local.bat
 		Directory.Build.props = Directory.Build.props
