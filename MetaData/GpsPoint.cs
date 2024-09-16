@@ -29,7 +29,7 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class GpsPoint(GpsPosition latitude = null, GpsPosition longitude = null, FixedPoint32? altitude = null) : IEquatable<GpsPoint>
+public sealed class GpsPoint(GpsPosition? latitude = null, GpsPosition? longitude = null, FixedPoint32? altitude = null) : IEquatable<GpsPoint>
 {
 #region Public
 
@@ -67,10 +67,10 @@ public sealed class GpsPoint(GpsPosition latitude = null, GpsPosition longitude 
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public GpsPosition Latitude { get; } = latitude;
-    public GpsPosition Longitude { get; } = longitude;
+    public GpsPosition? Latitude { get; } = latitude;
+    public GpsPosition? Longitude { get; } = longitude;
     public FixedPoint32? Altitude { get; } = altitude;
-    public bool IsSet => Longitude != null && Latitude != null;
+    public bool IsSet => Longitude.HasValue && Latitude.HasValue;
 
     public static GpsPoint Undefined { get; } = new();
 
@@ -96,13 +96,17 @@ public sealed class GpsPoint(GpsPosition latitude = null, GpsPosition longitude 
     internal JObject ToJson()
     {
         var obj = new JObject();
-        if (IsSet)
+        if (Latitude.HasValue)
         {
-            obj["latitude"] = Latitude.ToJson();
-            obj["longitude"] = Longitude.ToJson();
+            obj["latitude"] = Latitude.Value.ToJson();
         }
 
-        if (Altitude != null)
+        if (Longitude.HasValue)
+        {
+            obj["longitude"] = Longitude.Value.ToJson();
+        }
+
+        if (Altitude.HasValue)
         {
             obj["altitude"] = Altitude.Value.ToJson();
         }
