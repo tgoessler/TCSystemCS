@@ -114,6 +114,16 @@ public readonly struct GpsPosition(int deg, int min, int sec, int subSec,
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
+    public static bool operator ==(GpsPosition lhs, GpsPosition rhs)
+    {
+        return lhs.Equals(rhs);
+    }
+
+    public static bool operator !=(GpsPosition lhs, GpsPosition rhs)
+    {
+        return !lhs.Equals(rhs);
+    }
+
     public int Degrees { get; } = deg;
     public int Minutes { get; } = min;
     public int Seconds { get; } = sec;
