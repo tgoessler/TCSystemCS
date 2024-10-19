@@ -170,6 +170,7 @@ internal sealed class Converter
 
         IDictionary<string, DateTimeOffset> fmd1 = _fromDB.GetAllFileAndModifiedDates();
         IDictionary<string, DateTimeOffset> fmd2 = _toDB.GetAllFileAndModifiedDates();
+        // ReSharper disable once UsageOfDefaultStructEquality
         KeyValuePair<string, DateTimeOffset>[] fmd3 = fmd1.Except(fmd2).ToArray();
         if (fmd3.Length > 0)
         {
