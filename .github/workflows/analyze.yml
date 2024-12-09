@@ -24,7 +24,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6
+          dotnet-version: 8
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
@@ -57,7 +57,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"ThE-TiGeR_TCSystemCS" /o:"tcsystem" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.net6.0.opencover.xml" /d:sonar.host.url="https://sonarcloud.io" /v:"4.0.0"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"ThE-TiGeR_TCSystemCS" /o:"tcsystem" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.net8.0.opencover.xml" /d:sonar.host.url="https://sonarcloud.io" /v:"4.0.0"
           dotnet build --no-restore
           dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
