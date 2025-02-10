@@ -20,30 +20,21 @@
 
 #region Usings
 
+using System;
 using System.Threading;
 
 #endregion
 
 namespace TCSystem.Thread;
 
-public static class Factory
+public interface IMultipleTasksExecute
 {
 #region Public
 
-    public static IWorkerThread CreateWorkerThread(string name, ThreadPriority priority)
-    {
-        return new WorkerThread(name, priority);
-    }
+    void ExecuteCommand(Action action);
+    void ExecuteCommand(Action action, CancellationToken token);
+    void WaitAllDone();
+    void WaitAllDone(CancellationToken token);
 
-    public static IAsyncUpdateHelper CreateAsyncUpdateHelper()
-    {
-        return new AsyncUpdateHelper();
-    }
-
-    public static IMultipleTasksExecute CreateMultipleTasksExecute(int maxNumberOfTasks)
-    {
-        return new MultipleTasksExecute(maxNumberOfTasks);
-    }
-
-    #endregion
+#endregion
 }
