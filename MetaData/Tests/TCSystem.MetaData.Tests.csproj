@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>TCSystem.MetaData.Tests</AssemblyName>
     <RootNamespace>TCSystem.MetaData.Tests</RootNamespace>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
