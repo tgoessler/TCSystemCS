@@ -109,7 +109,14 @@ internal sealed class DB2 : IDB2
         }
     }
 
-    public IList<Address> GetAllLocationsLike(string filter = null)
+    public IList<string> GetAllTagsLikeOrderByNewestFile(string filter = null)
+    {
+        using (var acquiredInstance = new InstanceAcquire(this))
+        {
+            return acquiredInstance.Instance.Tags.GetAllTagsLikeOrderByNewestFile(filter);
+        }
+    }
+
     public IList<Address> GetAllAddressesLike(string filter = null)
     {
         using (var acquiredInstance = new InstanceAcquire(this))

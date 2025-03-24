@@ -42,7 +42,7 @@ public interface IDB2Read
 
     IList<string> GetAllFilesLike(string filter = null);
     IList<string> GetAllTagsLike(string filter = null);
-    IList<Address> GetAllLocationsLike(string filter = null);
+    IList<string> GetAllTagsLikeOrderByNewestFile(string filter = null);
     IList<Address> GetAllAddressesLike(string filter = null);
     IList<string> GetAllPersonNamesLike(string filter = null);
     IList<Location> GetAllLocations();

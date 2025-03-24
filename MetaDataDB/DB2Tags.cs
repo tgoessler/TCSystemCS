@@ -44,6 +44,40 @@ internal sealed class DB2Tags(DB2Instance instance) : DB2Constants
         }
     }
 
+    public IList<string> GetAllTagsLikeOrderByNewestFile(string filter)
+    {
+        const string filterTagsCommand = "WHERE " + IdTag + " LIKE @Filter ";
+
+        string filterCommand = filter != null ? filterTagsCommand : "";
+        if (filter != null)
+        {
+            filter = "%" + filter.Replace(' ', '%') + "%";
+        }
+
+        using (var command = new SqliteCommand())
+        {
+            command.Connection = _instance.Connection;
+            // create a query which select all IdTag and order them by date of the last file with this tag
+            command.CommandText = $"SELECT DISTINCT {IdTag} FROM {TableTags} " +
+                      $"    INNER JOIN {TableFileTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
+                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId} " +
+                      $"{filterCommand} " +
+                      $"ORDER by {TableFileData}.{IdDateTaken} ASC;";
+
+            command.Parameters.AddWithValue("@Filter", filter);
+            using (SqliteDataReader reader = command.ExecuteReader())
+            {
+                var tags = new List<string>();
+                while (reader.Read())
+                {
+                    tags.Add(reader.GetString(0));
+                }
+
+                return tags;
+            }
+        }
+    }
+
     public IList<string> GetAllTagsLike(string filter)
     {
         const string filterTagsCommand = "WHERE " + IdTag + " LIKE @Filter ";
