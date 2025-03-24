@@ -139,6 +139,7 @@ internal sealed class Converter
         CheckYears();
         CheckTags();
         CheckPersons();
+        CheckAddresses();
         CheckLocations();
         CheckFaces(true);
         CheckFaces(false);
@@ -363,37 +364,50 @@ internal sealed class Converter
         }
     }
 
-    private void CheckLocations()
+    private void CheckAddresses()
     {
-        Log.Instance.Info("Checking locations");
+        Log.Instance.Info("Checking addresses");
 
-        IList<Address> locations1 = _fromDB.GetAllLocationsLike();
-        IList<Address> locations2 = _toDB.GetAllLocationsLike();
-        Address[] locations3 = locations1.Except(locations2).ToArray();
-        if (locations3.Length > 0)
+        IList<Address> addresses1 = _fromDB.GetAllAddressesLike();
+        IList<Address> addresses2 = _toDB.GetAllAddressesLike();
+        Address[] addresses3 = addresses1.Except(addresses2).ToArray();
+        if (addresses3.Length > 0)
         {
-            Log.Instance.Warn($"List of all Locations is different {string.Join(",", locations3.Select(l => l.ToString()))}");
+            Log.Instance.Warn($"List of all Addresses is different {string.Join(",", addresses3.Select(l => l.ToString()))}");
         }
 
-        foreach (Address location in locations1)
+        foreach (Address address in addresses1)
         {
-            if (location.IsSet)
+            if (address.IsSet)
             {
-                long num1 = _fromDB.GetNumFilesOfAddress(location, true);
-                long num2 = _toDB.GetNumFilesOfAddress(location, true);
+                long num1 = _fromDB.GetNumFilesOfAddress(address, true);
+                long num2 = _toDB.GetNumFilesOfAddress(address, true);
                 if (num1 != num2)
                 {
                     throw new InvalidProgramException($"Num files do not match {num1} != {num2}");
                 }
 
-                IList<string> files1 = _fromDB.GetFilesOfAddress(location, true);
-                IList<string> files2 = _toDB.GetFilesOfAddress(location, true);
+                IList<string> files1 = _fromDB.GetFilesOfAddress(address, true);
+                IList<string> files2 = _toDB.GetFilesOfAddress(address, true);
                 string[] files3 = files1.Except(files2).ToArray();
                 if (files3.Length > 0)
                 {
-                    throw new InvalidProgramException($"List of Files of Location={location} is different {string.Join(",", files3)}");
+                    throw new InvalidProgramException($"List of Files of Address={address} is different {string.Join(",", files3)}");
                 }
             }
+        }
+    }
+
+    private void CheckLocations()
+    {
+        Log.Instance.Info("Checking locations");
+
+        IList<Location> locations1 = _fromDB.GetAllLocations();
+        IList<Location> locations2 = _toDB.GetAllLocations();
+        Location[] locations3 = locations1.Except(locations2).ToArray();
+        if (locations3.Length > 0)
+        {
+            Log.Instance.Warn($"List of all Locations is different {string.Join(",", locations3.Select(l => l.ToString()))}");
         }
     }
 

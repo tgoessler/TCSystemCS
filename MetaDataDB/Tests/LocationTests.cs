@@ -56,33 +56,33 @@ public sealed class LocationTests : DBSetup
     }
 
     [Test]
-    public void GetAllLocationsLike()
+    public void GetAllAddressesLike()
     {
-        Assert.That(DBReadOnly.GetAllLocationsLike().Count, Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetAllLocationsLike().Contains(Address.Undefined), Is.True);
-        Assert.That(DBReadOnly.GetAllLocationsLike("Steier").Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetAllAddressesLike().Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetAllAddressesLike().Contains(Address.Undefined), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike("Steier").Count, Is.EqualTo(0));
 
         DB.AddMetaData(TestData.ImageZero, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetAllLocationsLike().Count, Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetAllLocationsLike().Contains(Address.Undefined), Is.True);
-        Assert.That(DBReadOnly.GetAllLocationsLike("Steier").Count, Is.EqualTo(0));
+        Assert.That(DBReadOnly.GetAllAddressesLike().Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetAllAddressesLike().Contains(Address.Undefined), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike("Steier").Count, Is.EqualTo(0));
 
         DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetAllLocationsLike().Count, Is.EqualTo(2));
-        Assert.That(DBReadOnly.GetAllLocationsLike().Contains(Address.Undefined), Is.True);
-        Assert.That(DBReadOnly.GetAllLocationsLike().Contains(Address1), Is.True);
-        Assert.That(DBReadOnly.GetAllLocationsLike("Steier").Count, Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetAllLocationsLike("Steier").Contains(Address1), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike().Count, Is.EqualTo(2));
+        Assert.That(DBReadOnly.GetAllAddressesLike().Contains(Address.Undefined), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike().Contains(Address1), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike("Steier").Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetAllAddressesLike("Steier").Contains(Address1), Is.True);
 
         DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
-        Assert.That(DBReadOnly.GetAllLocationsLike().Count, Is.EqualTo(3));
-        Assert.That(DBReadOnly.GetAllLocationsLike().Contains(Address.Undefined), Is.True);
-        Assert.That(DBReadOnly.GetAllLocationsLike().Contains(Address1), Is.True);
-        Assert.That(DBReadOnly.GetAllLocationsLike().Contains(Address2), Is.True);
-        Assert.That(DBReadOnly.GetAllLocationsLike("Steier").Count, Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetAllLocationsLike("Steier").Contains(Address1), Is.True);
-        Assert.That(DBReadOnly.GetAllLocationsLike("Kroa").Count, Is.EqualTo(1));
-        Assert.That(DBReadOnly.GetAllLocationsLike("Kroa").Contains(Address2), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike().Count, Is.EqualTo(3));
+        Assert.That(DBReadOnly.GetAllAddressesLike().Contains(Address.Undefined), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike().Contains(Address1), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike().Contains(Address2), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike("Steier").Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetAllAddressesLike("Steier").Contains(Address1), Is.True);
+        Assert.That(DBReadOnly.GetAllAddressesLike("Kroa").Count, Is.EqualTo(1));
+        Assert.That(DBReadOnly.GetAllAddressesLike("Kroa").Contains(Address2), Is.True);
     }
 
     [Test]
@@ -133,6 +133,23 @@ public sealed class LocationTests : DBSetup
         DB.RemoveMetaData(TestData.Image11.FileName);
         Assert.That(DBReadOnly.GetFilesOfAddress(Address1, true).Count, Is.EqualTo(0));
         Assert.That(DBReadOnly.GetFilesOfAddress(Address2, true).Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void GetAllLocations()
+    {
+        Assert.That(DBReadOnly.GetAllLocations().Count, Is.EqualTo(0));
+
+        Image image1 = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        var locations = DBReadOnly.GetAllLocations();
+        Assert.That(locations.Count, Is.EqualTo(1));
+        Assert.That(locations[0], Is.EqualTo(image1.Location));
+
+        Image image2 = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        locations = DBReadOnly.GetAllLocations();
+        Assert.That(locations.Count, Is.EqualTo(2));
+        Assert.That(locations[0], Is.EqualTo(image1.Location));
+        Assert.That(locations[1], Is.EqualTo(image2.Location));
     }
 
     [Test]

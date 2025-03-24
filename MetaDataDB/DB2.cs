@@ -110,10 +110,11 @@ internal sealed class DB2 : IDB2
     }
 
     public IList<Address> GetAllLocationsLike(string filter = null)
+    public IList<Address> GetAllAddressesLike(string filter = null)
     {
         using (var acquiredInstance = new InstanceAcquire(this))
         {
-            return acquiredInstance.Instance.Locations.GetAllLocationsLike(filter);
+            return acquiredInstance.Instance.Locations.GetAllAddressesLike(filter);
         }
     }
 
@@ -130,6 +131,14 @@ internal sealed class DB2 : IDB2
         using (var acquiredInstance = new InstanceAcquire(this))
         {
             return acquiredInstance.Instance.Data.GetAllYears();
+        }
+    }
+
+    public IList<Location> GetAllLocations()
+    {
+        using (var acquiredInstance = new InstanceAcquire(this))
+        {
+            return acquiredInstance.Instance.Locations.GetAllLocations();
         }
     }
 

@@ -64,7 +64,7 @@ internal sealed class DB2Locations(DB2Instance instance) : DB2Constants
         }
     }
 
-    public IList<Address> GetAllLocationsLike(string filter)
+    public IList<Address> GetAllAddressesLike(string filter)
     {
         const string filterLocationCommand = "WHERE " +
                                              IdCountry + " LIKE @Filter OR " +
@@ -99,6 +99,34 @@ internal sealed class DB2Locations(DB2Instance instance) : DB2Constants
         }
     }
 
+    public IList<Location> GetAllLocations()
+    {
+        using (var command = new SqliteCommand())
+        {
+            command.Connection = _instance.Connection;
+            command.CommandText = $"SELECT {TableLocations}.{IdCountry}, {TableLocations}.{IdProvince}, {TableLocations}.{IdCity}, {TableLocations}.{IdStreet}, " +
+                                  $"{IdLatitude}, {IdLongitude}, {IdAltitude} " +
+                                  $"FROM {TableFileLocations} " +
+                                  $"    INNER JOIN {TableLocations} ON {TableLocations}.{IdLocationId} = {TableFileLocations}.{IdLocationId};";
+
+
+            using (SqliteDataReader reader = command.ExecuteReader())
+            {
+                var locations = new List<Location>();
+                while (reader.Read())
+                {
+                    var location = ReadLocation(reader, 0);
+                    if (location != null)
+                    {
+                        locations.Add(location);
+                    }
+                }
+
+                return locations;
+            }
+        }
+    }
+
     public Location GetLocation(long fileId, SqliteTransaction transaction)
     {
         using (var command = new SqliteCommand())
@@ -117,23 +145,7 @@ internal sealed class DB2Locations(DB2Instance instance) : DB2Constants
                 Location location = null;
                 if (reader.Read())
                 {
-                    FixedPoint32? altitude = null;
-                    if (reader.GetString(6).Length > 0)
-                    {
-                        altitude = new FixedPoint32(reader.GetInt32(6));
-                    }
-
-                    location = new(
-                        ReadAddress(reader, 0),
-                        new(
-                            GpsPosition.FromString(reader.GetString(4)),
-                            GpsPosition.FromString(reader.GetString(5)),
-                            altitude)
-                    );
-                    if (!location.IsSet)
-                    {
-                        location = null;
-                    }
+                    location = ReadLocation(reader, 0);
                 }
 
                 return location;
@@ -344,6 +356,18 @@ internal sealed class DB2Locations(DB2Instance instance) : DB2Constants
         return Constants.InvalidId;
     }
 
+    private static Location ReadLocation(SqliteDataReader reader, int startIndex)
+    {
+        Location location = new(ReadAddress(reader, startIndex + 0), ReadGpsPoint(reader, startIndex + 4));
+        if (!location.IsSet)
+        {
+            location = null;
+        }
+
+        return location;
+    }
+
+
     private static Address ReadAddress(SqliteDataReader reader, int startIndex)
     {
         return new(
@@ -351,6 +375,20 @@ internal sealed class DB2Locations(DB2Instance instance) : DB2Constants
             reader.GetString(startIndex + 1),
             reader.GetString(startIndex + 2),
             reader.GetString(startIndex + 3));
+    }
+
+    private static GpsPoint ReadGpsPoint(SqliteDataReader reader, int startIndex)
+    {
+        FixedPoint32? altitude = null;
+        if (reader.GetString(startIndex+2).Length > 0)
+        {
+            altitude = new FixedPoint32(reader.GetInt32(startIndex+2));
+        }
+
+        return new(
+            GpsPosition.FromString(reader.GetString(startIndex+0)),
+            GpsPosition.FromString(reader.GetString(startIndex+1)),
+            altitude);
     }
 
     private readonly DB2Instance _instance = instance;
