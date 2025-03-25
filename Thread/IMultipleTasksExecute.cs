@@ -21,30 +21,20 @@
 #region Usings
 
 using System;
-using Serilog;
-using Serilog.Configuration;
+using System.Threading;
 
 #endregion
 
-namespace TCSystem.Logging.AppCenter;
+namespace TCSystem.Thread;
 
-public static class AppCenterExt
+public interface IMultipleTasksExecute
 {
 #region Public
 
-    public static LoggerConfiguration AppCenter(this LoggerSinkConfiguration loggerConfiguration,
-                                                bool logAsync = true, IFormatProvider formatProvider = null)
-    {
-        return logAsync ?
-            loggerConfiguration.Async(l => l.Sink(new AppCenterSink(formatProvider))) :
-            loggerConfiguration.Sink(new AppCenterSink(formatProvider));
-    }
-
-    public static LoggerConfiguration AppCenter(this LoggerConfiguration loggerConfiguration, bool logAsync = true,
-                                                IFormatProvider formatProvider = null)
-    {
-        return loggerConfiguration.WriteTo.AppCenter(logAsync, formatProvider);
-    }
+    void ExecuteCommand(Action action);
+    void ExecuteCommand(Action action, CancellationToken token);
+    void WaitAllDone();
+    void WaitAllDone(CancellationToken token);
 
 #endregion
 }

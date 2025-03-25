@@ -350,8 +350,8 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /deploy.bat
-*.trx
-coverage.opencover.xml
+
+coverage.*opencover.xml
 *.db
 *.db-shm
 *.db-wal

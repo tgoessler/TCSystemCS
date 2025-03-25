@@ -30,14 +30,9 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Persons : DB2Constants
+internal sealed class DB2Persons(DB2Instance instance) : DB2Constants
 {
 #region Public
-
-    public DB2Persons(DB2Instance instance)
-    {
-        _instance = instance;
-    }
 
     public long GetNumPersons(SqliteTransaction transaction)
     {
@@ -501,19 +496,24 @@ internal sealed class DB2Persons : DB2Constants
 
             AddFaceParameters(fileId, personId, face, command);
             command.ExecuteNonQuery();
+
+            if (personId != Constants.EmptyPersonId)
+            {
+                _instance.NotThisPerson.RemoveNotThisPerson(face.Id, transaction);
+            }
         }
     }
 
-    private void RemoveFace(long id, SqliteTransaction transaction)
+    private void RemoveFace(long faceId, SqliteTransaction transaction)
     {
-        if (id != Constants.InvalidId)
+        if (faceId != Constants.InvalidId)
         {
             using (var command = new SqliteCommand())
             {
                 command.Transaction = transaction;
                 command.Connection = _instance.Connection;
                 command.CommandText = $"DELETE From {TableFileFaces} WHERE {IdFaceId}=@{IdFaceId};";
-                command.Parameters.AddWithValue($"@{IdFaceId}", id);
+                command.Parameters.AddWithValue($"@{IdFaceId}", faceId);
                 command.ExecuteNonQuery();
             }
         }
@@ -563,7 +563,7 @@ internal sealed class DB2Persons : DB2Constants
         command.Parameters.AddWithValue($"@{IdSourceId}", person.SourceId);
     }
 
-    private readonly DB2Instance _instance;
+    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

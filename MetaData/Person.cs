@@ -29,18 +29,10 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class Person : IEquatable<Person>
+public sealed class Person(long id, string name, string emailDigest, string liveId,
+                           string sourceId) : IEquatable<Person>
 {
 #region Public
-
-    public Person(long id, string name, string emailDigest, string liveId, string sourceId)
-    {
-        Id = id;
-        Name = name ?? "";
-        EmailDigest = emailDigest ?? "";
-        LiveId = liveId ?? "";
-        SourceId = sourceId ?? "";
-    }
 
     public override bool Equals(object obj)
     {
@@ -80,11 +72,11 @@ public sealed class Person : IEquatable<Person>
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public long Id { get; }
-    public string Name { get; }
-    public string EmailDigest { get; }
-    public string LiveId { get; }
-    public string SourceId { get; }
+    public long Id { get; } = id;
+    public string Name { get; } = name ?? "";
+    public string EmailDigest { get; } = emailDigest ?? "";
+    public string LiveId { get; } = liveId ?? "";
+    public string SourceId { get; } = sourceId ?? "";
 
     public bool IsValid => Name.Length != 0;
     public bool AllAttributesDefined => Name.Length != 0 && EmailDigest.Length != 0 && LiveId.Length != 0 && SourceId.Length != 0;

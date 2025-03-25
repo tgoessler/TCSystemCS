@@ -28,17 +28,9 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
-public readonly struct Rectangle : IEquatable<Rectangle>
+public readonly struct Rectangle(FixedPoint32 x, FixedPoint32 y, FixedPoint32 w, FixedPoint32 h) : IEquatable<Rectangle>
 {
 #region Public
-
-    public Rectangle(FixedPoint32 x, FixedPoint32 y, FixedPoint32 w, FixedPoint32 h)
-    {
-        X = x;
-        Y = y;
-        W = w;
-        H = h;
-    }
 
     public bool Contains(Rectangle other)
     {
@@ -139,10 +131,10 @@ public readonly struct Rectangle : IEquatable<Rectangle>
         return obj;
     }
 
-    public FixedPoint32 X { get; }
-    public FixedPoint32 Y { get; }
-    public FixedPoint32 W { get; }
-    public FixedPoint32 H { get; }
+    public FixedPoint32 X { get; } = x;
+    public FixedPoint32 Y { get; } = y;
+    public FixedPoint32 W { get; } = w;
+    public FixedPoint32 H { get; } = h;
 
     public FixedPoint32 Left => X;
     public FixedPoint32 Top => Y;

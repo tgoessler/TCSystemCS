@@ -31,6 +31,9 @@
   Log.Instance.Info("Hello World");
   ```
 
+## TCSystem.Gps
+  Allows to read GPS data from a google location history file (records.json).
+
 ## TCSystem.MetaData
 
   Provide classes for managing meta date from photos.

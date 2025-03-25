@@ -31,7 +31,7 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-public sealed class DB2 : IDB2
+internal sealed class DB2 : IDB2
 {
 #region Public
 
@@ -109,11 +109,19 @@ public sealed class DB2 : IDB2
         }
     }
 
-    public IList<Address> GetAllLocationsLike(string filter = null)
+    public IList<string> GetAllTagsLikeOrderByNewestFile(string filter = null)
     {
         using (var acquiredInstance = new InstanceAcquire(this))
         {
-            return acquiredInstance.Instance.Locations.GetAllLocationsLike(filter);
+            return acquiredInstance.Instance.Tags.GetAllTagsLikeOrderByNewestFile(filter);
+        }
+    }
+
+    public IList<Address> GetAllAddressesLike(string filter = null)
+    {
+        using (var acquiredInstance = new InstanceAcquire(this))
+        {
+            return acquiredInstance.Instance.Locations.GetAllAddressesLike(filter);
         }
     }
 
@@ -130,6 +138,14 @@ public sealed class DB2 : IDB2
         using (var acquiredInstance = new InstanceAcquire(this))
         {
             return acquiredInstance.Instance.Data.GetAllYears();
+        }
+    }
+
+    public IList<Location> GetAllLocations()
+    {
+        using (var acquiredInstance = new InstanceAcquire(this))
+        {
+            return acquiredInstance.Instance.Locations.GetAllLocations();
         }
     }
 
@@ -463,6 +479,26 @@ public sealed class DB2 : IDB2
         }
     }
 
+    public void AddNotThisPerson(Face face, Person person)
+    {
+        using (var acquiredInstance = new InstanceAcquire(this))
+        {
+            using (SqliteTransaction transaction = acquiredInstance.Instance.BeginTransaction())
+            {
+                acquiredInstance.Instance.NotThisPerson.AddNotThisPerson(face.Id, person.Id, transaction);
+                transaction.Commit();
+            }
+        }
+    }
+
+    public IDictionary<long, IList<long>> GetNotThisPersonInformation()
+    {
+        using (var acquiredInstance = new InstanceAcquire(this))
+        {
+            return acquiredInstance.Instance.NotThisPerson.GetNotThisPersonInformation();
+        }
+    }
+
     public event Action<Image> MetaDataAdded;
     public event Action<Image> MetaDataRemoved;
     public event Action<(Image NewData, Image OldData)> MetaDataChanged;
@@ -564,28 +600,22 @@ public sealed class DB2 : IDB2
         _instances.Push(instance);
     }
 
-    private readonly struct InstanceAcquire : IDisposable
+    private readonly struct InstanceAcquire(DB2 db2) : IDisposable
     {
 #region Public
-
-        public InstanceAcquire(DB2 db2)
-        {
-            _db2 = db2;
-            Instance = db2.AcquireInstance();
-        }
 
         public void Dispose()
         {
             _db2.ReleaseInstance(Instance);
         }
 
-        public DB2Instance Instance { get; }
+        public DB2Instance Instance { get; } = db2.AcquireInstance();
 
 #endregion
 
 #region Private
 
-        private readonly DB2 _db2;
+        private readonly DB2 _db2 = db2;
 
 #endregion
     }

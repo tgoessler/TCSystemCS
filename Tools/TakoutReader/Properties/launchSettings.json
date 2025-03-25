@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "TCSystem.Tools.TakoutReader": {
+      "commandName": "Project",
+      "commandLineArgs": "\"\\\\server01\\homes\\Thomas\\Documents\\Takeout\\Standortverlauf (Zeitachse)\\Records.json\" \"C:\\Users\\Thomas\\AppData\\Local\\Packages\\44942TCSystem.TCPhotoGallery_zk7fg4q93aynw\\LocalState\\MetaData2.db\"",
+      "workingDirectory": "D:\\Source\\TCSystemCS.git\\Tools\\TakoutReader"
+    }
+  }
+}

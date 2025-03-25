@@ -20,30 +20,22 @@
 
 #region Usings
 
-using System.Threading;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 #endregion
 
-namespace TCSystem.Thread;
+namespace TCSystem.Gps;
 
-public static class Factory
+public static class TakeoutRecordReader
 {
 #region Public
 
-    public static IWorkerThread CreateWorkerThread(string name, ThreadPriority priority)
+    public static ValueTask<TakeoutRecords> ReadAsync(Stream stream)
     {
-        return new WorkerThread(name, priority);
+        return JsonSerializer.DeserializeAsync<TakeoutRecords>(stream);
     }
 
-    public static IAsyncUpdateHelper CreateAsyncUpdateHelper()
-    {
-        return new AsyncUpdateHelper();
-    }
-
-    public static IMultipleTasksExecute CreateMultipleTasksExecute(int maxNumberOfTasks)
-    {
-        return new MultipleTasksExecute(maxNumberOfTasks);
-    }
-
-    #endregion
+#endregion
 }

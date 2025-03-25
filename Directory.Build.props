@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en-US</DefaultLanguage>
 		<ProduceReferenceAssembly Condition="'$(ProduceReferenceAssembly)'==''">true</ProduceReferenceAssembly>
-		<TargetFramework Condition="'$(TargetFramework)'==''">netstandard2.0</TargetFramework>
-		<LangVersion Condition="'$(LangVersion)'==''">10</LangVersion>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'==''">net462;netstandard2.0;net8.0</TargetFrameworks>
+		<LangVersion Condition="'$(LangVersion)'==''">12</LangVersion>
 		<WarningLevel>9999</WarningLevel>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>

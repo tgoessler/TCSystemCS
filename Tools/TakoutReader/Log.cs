@@ -20,30 +20,17 @@
 
 #region Usings
 
-using System.Threading;
+using TCSystem.Logging;
 
 #endregion
 
-namespace TCSystem.Thread;
+namespace TCSystem.Tools.TakeoutReader;
 
-public static class Factory
+internal static class Log
 {
 #region Public
 
-    public static IWorkerThread CreateWorkerThread(string name, ThreadPriority priority)
-    {
-        return new WorkerThread(name, priority);
-    }
+    public static Logger Instance { get; } = Factory.GetLogger(typeof(Log));
 
-    public static IAsyncUpdateHelper CreateAsyncUpdateHelper()
-    {
-        return new AsyncUpdateHelper();
-    }
-
-    public static IMultipleTasksExecute CreateMultipleTasksExecute(int maxNumberOfTasks)
-    {
-        return new MultipleTasksExecute(maxNumberOfTasks);
-    }
-
-    #endregion
+#endregion
 }

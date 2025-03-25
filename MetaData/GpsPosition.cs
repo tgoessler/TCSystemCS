@@ -23,24 +23,15 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TCSystem.Util;
 
 #endregion
 
 namespace TCSystem.MetaData;
 
-public sealed class GpsPosition : IEquatable<GpsPosition>
+public readonly struct GpsPosition(int deg, int min, int sec, int subSec,
+                                   bool neg) : IEquatable<GpsPosition>
 {
 #region Public
-
-    public GpsPosition(int deg, int min, int sec, int subSec, bool neg)
-    {
-        Degrees = deg;
-        Minutes = min;
-        Seconds = sec;
-        SubSeconds = subSec;
-        Negative = neg;
-    }
 
     public double ToDouble()
     {
@@ -52,12 +43,16 @@ public sealed class GpsPosition : IEquatable<GpsPosition>
 
     public override bool Equals(object obj)
     {
-        return EqualsUtil.Equals(this, obj as GpsPosition, EqualsImp);
+        return obj is GpsPosition pos && Equals(pos);
     }
 
     public bool Equals(GpsPosition other)
     {
-        return EqualsUtil.Equals(this, other, EqualsImp);
+        return Degrees == other.Degrees &&
+               Minutes == other.Minutes &&
+               Seconds == other.Seconds &&
+               SubSeconds == other.SubSeconds &&
+               Negative == other.Negative;
     }
 
     public override int GetHashCode()
@@ -79,7 +74,7 @@ public sealed class GpsPosition : IEquatable<GpsPosition>
         return $"{sign}{Degrees}.{Minutes}.{Seconds}.{SubSeconds}";
     }
 
-    public static GpsPosition FromString(string val)
+    public static GpsPosition? FromString(string val)
     {
         if (!string.IsNullOrWhiteSpace(val))
         {
@@ -114,22 +109,32 @@ public sealed class GpsPosition : IEquatable<GpsPosition>
             coordinate < 0);
     }
 
-    public static GpsPosition FromJsonString(string jsonString)
+    public static GpsPosition? FromJsonString(string jsonString)
     {
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public int Degrees { get; }
-    public int Minutes { get; }
-    public int Seconds { get; }
-    public int SubSeconds { get; }
-    public bool Negative { get; }
+    public static bool operator ==(GpsPosition lhs, GpsPosition rhs)
+    {
+        return lhs.Equals(rhs);
+    }
+
+    public static bool operator !=(GpsPosition lhs, GpsPosition rhs)
+    {
+        return !lhs.Equals(rhs);
+    }
+
+    public int Degrees { get; } = deg;
+    public int Minutes { get; } = min;
+    public int Seconds { get; } = sec;
+    public int SubSeconds { get; } = subSec;
+    public bool Negative { get; } = neg;
 
 #endregion
 
 #region Internal
 
-    internal static GpsPosition FromJson(JObject jsonObject)
+    internal static GpsPosition? FromJson(JObject jsonObject)
     {
         if (jsonObject != null)
         {
@@ -169,15 +174,6 @@ public sealed class GpsPosition : IEquatable<GpsPosition>
 #region Private
 
     private const double SubSecondsUnit = 10000;
-
-    private bool EqualsImp(GpsPosition other)
-    {
-        return Degrees == other.Degrees &&
-               Minutes == other.Minutes &&
-               Seconds == other.Seconds &&
-               SubSeconds == other.SubSeconds &&
-               Negative == other.Negative;
-    }
 
 #endregion
 }

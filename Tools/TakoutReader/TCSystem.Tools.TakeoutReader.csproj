@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <AssemblyName>TCSystem.Tools.TakeoutReader</AssemblyName>
+    <RootNamespace>TCSystem.Tools.TakeoutReader</RootNamespace>
+    <Description>Reads a google takeout records file</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Gps\TCSystem.Gps.csproj" />
+    <ProjectReference Include="..\..\Logging\TCSystem.Logging.csproj" />
+    <ProjectReference Include="..\..\MetaDataDB\TCSystem.MetaDataDB.csproj" />
+  </ItemGroup>
+
+</Project>

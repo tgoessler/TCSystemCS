@@ -29,19 +29,11 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
-public readonly struct FixedPoint64 : IEquatable<FixedPoint64>
+public readonly struct FixedPoint64(long val) : IEquatable<FixedPoint64>
 {
 #region Public
 
-    public FixedPoint64(long val)
-    {
-        RawValue = val;
-    }
-
-    public FixedPoint64(double val)
-    {
-        RawValue = (long)(val * (1L << 32));
-    }
+    public FixedPoint64(double val) : this((long)(val * (1L << 32))) { }
 
     public override bool Equals(object obj)
     {
@@ -85,7 +77,7 @@ public readonly struct FixedPoint64 : IEquatable<FixedPoint64>
     }
 
     public double Value => RawValue / (double)(1L << 32);
-    public long RawValue { get; }
+    public long RawValue { get; } = val;
 
 #endregion
 

@@ -20,10 +20,6 @@
 
 #region Usings
 
-#endregion
-
-#region Usings
-
 using System.Collections.Generic;
 using System.Linq;
 

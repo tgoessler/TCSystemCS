@@ -34,6 +34,7 @@ public interface IDB2Write
     Image AddMetaData(Image newMetaData, DateTimeOffset dateModified);
     void RemoveMetaData(string fileName);
     void RemoveAllFilesOfFolder(string folder);
+    void AddNotThisPerson(Face face, Person person);
 
     event Action<Image> MetaDataAdded;
     event Action<Image> MetaDataRemoved;

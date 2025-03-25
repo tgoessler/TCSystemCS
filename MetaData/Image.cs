@@ -31,30 +31,11 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class Image : IEquatable<Image>
+public sealed class Image(long fileId, string fileName, ProcessingInfos processingInfos, int width,
+                          int height, OrientationMode orientation, DateTimeOffset dateTaken, string title,
+                          Location location, IReadOnlyList<PersonTag> personsTags, IReadOnlyList<string> tags) : IEquatable<Image>
 {
 #region Public
-
-    public Image(long fileId, string fileName, ProcessingInfos processingInfos,
-                 int width, int height, OrientationMode orientation,
-                 DateTimeOffset dateTaken,
-                 string title, Location location,
-                 IReadOnlyList<PersonTag> personsTags,
-                 IReadOnlyList<string> tags
-    )
-    {
-        Id = fileId;
-        FileName = fileName;
-        ProcessingInfos = processingInfos;
-        Width = width;
-        Height = height;
-        Orientation = orientation;
-        DateTaken = dateTaken.Trim(TimeSpan.TicksPerSecond);
-        Title = title ?? "";
-        Location = location;
-        _personTags = personsTags ?? new List<PersonTag>();
-        _tags = tags ?? new List<string>();
-    }
 
     public bool HasPerson(string name)
     {
@@ -285,19 +266,19 @@ public sealed class Image : IEquatable<Image>
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public long Id { get; }
-    public string Name => FileName.Substring(FileName.LastIndexOf("\\", StringComparison.Ordinal) + 1);
-    public string FileName { get; }
-    public ProcessingInfos ProcessingInfos { get; }
-    public int Width { get; }
-    public int Height { get; }
-    public OrientationMode Orientation { get; }
-    public DateTimeOffset DateTaken { get; }
+    public long Id { get; } = fileId;
+    public string Name => FileName.Substring(FileName.LastIndexOf('\\') + 1);
+    public string FileName { get; } = fileName;
+    public ProcessingInfos ProcessingInfos { get; } = processingInfos;
+    public int Width { get; } = width;
+    public int Height { get; } = height;
+    public OrientationMode Orientation { get; } = orientation;
+    public DateTimeOffset DateTaken { get; } = dateTaken.Trim(TimeSpan.TicksPerSecond);
     public bool IsDateTimeSet => DateTaken != InvalidDateTaken;
     public static DateTimeOffset InvalidDateTaken { get; } = DateTimeOffset.FromUnixTimeSeconds(0).ToLocalTime();
 
-    public string Title { get; }
-    public Location Location { get; }
+    public string Title { get; } = title ?? "";
+    public Location Location { get; } = location;
     public IReadOnlyList<PersonTag> PersonTags => _personTags;
 
     public int NumTags => _tags.Count;
@@ -370,8 +351,8 @@ public sealed class Image : IEquatable<Image>
                _tags.SequenceEqual(other._tags);
     }
 
-    private readonly IReadOnlyList<PersonTag> _personTags;
-    private readonly IReadOnlyList<string> _tags;
+    private readonly IReadOnlyList<PersonTag> _personTags = personsTags ?? [];
+    private readonly IReadOnlyList<string> _tags = tags ?? [];
 
 #endregion
 }

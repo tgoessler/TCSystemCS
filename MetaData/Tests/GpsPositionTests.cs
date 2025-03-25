@@ -75,12 +75,12 @@ public class GpsPositionTests
     [Test]
     public void FromJsonStringTest()
     {
-        string ToJson(GpsPosition d)
+        string ToJson(GpsPosition? d)
         {
-            return d.ToJsonString();
+            return d.HasValue ? d.Value.ToJsonString() : "";
         }
 
-        Func<string, GpsPosition> fromJson = GpsPosition.FromJsonString;
+        Func<string, GpsPosition?> fromJson = GpsPosition.FromJsonString;
 
         TestUtil.FromJsonStringTest(TestData.GpsPosition1, ToJson, fromJson);
         TestUtil.FromJsonStringTest(TestData.GpsPosition2, ToJson, fromJson);
@@ -92,7 +92,7 @@ public class GpsPositionTests
     {
         GpsPosition point1 = TestData.GpsPosition1;
         var jsonString = point1.ToString();
-        GpsPosition point2 = GpsPosition.FromString(jsonString);
+        GpsPosition? point2 = GpsPosition.FromString(jsonString);
         Assert.That(point1, Is.EqualTo(point2));
 
         point1 = TestData.GpsPosition2;

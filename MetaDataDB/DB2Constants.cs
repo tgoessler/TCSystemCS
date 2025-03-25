@@ -38,6 +38,7 @@ internal class DB2Constants
     protected const string TableFileFaces = "FileFaces";
     protected const string TableFileTags = "FileTags";
     protected const string TableFileLocations = "FileLocations";
+    protected const string TableNotThisPerson = "NotThisPerson";
 
     protected const string IdKey = "Key";
     protected const string IdValue = "Value";
@@ -94,7 +95,7 @@ internal class DB2Constants
     protected DB2Constants() { }
 
     protected static readonly string[] _filters =
-    {
+    [
         FilterDate,
         FilterFaceId,
         FilterFile,
@@ -102,7 +103,7 @@ internal class DB2Constants
         FilterName,
         FilterTag,
         FilterNumPersons
-    };
+    ];
 
 #endregion
 }

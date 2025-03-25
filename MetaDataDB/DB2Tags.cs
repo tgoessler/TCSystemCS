@@ -29,14 +29,9 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Tags : DB2Constants
+internal sealed class DB2Tags(DB2Instance instance) : DB2Constants
 {
 #region Public
-
-    public DB2Tags(DB2Instance instance)
-    {
-        _instance = instance;
-    }
 
     public long GetNumTags(SqliteTransaction transaction)
     {
@@ -46,6 +41,40 @@ internal sealed class DB2Tags : DB2Constants
             command.CommandText = $"SELECT COUNT({IdTagId}) FROM {TableTags};";
             object result = command.ExecuteScalar();
             return (long?)result ?? 0;
+        }
+    }
+
+    public IList<string> GetAllTagsLikeOrderByNewestFile(string filter)
+    {
+        const string filterTagsCommand = "WHERE " + IdTag + " LIKE @Filter ";
+
+        string filterCommand = filter != null ? filterTagsCommand : "";
+        if (filter != null)
+        {
+            filter = "%" + filter.Replace(' ', '%') + "%";
+        }
+
+        using (var command = new SqliteCommand())
+        {
+            command.Connection = _instance.Connection;
+            // create a query which select all IdTag and order them by date of the last file with this tag
+            command.CommandText = $"SELECT DISTINCT {IdTag} FROM {TableTags} " +
+                      $"    INNER JOIN {TableFileTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
+                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId} " +
+                      $"{filterCommand} " +
+                      $"ORDER by {TableFileData}.{IdDateTaken} ASC;";
+
+            command.Parameters.AddWithValue("@Filter", filter);
+            using (SqliteDataReader reader = command.ExecuteReader())
+            {
+                var tags = new List<string>();
+                while (reader.Read())
+                {
+                    tags.Add(reader.GetString(0));
+                }
+
+                return tags;
+            }
         }
     }
 
@@ -260,7 +289,7 @@ internal sealed class DB2Tags : DB2Constants
         command.Parameters.AddWithValue($"@{IdTagId}", tagId);
     }
 
-    private readonly DB2Instance _instance;
+    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

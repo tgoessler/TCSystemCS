@@ -42,8 +42,10 @@ public interface IDB2Read
 
     IList<string> GetAllFilesLike(string filter = null);
     IList<string> GetAllTagsLike(string filter = null);
-    IList<Address> GetAllLocationsLike(string filter = null);
+    IList<string> GetAllTagsLikeOrderByNewestFile(string filter = null);
+    IList<Address> GetAllAddressesLike(string filter = null);
     IList<string> GetAllPersonNamesLike(string filter = null);
+    IList<Location> GetAllLocations();
     IList<DateTimeOffset> GetAllYears();
     IList<(string FileName, ProcessingInfos ProcessingInfo)> GetAllProcessingInformation();
     IDictionary<string, DateTimeOffset> GetAllFileAndModifiedDates();
@@ -73,6 +75,12 @@ public interface IDB2Read
     IList<string> SearchForFiles(string searchFilter);
 
     IList<FileAndPersonTag> GetFileAndPersonTagsOfPerson(string name, bool visibleOnly);
+
+    /// <summary>
+    ///     get for each face id which person id it is not
+    /// </summary>
+    /// <returns>dictionary from face id to person ids</returns>
+    IDictionary<long, IList<long>> GetNotThisPersonInformation();
 
     void EnableUnsafeMode();
     void EnableDefaultMode();

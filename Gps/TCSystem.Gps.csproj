@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>TCSystem.Gps</AssemblyName>
+    <RootNamespace>TCSystem.Gps</RootNamespace>
+    <PackageTags>C#, Gps Utilities</PackageTags>
+    <Description>Provides Reader/Writer for reading GPS data from Google takout</Description>
+  </PropertyGroup>
+
+  <Import Project="..\Packaging.props"></Import>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MetaData\TCSystem.MetaData.csproj" />
+  </ItemGroup>
+
+</Project>

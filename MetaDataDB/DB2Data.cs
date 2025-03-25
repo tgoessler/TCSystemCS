@@ -29,14 +29,9 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Data : DB2Constants
+internal sealed class DB2Data(DB2Instance instance) : DB2Constants
 {
 #region Public
-
-    public DB2Data(DB2Instance instance)
-    {
-        _instance = instance;
-    }
 
     public Image GetMetaData(long fileId, Location location, IReadOnlyList<PersonTag> personTags,
                              IReadOnlyList<string> tags, SqliteTransaction transaction)
@@ -243,7 +238,7 @@ internal sealed class DB2Data : DB2Constants
         }
     }
 
-    private readonly DB2Instance _instance;
+    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

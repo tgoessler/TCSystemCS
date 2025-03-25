@@ -50,10 +50,10 @@ public class ConverterTests
     public void ConvertDBTest()
     {
         string[] files =
-        {
+        [
             "MetaData2-v11.db",
-            "MetaData2-v12.db",
-        };
+            "MetaData2-v12.db"
+        ];
 
         string testDataDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "TestData");
         if (Directory.Exists(testDataDir))
