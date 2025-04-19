@@ -29,7 +29,7 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Tags(DB2Instance instance) : DB2Constants
+internal sealed class DB2Tags(DB2Instance _instance) : DB2Constants
 {
 #region Public
 
@@ -288,8 +288,6 @@ internal sealed class DB2Tags(DB2Instance instance) : DB2Constants
         command.Parameters.AddWithValue($"@{IdFileId}", fileId);
         command.Parameters.AddWithValue($"@{IdTagId}", tagId);
     }
-
-    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

@@ -31,9 +31,9 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class Image(long fileId, string fileName, ProcessingInfos processingInfos, int width,
-                          int height, OrientationMode orientation, DateTimeOffset dateTaken, string title,
-                          Location location, IReadOnlyList<PersonTag> personsTags, IReadOnlyList<string> tags) : IEquatable<Image>
+public sealed class Image(long _fileId, string _fileName, ProcessingInfos _processingInfos, int _width,
+                          int _height, OrientationMode _orientation, DateTimeOffset _dateTaken, string _title,
+                          Location _location, IReadOnlyList<PersonTag> _personsTags, IReadOnlyList<string> _tags) : IEquatable<Image>
 {
 #region Public
 
@@ -266,19 +266,19 @@ public sealed class Image(long fileId, string fileName, ProcessingInfos processi
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public long Id { get; } = fileId;
+    public long Id => _fileId;
     public string Name => FileName.Substring(FileName.LastIndexOf('\\') + 1);
-    public string FileName { get; } = fileName;
-    public ProcessingInfos ProcessingInfos { get; } = processingInfos;
-    public int Width { get; } = width;
-    public int Height { get; } = height;
-    public OrientationMode Orientation { get; } = orientation;
-    public DateTimeOffset DateTaken { get; } = dateTaken.Trim(TimeSpan.TicksPerSecond);
+    public string FileName => _fileName;
+    public ProcessingInfos ProcessingInfos => _processingInfos;
+    public int Width => _width;
+    public int Height => _height;
+    public OrientationMode Orientation => _orientation;
+    public DateTimeOffset DateTaken => _dateTaken.Trim(TimeSpan.TicksPerSecond);
     public bool IsDateTimeSet => DateTaken != InvalidDateTaken;
-    public static DateTimeOffset InvalidDateTaken { get; } = DateTimeOffset.FromUnixTimeSeconds(0).ToLocalTime();
+    public static DateTimeOffset InvalidDateTaken => DateTimeOffset.FromUnixTimeSeconds(0).ToLocalTime();
 
-    public string Title { get; } = title ?? "";
-    public Location Location { get; } = location;
+    public string Title => _title ?? "";
+    public Location Location => _location;
     public IReadOnlyList<PersonTag> PersonTags => _personTags;
 
     public int NumTags => _tags.Count;
@@ -351,8 +351,8 @@ public sealed class Image(long fileId, string fileName, ProcessingInfos processi
                _tags.SequenceEqual(other._tags);
     }
 
-    private readonly IReadOnlyList<PersonTag> _personTags = personsTags ?? [];
-    private readonly IReadOnlyList<string> _tags = tags ?? [];
+    private readonly IReadOnlyList<PersonTag> _personTags = _personsTags ?? [];
+    private readonly IReadOnlyList<string> _tags = _tags ?? [];
 
 #endregion
 }

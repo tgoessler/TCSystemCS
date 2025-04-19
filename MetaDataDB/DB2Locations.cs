@@ -29,7 +29,7 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Locations(DB2Instance instance) : DB2Constants
+internal sealed class DB2Locations(DB2Instance _instance) : DB2Constants
 {
 #region Public
 
@@ -390,8 +390,6 @@ internal sealed class DB2Locations(DB2Instance instance) : DB2Constants
             GpsPosition.FromString(reader.GetString(startIndex+1)),
             altitude);
     }
-
-    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

@@ -29,7 +29,7 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class Address(string country = "", string province = "", string city = "", string street = "") : IEquatable<Address>
+public sealed class Address(string _country = "", string _province = "", string _city = "", string _street = "") : IEquatable<Address>
 {
 #region Public
 
@@ -70,10 +70,10 @@ public sealed class Address(string country = "", string province = "", string ci
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public string Country { get; } = country;
-    public string Province { get; } = province;
-    public string City { get; } = city;
-    public string Street { get; } = street;
+    public string Country => _country;
+    public string Province => _province;
+    public string City => _city;
+    public string Street => _street;
 
     public string FormattedAddress
     {

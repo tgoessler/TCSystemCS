@@ -29,7 +29,7 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
-public readonly struct FixedPoint64(long val) : IEquatable<FixedPoint64>
+public readonly struct FixedPoint64(long _rawValue) : IEquatable<FixedPoint64>
 {
 #region Public
 
@@ -76,8 +76,8 @@ public readonly struct FixedPoint64(long val) : IEquatable<FixedPoint64>
         return !lhs.Equals(rhs);
     }
 
-    public double Value => RawValue / (double)(1L << 32);
-    public long RawValue { get; } = val;
+    public double Value => _rawValue / (double)(1L << 32);
+    public long RawValue => _rawValue;
 
 #endregion
 

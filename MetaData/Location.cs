@@ -29,7 +29,7 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class Location(Address address, GpsPoint point) : IEquatable<Location>
+public sealed class Location(Address _address, GpsPoint _point) : IEquatable<Location>
 {
 #region Public
 
@@ -68,8 +68,8 @@ public sealed class Location(Address address, GpsPoint point) : IEquatable<Locat
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public Address Address { get; } = address ?? Address.Undefined;
-    public GpsPoint Point { get; } = point ?? GpsPoint.Undefined;
+    public Address Address => _address ?? Address.Undefined;
+    public GpsPoint Point => _point ?? GpsPoint.Undefined;
 
 
     public bool IsAllSet => Point.IsSet && Address.IsSet;

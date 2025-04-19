@@ -28,7 +28,7 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
-public readonly struct Rectangle(FixedPoint32 x, FixedPoint32 y, FixedPoint32 w, FixedPoint32 h) : IEquatable<Rectangle>
+public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 _w, FixedPoint32 _h) : IEquatable<Rectangle>
 {
 #region Public
 
@@ -131,10 +131,10 @@ public readonly struct Rectangle(FixedPoint32 x, FixedPoint32 y, FixedPoint32 w,
         return obj;
     }
 
-    public FixedPoint32 X { get; } = x;
-    public FixedPoint32 Y { get; } = y;
-    public FixedPoint32 W { get; } = w;
-    public FixedPoint32 H { get; } = h;
+    public FixedPoint32 X => _x;
+    public FixedPoint32 Y => _y;
+    public FixedPoint32 W => _w;
+    public FixedPoint32 H => _h;
 
     public FixedPoint32 Left => X;
     public FixedPoint32 Top => Y;

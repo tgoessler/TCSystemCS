@@ -28,8 +28,8 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
-public readonly struct GpsPosition(int deg, int min, int sec, int subSec,
-                                   bool neg) : IEquatable<GpsPosition>
+public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int _subSeconds,
+                                   bool _negative) : IEquatable<GpsPosition>
 {
 #region Public
 
@@ -124,11 +124,37 @@ public readonly struct GpsPosition(int deg, int min, int sec, int subSec,
         return !lhs.Equals(rhs);
     }
 
-    public int Degrees { get; } = deg;
-    public int Minutes { get; } = min;
-    public int Seconds { get; } = sec;
-    public int SubSeconds { get; } = subSec;
-    public bool Negative { get; } = neg;
+    public static GpsPosition operator+(GpsPosition pos1, GpsPosition pos2)
+    {
+        // Convert both positions to their double representation
+        double pos1Value = pos1.ToDouble();
+        double pos2Value = pos2.ToDouble();
+
+        // Subtract the second position from the first
+        double resultValue = pos1Value + pos2Value;
+
+        // Convert the result back to a GpsPosition
+        return FromDoublePosition(resultValue);
+    }
+
+    public static GpsPosition operator-(GpsPosition pos1, GpsPosition pos2)
+    {
+        // Convert both positions to their double representation
+        double pos1Value = pos1.ToDouble();
+        double pos2Value = pos2.ToDouble();
+
+        // Subtract the second position from the first
+        double resultValue = pos1Value - pos2Value;
+
+        // Convert the result back to a GpsPosition
+        return FromDoublePosition(resultValue);
+    }
+
+    public int Degrees => _degrees;
+    public int Minutes => _minutes;
+    public int Seconds => _seconds;
+    public int SubSeconds => _subSeconds;
+    public bool Negative => _negative;
 
 #endregion
 

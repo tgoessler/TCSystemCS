@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace TCSystem.Thread;
 
-internal sealed class MultipleTasksExecute(int maxNumberOfTasks) : IMultipleTasksExecute
+internal sealed class MultipleTasksExecute(int _maxNumberOfTasks) : IMultipleTasksExecute
 {
 #region Public
 
@@ -81,7 +81,7 @@ internal sealed class MultipleTasksExecute(int maxNumberOfTasks) : IMultipleTask
 
     public void WaitAllDoneInternal(CancellationToken? token)
     {
-        while(_semaphore.CurrentCount != maxNumberOfTasks)
+        while(_semaphore.CurrentCount != _maxNumberOfTasks)
         {   
             if (token.HasValue)
             {
@@ -95,7 +95,7 @@ internal sealed class MultipleTasksExecute(int maxNumberOfTasks) : IMultipleTask
         }
     }
 
-    private readonly SemaphoreSlim _semaphore = new(maxNumberOfTasks, maxNumberOfTasks);
+    private readonly SemaphoreSlim _semaphore = new(_maxNumberOfTasks, _maxNumberOfTasks);
 
 #endregion
 }

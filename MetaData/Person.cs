@@ -29,8 +29,8 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class Person(long id, string name, string emailDigest, string liveId,
-                           string sourceId) : IEquatable<Person>
+public sealed class Person(long _id, string _name, string _emailDigest, string _liveId,
+                           string _sourceId) : IEquatable<Person>
 {
 #region Public
 
@@ -72,11 +72,11 @@ public sealed class Person(long id, string name, string emailDigest, string live
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public long Id { get; } = id;
-    public string Name { get; } = name ?? "";
-    public string EmailDigest { get; } = emailDigest ?? "";
-    public string LiveId { get; } = liveId ?? "";
-    public string SourceId { get; } = sourceId ?? "";
+    public long Id => _id;
+    public string Name => _name ?? string.Empty;
+    public string EmailDigest => _emailDigest ?? string.Empty;
+    public string LiveId => _liveId ?? string.Empty;
+    public string SourceId => _sourceId ?? string.Empty;
 
     public bool IsValid => Name.Length != 0;
     public bool AllAttributesDefined => Name.Length != 0 && EmailDigest.Length != 0 && LiveId.Length != 0 && SourceId.Length != 0;

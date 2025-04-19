@@ -26,7 +26,7 @@ using System;
 
 namespace TCSystem.Thread;
 
-internal readonly struct AsyncUpdateScope(IAsyncUpdateHelper asyncUpdateHelper) : IDisposable
+internal readonly struct AsyncUpdateScope(IAsyncUpdateHelper _asyncUpdateHelper) : IDisposable
 {
 #region Public
 
@@ -34,12 +34,6 @@ internal readonly struct AsyncUpdateScope(IAsyncUpdateHelper asyncUpdateHelper) 
     {
         _asyncUpdateHelper.EndUpdate();
     }
-
-#endregion
-
-#region Private
-
-    private readonly IAsyncUpdateHelper _asyncUpdateHelper = asyncUpdateHelper;
 
 #endregion
 }

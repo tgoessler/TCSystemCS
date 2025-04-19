@@ -27,7 +27,7 @@ using Microsoft.Data.Sqlite;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2NotThisPerson(DB2Instance instance) : DB2Constants
+internal sealed class DB2NotThisPerson(DB2Instance _instance) : DB2Constants
 {
 #region Public
 
@@ -87,12 +87,6 @@ internal sealed class DB2NotThisPerson(DB2Instance instance) : DB2Constants
             command.ExecuteNonQuery();
         }
     }
-
-#endregion
-
-#region Private
-
-    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

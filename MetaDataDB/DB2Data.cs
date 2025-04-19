@@ -29,7 +29,7 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Data(DB2Instance instance) : DB2Constants
+internal sealed class DB2Data(DB2Instance _instance) : DB2Constants
 {
 #region Public
 
@@ -237,8 +237,6 @@ internal sealed class DB2Data(DB2Instance instance) : DB2Constants
             command.Parameters.AddWithValue("@EndDate", endDate);
         }
     }
-
-    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

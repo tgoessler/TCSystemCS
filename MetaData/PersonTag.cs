@@ -29,7 +29,7 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class PersonTag(Person person, Face face) : IEquatable<PersonTag>
+public sealed class PersonTag(Person _person, Face _face) : IEquatable<PersonTag>
 {
 #region Public
 
@@ -68,8 +68,8 @@ public sealed class PersonTag(Person person, Face face) : IEquatable<PersonTag>
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
-    public Person Person { get; } = person;
-    public Face Face { get; } = face;
+    public Person Person => _person;
+    public Face Face => _face;
 
 #endregion
 

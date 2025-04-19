@@ -30,7 +30,7 @@ using TCSystem.MetaData;
 
 namespace TCSystem.MetaDataDB;
 
-internal sealed class DB2Persons(DB2Instance instance) : DB2Constants
+internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
 {
 #region Public
 
@@ -562,8 +562,6 @@ internal sealed class DB2Persons(DB2Instance instance) : DB2Constants
         command.Parameters.AddWithValue($"@{IdLiveId}", person.LiveId);
         command.Parameters.AddWithValue($"@{IdSourceId}", person.SourceId);
     }
-
-    private readonly DB2Instance _instance = instance;
 
 #endregion
 }

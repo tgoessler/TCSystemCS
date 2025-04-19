@@ -31,7 +31,7 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class FileAndPersonTag(string fileName, PersonTag personTag) : IEquatable<FileAndPersonTag>
+public sealed class FileAndPersonTag(string _fileName, PersonTag _personTag) : IEquatable<FileAndPersonTag>
 {
 #region Public
 
@@ -87,8 +87,8 @@ public sealed class FileAndPersonTag(string fileName, PersonTag personTag) : IEq
         return array.Select(v => FromJson((JObject)v));
     }
 
-    public string FileName { get; } = fileName ?? string.Empty;
-    public PersonTag PersonTag { get; } = personTag;
+    public string FileName => _fileName ?? string.Empty;
+    public PersonTag PersonTag => _personTag;
 
 #endregion
 
