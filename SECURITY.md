@@ -9,4 +9,4 @@
 
 ## Reporting a Vulnerability
 
-If you find any Vulnerability please directly report to [@ThE-TiGeR](https://github.com/tgoessler)
+If you find any Vulnerability please directly report to [@TGOESSLER](https://github.com/tgoessler)
