@@ -88,6 +88,19 @@ public class PersonTagTests : DBSetup
     }
 
     [Test]
+    public void ChangePersonFaceQuality()
+    {
+        Image data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+
+        PersonTag personTag = data.PersonTags[1];
+        data = Image.ChangePersonTagFaceQuality(data, personTag, FaceQuality.Normal);
+        DB.AddMetaData(data, DateTimeOffset.Now);
+
+        Assert.That(DBReadOnly.GetNumFiles(), Is.EqualTo(1));
+        AssertImageDataNotEqual(data, DBReadOnly.GetMetaData(TestData.Image2.FileName));
+    }
+
+    [Test]
     public void GetAllFaceInfos()
     {
         Assert.That(DBReadOnly.GetAllFaceInfos(true).Count, Is.EqualTo(0));

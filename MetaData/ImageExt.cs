@@ -47,7 +47,7 @@ public static class ImageExt
 
     public static Face InvalidateId(this Face face)
     {
-        return new(Constants.InvalidId, face.Rectangle, face.FaceMode, face.Visible, face.FaceDescriptor);
+        return new(Constants.InvalidId, face.Rectangle, face.FaceMode, face.FaceQuality, face.Visible, face.FaceDescriptor);
     }
 
     public static PersonTag InvalidateId(this PersonTag personTag)

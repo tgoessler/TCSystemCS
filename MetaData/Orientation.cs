@@ -93,7 +93,7 @@ public static class Orientation
 
     public static Face Orientate(Face face, OrientationMode mode)
     {
-        return new(face.Id, Orientate(face.Rectangle, mode), face.FaceMode, face.Visible, face.FaceDescriptor);
+        return new(face.Id, Orientate(face.Rectangle, mode), face.FaceMode, face.FaceQuality, face.Visible, face.FaceDescriptor);
     }
 
     public static Rectangle OrientateBack(Rectangle rectangle, OrientationMode mode)
@@ -124,7 +124,7 @@ public static class Orientation
 
     public static Face OrientateBack(Face face, OrientationMode mode)
     {
-        return new(face.Id, OrientateBack(face.Rectangle, mode), face.FaceMode, face.Visible, face.FaceDescriptor);
+        return new(face.Id, OrientateBack(face.Rectangle, mode), face.FaceMode, face.FaceQuality, face.Visible, face.FaceDescriptor);
     }
 
 #endregion

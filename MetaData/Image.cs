@@ -143,7 +143,25 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         {
             List<PersonTag> pts = image._personTags.ToList();
             pts.Remove(pt);
-            pt = new(pt.Person, new(pt.Face.Id, pt.Face.Rectangle, pt.Face.FaceMode, visible, pt.Face.FaceDescriptor));
+            pt = new(pt.Person, new(pt.Face.Id, pt.Face.Rectangle, pt.Face.FaceMode, pt.Face.FaceQuality, visible, pt.Face.FaceDescriptor));
+            pts.Add(pt);
+
+            image = new(image.Id, image.FileName, image.ProcessingInfos,
+                image.Width, image.Height, image.Orientation,
+                image.DateTaken, image.Title, image.Location,
+                pts, image._tags);
+        }
+
+        return image;
+    }
+
+    public static Image ChangePersonTagFaceQuality(Image image, PersonTag pt, FaceQuality quality)
+    {
+        if (image.HasPersonTag(pt))
+        {
+            List<PersonTag> pts = image._personTags.ToList();
+            pts.Remove(pt);
+            pt = new(pt.Person, new(pt.Face.Id, pt.Face.Rectangle, pt.Face.FaceMode, quality, pt.Face.Visible, pt.Face.FaceDescriptor));
             pts.Add(pt);
 
             image = new(image.Id, image.FileName, image.ProcessingInfos,

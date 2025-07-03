@@ -27,7 +27,8 @@ internal class DB2Constants
     protected const string Version10 = "1.0";
     protected const string Version11 = "1.1";
     protected const string Version12 = "1.2";
-    protected const string CurrentVersion = Version12;
+    protected const string Version13 = "1.3";
+    protected const string CurrentVersion = Version13;
 
     protected const string TableKeyValues = "KeyValues";
     protected const string TableFiles = "Files";
@@ -73,6 +74,7 @@ internal class DB2Constants
     protected const string IdRectangleW = "RectangleW";
     protected const string IdRectangleH = "RectangleH";
     protected const string IdFaceMode = "FaceMode";
+    protected const string IdFaceQuality = "FaceQuality";
     protected const string IdVisible = "Visible";
     protected const string IdFaceDescriptor = "FaceDescriptor";
 

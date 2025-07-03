@@ -71,12 +71,12 @@ public static class TestData
     public static readonly FaceInfo FaceInfo2 = new(2, 3, 4, FaceMode.DlibCnn,
         Enumerable.Repeat(new FixedPoint64(1), 128));
 
-    public static readonly Face FaceZero = new(0, Rectangle.FromFloat(0, 0, 0, 0), FaceMode.Undefined, false, null);
+    public static readonly Face FaceZero = new(0, Rectangle.FromFloat(0, 0, 0, 0), FaceMode.Undefined, FaceQuality.Normal, false, null);
 
-    public static readonly Face Face1 = new(1, Rectangle.FromFloat(10, 10, 100, 100), FaceMode.DlibFront, true,
+    public static readonly Face Face1 = new(1, Rectangle.FromFloat(10, 10, 100, 100), FaceMode.DlibFront, FaceQuality.Good, true,
         Enumerable.Repeat(new FixedPoint64(1), 128));
 
-    public static readonly Face Face2 = new(2, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, true,
+    public static readonly Face Face2 = new(2, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, FaceQuality.Poor, true,
         Enumerable.Repeat(new FixedPoint64(2), 128));
 
     public static readonly Person PersonZero = new(0, null, null, null, null);

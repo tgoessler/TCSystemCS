@@ -41,13 +41,13 @@ public static class TestData
     public const string Tag2 = "02 Geburtstag";
     public const string Tag3 = "03 Ostern";
 
-    public static readonly Face Face1 = new(Constants.InvalidId, Rectangle.FromFloat(10, 10, 100, 100), FaceMode.DlibFront, true,
+    public static readonly Face Face1 = new(Constants.InvalidId, Rectangle.FromFloat(10, 10, 100, 100), FaceMode.DlibFront, FaceQuality.Normal, true,
         Enumerable.Repeat(new FixedPoint64(1), 128));
 
-    public static readonly Face Face2 = new(Constants.InvalidId, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, false,
+    public static readonly Face Face2 = new(Constants.InvalidId, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, FaceQuality.Good, false,
         Enumerable.Repeat(new FixedPoint64(2), 128));
 
-    public static readonly Face Face3 = new(Constants.InvalidId, Rectangle.FromFloat(17, 15, 70, 90), FaceMode.DlibCnn, true,
+    public static readonly Face Face3 = new(Constants.InvalidId, Rectangle.FromFloat(17, 15, 70, 90), FaceMode.DlibCnn, FaceQuality.Poor, true,
         Enumerable.Repeat(new FixedPoint64(3), 128));
 
     public static readonly Person Person1 = new(Constants.InvalidId, "01 Thomas", "thomas@email.com", "123", "456");

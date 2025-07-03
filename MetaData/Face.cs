@@ -35,11 +35,12 @@ public sealed class Face : IEquatable<Face>
 {
 #region Public
 
-    public Face(long faceId, Rectangle rectangle, FaceMode faceMode, bool visible, IEnumerable<FixedPoint64> faceDescriptor)
+    public Face(long faceId, Rectangle rectangle, FaceMode faceMode, FaceQuality faceQuality, bool visible, IEnumerable<FixedPoint64> faceDescriptor)
     {
         Id = faceId;
         Rectangle = rectangle;
         FaceMode = faceMode;
+        FaceQuality = faceQuality;
         Visible = visible;
         _faceDescriptor = faceDescriptor?.ToArray();
         // safety check for wrong face descriptors
@@ -66,6 +67,7 @@ public sealed class Face : IEquatable<Face>
             int hashCode = Id.GetHashCode();
             hashCode = (hashCode * 397) ^ Rectangle.GetHashCode();
             hashCode = (hashCode * 397) ^ FaceMode.GetHashCode();
+            hashCode = (hashCode * 397) ^ FaceQuality.GetHashCode();
             hashCode = (hashCode * 397) ^ Visible.GetHashCode();
             return _faceDescriptor != null ?
                 _faceDescriptor.Aggregate(hashCode, (current, fixedPoint64) => (current * 397) ^ fixedPoint64.GetHashCode()) :
@@ -91,6 +93,7 @@ public sealed class Face : IEquatable<Face>
     public long Id { get; }
     public Rectangle Rectangle { get; }
     public FaceMode FaceMode { get; }
+    public FaceQuality FaceQuality { get; }
     public bool IsFrontFace => FaceMode == FaceMode.DlibFront;
     public bool Visible { get; }
     public bool HasFaceDescriptor => _faceDescriptor != null;
@@ -106,6 +109,7 @@ public sealed class Face : IEquatable<Face>
         return new((long)jsonObject["id"],
             Rectangle.FromJson((JObject)jsonObject["rectangle"]),
             (FaceMode)(int)jsonObject["face_mode"],
+            (FaceQuality)(int)jsonObject["face_quality"],
             (int)jsonObject["visible"] == 1,
             fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double)v)) : null);
     }
@@ -117,6 +121,7 @@ public sealed class Face : IEquatable<Face>
             ["id"] = Id,
             ["rectangle"] = Rectangle.ToJson(),
             ["face_mode"] = (int)FaceMode,
+            ["face_quality"] = (int)FaceQuality,
             ["visible"] = Visible ? 1 : 0,
             ["face_descriptor"] = HasFaceDescriptor ? new(FaceDescriptor.Select(v => v.Value)) : new JArray()
         };
@@ -133,7 +138,11 @@ public sealed class Face : IEquatable<Face>
     private bool EqualsImp(Face other)
     {
         var equal = false;
-        if (Id == other.Id && Rectangle.Equals(other.Rectangle) && Visible == other.Visible)
+        if (Id == other.Id &&
+            Rectangle.Equals(other.Rectangle) &&
+            FaceMode == other.FaceMode &&
+            FaceQuality == other.FaceQuality &&
+            Visible == other.Visible)
         {
             if (_faceDescriptor == null && other._faceDescriptor == null)
             {

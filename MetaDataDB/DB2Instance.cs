@@ -438,6 +438,7 @@ internal sealed class DB2Instance : DB2Constants
                                   $"{IdRectangleW} INTEGER, " +
                                   $"{IdRectangleH} INTEGER, " +
                                   $"{IdFaceMode} INTEGER DEFAULT {(int)FaceMode.Undefined}, " +
+                                  $"{IdFaceQuality} INTEGER DEFAULT {(int)FaceQuality.Normal}, " +
                                   $"{IdVisible} INTEGER DEFAULT 1, " +
                                   $"{IdFaceDescriptor} BLOB " +
                                   ");";
@@ -536,6 +537,15 @@ internal sealed class DB2Instance : DB2Constants
             ExecuteNonQuery($"ALTER TABLE {TableFileFaces} ADD {IdVisible} INTEGER DEFAULT 1;", transaction);
 
             UpdateDbVersion(transaction, Version12);
+        }
+
+        if (Version == Version12)
+        {
+            transaction ??= BeginTransaction();
+
+            ExecuteNonQuery($"ALTER TABLE {TableFileFaces} ADD {IdFaceQuality} INTEGER DEFAULT {(int)FaceQuality.Normal};", transaction);
+
+            UpdateDbVersion(transaction, Version13);
         }
 
         if (Version != CurrentVersion)

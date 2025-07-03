@@ -128,7 +128,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
             command.Connection = _instance.Connection;
             command.CommandText =
                 $"SELECT {TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
-                $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdVisible}, {IdFaceDescriptor} " +
+                $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdFaceQuality}, {IdVisible}, {IdFaceDescriptor} " +
                 $"FROM {TableFileFaces} " +
                 $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId} = {TableFileFaces}.{IdPersonId} " +
                 $"WHERE {IdFileId}=@{IdFileId}{AddVisibleWhere(visibleOnly)};";
@@ -296,7 +296,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
             command.Connection = _instance.Connection;
             command.CommandText = "SELECT " +
                                   $"{TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
-                                  $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdVisible}, {IdFaceDescriptor}, " +
+                                  $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdFaceQuality}, {IdVisible}, {IdFaceDescriptor}, " +
                                   $"{TableFiles}.{IdFileName} " +
                                   $"FROM {TableFileFaces} " +
                                   $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
@@ -311,7 +311,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
                 var fileAndPersonTags = new List<FileAndPersonTag>();
                 while (reader.HasRows && reader.Read())
                 {
-                    fileAndPersonTags.Add(new(reader.GetString(13),
+                    fileAndPersonTags.Add(new(reader.GetString(14),
                         ReadPersonTag(0, reader)));
                 }
 
@@ -372,7 +372,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
             command.Connection = _instance.Connection;
             command.CommandText = "SELECT " +
                                   $"{TablePersons}.{IdPersonId}, {TablePersons}.{IdName}, {TablePersons}.{IdEmailDigest}, {TablePersons}.{IdLiveId}, {TablePersons}.{IdSourceId}, " +
-                                  $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdVisible}, {IdFaceDescriptor}, " +
+                                  $"{IdFaceId}, {IdRectangleX}, {IdRectangleY}, {IdRectangleW}, {IdRectangleH}, {IdFaceMode}, {IdFaceQuality}, {IdVisible}, {IdFaceDescriptor}, " +
                                   $"{TableFiles}.{IdFileName} " +
                                   $"FROM {TableFileFaces} " +
                                   $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
@@ -385,7 +385,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
                 FileAndPersonTag fileAndPersonTag = null;
                 if (reader.HasRows && reader.Read())
                 {
-                    fileAndPersonTag = new(reader.GetString(13),
+                    fileAndPersonTag = new(reader.GetString(14),
                         ReadPersonTag(0, reader));
                 }
 
@@ -422,9 +422,10 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
         if (rect.W.RawValue > 0 && rect.H.RawValue > 0)
         {
             var faceMode = (FaceMode)reader.GetInt32(start + 5);
-            bool visible = reader.GetInt32(start + 6) == 1;
-            IEnumerable<FixedPoint64> faceDescriptor = ReadFaceDescriptor(start + 7, reader);
-            face = new(faceId, rect, faceMode, visible, faceDescriptor);
+            var faceQuality = (FaceQuality)reader.GetInt32(start + 6);
+            bool visible = reader.GetInt32(start + 7) == 1;
+            IEnumerable<FixedPoint64> faceDescriptor = ReadFaceDescriptor(start + 8, reader);
+            face = new(faceId, rect, faceMode, faceQuality, visible, faceDescriptor);
         }
         else
         {
@@ -433,6 +434,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
                     new(0),
                     new(0)),
                 FaceMode.Undefined,
+                FaceQuality.Normal,
                 false,
                 null);
         }
@@ -468,9 +470,9 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
             command.Transaction = transaction;
             command.Connection = _instance.Connection;
             command.CommandText = $"INSERT INTO {TableFileFaces} " + "" +
-                                  $"( {IdFileId},  {IdPersonId},  {IdRectangleX},  {IdRectangleY},  {IdRectangleW},  {IdRectangleH},  {IdFaceMode},  {IdVisible}, {IdFaceDescriptor})" +
+                                  $"( {IdFileId},  {IdPersonId},  {IdRectangleX},  {IdRectangleY},  {IdRectangleW},  {IdRectangleH},  {IdFaceMode},  {IdFaceQuality},  {IdVisible}, {IdFaceDescriptor})" +
                                   "VALUES " +
-                                  $"(@{IdFileId}, @{IdPersonId}, @{IdRectangleX}, @{IdRectangleY}, @{IdRectangleW}, @{IdRectangleH}, @{IdFaceMode}, @{IdVisible}, @{IdFaceDescriptor});";
+                                  $"(@{IdFileId}, @{IdPersonId}, @{IdRectangleX}, @{IdRectangleY}, @{IdRectangleW}, @{IdRectangleH}, @{IdFaceMode}, @{IdFaceQuality}, @{IdVisible}, @{IdFaceDescriptor});";
             AddFaceParameters(fileId, personId, face, command);
             command.ExecuteNonQuery();
         }
@@ -490,6 +492,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
                                   $"    {IdRectangleW}=@{IdRectangleW}," +
                                   $"    {IdRectangleH}=@{IdRectangleH}," +
                                   $"    {IdFaceMode}=@{IdFaceMode}," +
+                                  $"    {IdFaceQuality}=@{IdFaceQuality}," +
                                   $"    {IdVisible}=@{IdVisible}," +
                                   $"    {IdFaceDescriptor}=@{IdFaceDescriptor} " +
                                   $"WHERE {IdFaceId}=@{IdFaceId};";
@@ -529,6 +532,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
         command.Parameters.AddWithValue($"@{IdRectangleW}", face.Rectangle.W.RawValue);
         command.Parameters.AddWithValue($"@{IdRectangleH}", face.Rectangle.H.RawValue);
         command.Parameters.AddWithValue($"@{IdFaceMode}", (int)face.FaceMode);
+        command.Parameters.AddWithValue($"@{IdFaceQuality}", (int)face.FaceQuality);
         command.Parameters.AddWithValue($"@{IdVisible}", face.Visible ? 1 : 0);
         IEnumerable<string> faceDescriptorStringValues = face.HasFaceDescriptor ?
             face.FaceDescriptor.Select(v => v.RawValue.ToString(CultureInfo.InvariantCulture)) :
