@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(GeneratePackageOnBuild)' == ''">true</GeneratePackageOnBuild>
-		<PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</PackageProjectUrl>
-		<RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/ThE-TiGeR/TCSystemCS</RepositoryUrl>
+		<PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/tgoessler/TCSystemCS</PackageProjectUrl>
+		<RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/tgoessler/TCSystemCS</RepositoryUrl>
 		<RepositoryType Condition="'$(RepositoryType)' == ''">Git</RepositoryType>
 		<PackageLicenseFile Condition="'$(PackageLicenseFile)' == ''">LICENSE</PackageLicenseFile>
 		<PackageReadmeFile Condition="'$(PackageReadmeFile)' == ''">README.md</PackageReadmeFile>

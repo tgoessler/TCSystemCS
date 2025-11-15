@@ -9,7 +9,7 @@
 //     *      ***   ***    *     **   **   **   *   *
 //                         *
 // *******************************************************************************
-//  see https://github.com/ThE-TiGeR/TCSystemCS for details.
+//  see https://github.com/tgoessler/TCSystemCS for details.
 //  Copyright (C) 2003 - 2025 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
