@@ -39,6 +39,7 @@ internal sealed class DB2Instance : DB2Constants
         try
         {
             Log.Instance.Info($"Open Database '{fileName}:readOnly={readOnly}'");
+            AppContext.SetSwitch("Microsoft.Data.Sqlite.Pre10TimeZoneHandling", isEnabled: true);
 
             _fileName = fileName;
             ReadOnly = readOnly;
