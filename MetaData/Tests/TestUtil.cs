@@ -36,6 +36,7 @@ public static class TestUtil
         string jsonString = toJson(data1);
         TData jsonData = fromJson(jsonString);
         Assert.That(jsonData, Is.EqualTo(data1));
+        Assert.That(jsonString, Is.EqualTo(toJson(jsonData)));
     }
 
     public static void GetHashCodeTest<TData>(TData dataZero, TData data1, TData data2, TData copyOfData1)
