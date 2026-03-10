@@ -258,6 +258,10 @@ public class ConverterTests
         _dbFileName1 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         _dbFileName2 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
+        if (!File.Exists(fileName))
+        {
+            Assert.Ignore("DB file not available");
+        }
         File.Copy(fileName, _dbFileName1);
 
         _db1 = Factory.CreateReadWrite(_dbFileName1);
