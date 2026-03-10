@@ -311,8 +311,11 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
                 var fileAndPersonTags = new List<FileAndPersonTag>();
                 while (reader.HasRows && reader.Read())
                 {
-                    fileAndPersonTags.Add(new(reader.GetString(14),
-                        ReadPersonTag(0, reader)));
+                    var personTag = ReadPersonTag(0, reader);
+                    if (!visibleOnly || personTag.Face.Visible)
+                    {
+                        fileAndPersonTags.Add(new(reader.GetString(14), personTag));
+                    }
                 }
 
                 return fileAndPersonTags;
@@ -342,7 +345,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
         {
             command.Connection = _instance.Connection;
             command.CommandText =
-                $"SELECT {TableFiles}.{IdFileId}, {IdFaceId}, {TablePersons}.{IdPersonId}, {IdFaceMode}, {IdFaceDescriptor} " +
+                $"SELECT {TableFiles}.{IdFileId}, {IdFaceId}, {TablePersons}.{IdPersonId}, {IdFaceMode}, {IdFaceQuality}, {IdFaceDescriptor} " +
                 $"FROM {TableFileFaces} " +
                 $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
                 $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
@@ -357,7 +360,8 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
                         reader.GetInt64(1),
                         reader.GetInt64(2),
                         (FaceMode)reader.GetInt64(3),
-                        ReadFaceDescriptor(4, reader)));
+                        (FaceQuality)reader.GetInt64(4),
+                        ReadFaceDescriptor(5, reader)));
                 }
 
                 return faceInfos;
