@@ -63,7 +63,7 @@ public class FaceInfoTests
     {
         FaceInfo data1 = TestData.FaceInfo1;
         var copyOfData1 = new FaceInfo(data1.FileId, data1.FaceId,
-            data1.PersonId, data1.FaceMode, data1.FaceDescriptor);
+            data1.PersonId, data1.FaceMode, data1.FaceQuality, data1.FaceDescriptor);
 
         TestUtil.GetHashCodeTest(TestData.FaceInfoZero, TestData.FaceInfo1,
             TestData.FaceInfo2, copyOfData1);

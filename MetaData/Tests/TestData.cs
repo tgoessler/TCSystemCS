@@ -63,12 +63,11 @@ public static class TestData
     public static readonly FaceDistanceInfo FaceDistanceInfo1 = new(1, 1, 10);
     public static readonly FaceDistanceInfo FaceDistanceInfo2 = new(2, 2, 5);
 
-    public static readonly FaceInfo FaceInfoZero = new(Constants.InvalidId, Constants.InvalidId, Constants.InvalidId, FaceMode.DlibCnn,
-        null);
+    public static readonly FaceInfo FaceInfoZero = new(Constants.InvalidId, Constants.InvalidId, Constants.InvalidId, FaceMode.DlibCnn, FaceQuality.Normal, null);
 
-    public static readonly FaceInfo FaceInfo1 = new(1, 2, 3, FaceMode.DlibCnn, Array.Empty<FixedPoint64>());
+    public static readonly FaceInfo FaceInfo1 = new(1, 2, 3, FaceMode.DlibCnn, FaceQuality.Normal, Array.Empty<FixedPoint64>());
 
-    public static readonly FaceInfo FaceInfo2 = new(2, 3, 4, FaceMode.DlibCnn,
+    public static readonly FaceInfo FaceInfo2 = new(2, 3, 4, FaceMode.DlibCnn, FaceQuality.Normal,
         Enumerable.Repeat(new FixedPoint64(1), 128));
 
     public static readonly Face FaceZero = new(0, Rectangle.FromFloat(0, 0, 0, 0), FaceMode.Undefined, FaceQuality.Normal, false, null);

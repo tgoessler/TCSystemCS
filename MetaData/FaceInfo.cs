@@ -31,7 +31,7 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
-public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMode _faceMode,
+public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMode _faceMode, FaceQuality _faceQuality,
                              IEnumerable<FixedPoint64> _faceDescriptor) : IEquatable<FaceInfo>
 {
 #region Public
@@ -54,6 +54,7 @@ public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMod
             hashCode *= 397 ^ FaceId.GetHashCode();
             hashCode *= 397 ^ PersonId.GetHashCode();
             hashCode *= 397 ^ FaceMode.GetHashCode();
+            hashCode *= 397 ^ FaceQuality.GetHashCode();
             return FaceDescriptor.Aggregate(hashCode, (current, fixedPoint64) => (current * 397) ^ fixedPoint64.GetHashCode());
         }
     }
@@ -83,6 +84,7 @@ public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMod
     public long FaceId => _faceId;
     public long PersonId => _personId == Constants.EmptyPersonId ? Constants.InvalidId : _personId;
     public FaceMode FaceMode => _faceMode;
+    public FaceQuality FaceQuality => _faceQuality;
     public IReadOnlyCollection<FixedPoint64> FaceDescriptor => (_faceDescriptor ?? Array.Empty<FixedPoint64>()).ToArray();
 
 #endregion
@@ -95,6 +97,7 @@ public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMod
                FaceId == other.FaceId &&
                PersonId == other.PersonId &&
                FaceMode == other.FaceMode &&
+               FaceQuality == other.FaceQuality &&
                FaceDescriptor.SequenceEqual(other.FaceDescriptor);
     }
 
@@ -106,6 +109,7 @@ public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMod
             (long)jsonObject["face_id"],
             (long)jsonObject["person_id"],
             (FaceMode)(long)jsonObject["face_mode"],
+            (FaceQuality)(long)jsonObject["face_quality"],
             fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double)v)) : null);
     }
 
@@ -117,6 +121,7 @@ public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMod
             ["face_id"] = FaceId,
             ["person_id"] = PersonId,
             ["face_mode"] = (long)FaceMode,
+            ["face_quality"] = (long)FaceQuality,
             ["face_descriptor"] = new JArray(FaceDescriptor.Select(v => v.Value))
         };
 
