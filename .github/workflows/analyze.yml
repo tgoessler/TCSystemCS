@@ -29,7 +29,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          dotnet sonarscanner begin /k:"TCSystemCS" /o:"tgoessler" /d:sonar.verbose=true /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.net8.0.opencover.xml" /d:sonar.host.url="https://sonarcloud.io" /v:"5.0.0"
+          dotnet sonarscanner begin /k:"TCSystemCS" /o:"tgoessler" /d:sonar.verbose=true /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.net8.0.opencover.xml" /d:sonar.host.url="https://sonarcloud.io" /v:"5.0.0"
           dotnet build -c Debug --no-restore
           dotnet test  -c Debug --no-build --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
