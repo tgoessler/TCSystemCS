@@ -355,3 +355,6 @@ coverage.*opencover.xml
 *.db
 *.db-shm
 *.db-wal
+
+# sonar
+.sonarqube
