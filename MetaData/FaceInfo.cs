@@ -32,7 +32,7 @@ using TCSystem.Util;
 namespace TCSystem.MetaData;
 
 public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMode _faceMode, FaceQuality _faceQuality,
-                             IEnumerable<FixedPoint64> _faceDescriptor) : IEquatable<FaceInfo>
+                             IReadOnlyList<FixedPoint64> _faceDescriptor) : IEquatable<FaceInfo>
 {
 #region Public
 
@@ -85,7 +85,7 @@ public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMod
     public long PersonId => _personId == Constants.EmptyPersonId ? Constants.InvalidId : _personId;
     public FaceMode FaceMode => _faceMode;
     public FaceQuality FaceQuality => _faceQuality;
-    public IReadOnlyCollection<FixedPoint64> FaceDescriptor => (_faceDescriptor ?? Array.Empty<FixedPoint64>()).ToArray();
+    public IReadOnlyList<FixedPoint64> FaceDescriptor => _faceDescriptor ?? Array.Empty<FixedPoint64>();
 
 #endregion
 
@@ -110,7 +110,7 @@ public sealed class FaceInfo(long _fileId, long _faceId, long _personId, FaceMod
             (long)jsonObject["person_id"],
             (FaceMode)(long)jsonObject["face_mode"],
             (FaceQuality)(long)jsonObject["face_quality"],
-            fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double)v)) : null);
+            fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double)v)).ToArray() : null);
     }
 
     private JObject ToJson()

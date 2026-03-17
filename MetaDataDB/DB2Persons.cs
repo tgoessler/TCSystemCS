@@ -428,7 +428,7 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
             var faceMode = (FaceMode)reader.GetInt32(start + 5);
             var faceQuality = (FaceQuality)reader.GetInt32(start + 6);
             bool visible = reader.GetInt32(start + 7) == 1;
-            IEnumerable<FixedPoint64> faceDescriptor = ReadFaceDescriptor(start + 8, reader);
+            FixedPoint64[] faceDescriptor = ReadFaceDescriptor(start + 8, reader);
             face = new(faceId, rect, faceMode, faceQuality, visible, faceDescriptor);
         }
         else
@@ -446,11 +446,11 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
         return face;
     }
 
-    private static IEnumerable<FixedPoint64> ReadFaceDescriptor(int start, SqliteDataReader reader)
+    private static FixedPoint64[] ReadFaceDescriptor(int start, SqliteDataReader reader)
     {
         string faceDescriptorString = reader.GetString(start);
-        IEnumerable<FixedPoint64> faceDescriptor = faceDescriptorString.Length > 0 ?
-            faceDescriptorString.Split(',').Select(s => new FixedPoint64(long.Parse(s, CultureInfo.InvariantCulture))) :
+        var faceDescriptor = faceDescriptorString.Length > 0 ?
+            faceDescriptorString.Split(',').Select(s => new FixedPoint64(long.Parse(s, CultureInfo.InvariantCulture))).ToArray() :
             null;
         return faceDescriptor;
     }

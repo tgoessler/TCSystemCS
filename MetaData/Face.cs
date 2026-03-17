@@ -35,7 +35,7 @@ public sealed class Face : IEquatable<Face>
 {
 #region Public
 
-    public Face(long faceId, Rectangle rectangle, FaceMode faceMode, FaceQuality faceQuality, bool visible, IEnumerable<FixedPoint64> faceDescriptor)
+    public Face(long faceId, Rectangle rectangle, FaceMode faceMode, FaceQuality faceQuality, bool visible, IReadOnlyList<FixedPoint64> faceDescriptor)
     {
         Id = faceId;
         Rectangle = rectangle;
@@ -97,7 +97,7 @@ public sealed class Face : IEquatable<Face>
     public bool IsFrontFace => FaceMode == FaceMode.DlibFront;
     public bool Visible { get; }
     public bool HasFaceDescriptor => _faceDescriptor != null;
-    public IReadOnlyCollection<FixedPoint64> FaceDescriptor => _faceDescriptor;
+    public IReadOnlyList<FixedPoint64> FaceDescriptor => _faceDescriptor;
 
 #endregion
 
@@ -111,7 +111,7 @@ public sealed class Face : IEquatable<Face>
             (FaceMode)(int)jsonObject["face_mode"],
             (FaceQuality)(int)jsonObject["face_quality"],
             (int)jsonObject["visible"] == 1,
-            fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double)v)) : null);
+            fdJson is { Count: > 0 } ? fdJson.Select(v => new FixedPoint64((double)v)).ToArray() : null);
     }
 
     internal JObject ToJson()

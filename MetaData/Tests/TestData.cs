@@ -68,15 +68,15 @@ public static class TestData
     public static readonly FaceInfo FaceInfo1 = new(1, 2, 3, FaceMode.DlibCnn, FaceQuality.Normal, Array.Empty<FixedPoint64>());
 
     public static readonly FaceInfo FaceInfo2 = new(2, 3, 4, FaceMode.DlibCnn, FaceQuality.Normal,
-        Enumerable.Repeat(new FixedPoint64(1), 128));
+        Enumerable.Repeat(new FixedPoint64(1), 128).ToArray());
 
     public static readonly Face FaceZero = new(0, Rectangle.FromFloat(0, 0, 0, 0), FaceMode.Undefined, FaceQuality.Normal, false, null);
 
     public static readonly Face Face1 = new(1, Rectangle.FromFloat(10, 10, 100, 100), FaceMode.DlibFront, FaceQuality.Good, true,
-        Enumerable.Repeat(new FixedPoint64(1), 128));
+        Enumerable.Repeat(new FixedPoint64(1), 128).ToArray());
 
     public static readonly Face Face2 = new(2, Rectangle.FromFloat(15, 17, 90, 70), FaceMode.Undefined, FaceQuality.Poor, true,
-        Enumerable.Repeat(new FixedPoint64(2), 128));
+        Enumerable.Repeat(new FixedPoint64(2), 128).ToArray());
 
     public static readonly Person PersonZero = new(0, null, null, null, null);
     public static readonly Person Person1 = new(1, "Thomas", "thomas@email.com", "123", "456");
