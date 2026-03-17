@@ -1,3 +1,3 @@
-dotnet msbuild TCSystem.sln -t:Rebuild,Pack,NugetPush -p:Configuration=Release
+dotnet msbuild TCSystem.slnx -t:Rebuild,Pack,NugetPush -p:Configuration=Release
 
 pause

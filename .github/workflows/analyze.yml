@@ -3,7 +3,6 @@ on:
   push:
     branches: [develop, main]
   workflow_dispatch:
-    branches: [develop, main]
 
 jobs:
   build:
@@ -24,7 +23,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8
+          dotnet-version: 10
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v3

@@ -2,7 +2,6 @@ name: Build Release
 
 on:
   workflow_dispatch:
-    branches: [ main, develop ]
 
 jobs:
   build:
@@ -16,7 +15,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8
+        dotnet-version: 10
     
     - name: Restore dependencies
       run: dotnet restore
