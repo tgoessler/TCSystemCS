@@ -132,20 +132,14 @@ internal sealed class DB2Tags(DB2Instance _instance) : DB2Constants
 
     public void SetTags(long fileId, IReadOnlyList<string> newTags, IReadOnlyList<string> oldTags, SqliteTransaction transaction)
     {
-        foreach (string tag in newTags)
+        foreach (var tag in newTags.Where(tag => !oldTags.Contains(tag)))
         {
-            if (!oldTags.Contains(tag))
-            {
-                AddTag(fileId, tag, transaction);
-            }
+            AddTag(fileId, tag, transaction);
         }
 
-        foreach (string tag in oldTags)
+        foreach (var tag in oldTags.Where(tag => !newTags.Contains(tag)))
         {
-            if (!newTags.Contains(tag))
-            {
-                RemoveTag(fileId, tag, transaction);
-            }
+            RemoveTag(fileId, tag, transaction);
         }
     }
 

@@ -291,7 +291,7 @@ public class ConverterTests
     }
 
 
-    private string TestDataDirectory => Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "TestData");
+    private static string TestDataDirectory => Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "TestData");
 
     private IDB2 _db1;
     private IDB2 _db2;
