@@ -67,14 +67,44 @@ public class PersonTests
     }
 
     [Test]
-    public void InvalidateIdTest() { }
+    public void InvalidateIdTest()
+    {
+        Person invalidated = TestData.Person1.InvalidateId();
+        Assert.That(invalidated.Id, Is.EqualTo(Constants.InvalidId));
+        Assert.That(invalidated.Name, Is.EqualTo(TestData.Person1.Name));
+        Assert.That(invalidated.EmailDigest, Is.EqualTo(TestData.Person1.EmailDigest));
+        Assert.That(invalidated.LiveId, Is.EqualTo(TestData.Person1.LiveId));
+        Assert.That(invalidated.SourceId, Is.EqualTo(TestData.Person1.SourceId));
+    }
 
     [Test]
-    public void PersonTest() { }
+    public void PersonTest()
+    {
+        Person person = TestData.Person1;
+        Assert.That(person.Id, Is.EqualTo(1));
+        Assert.That(person.Name, Is.EqualTo("Thomas"));
+        Assert.That(person.EmailDigest, Is.EqualTo("thomas@email.com"));
+        Assert.That(person.LiveId, Is.EqualTo("123"));
+        Assert.That(person.SourceId, Is.EqualTo("456"));
+        Assert.That(person.IsValid, Is.True);
+        Assert.That(person.AllAttributesDefined, Is.True);
+
+        Person empty = TestData.PersonZero;
+        Assert.That(empty.IsValid, Is.False);
+        Assert.That(empty.AllAttributesDefined, Is.False);
+    }
 
     [Test]
-    public void ToJsonStringTest() { }
+    public void ToJsonStringTest()
+    {
+        string json = TestData.Person1.ToJsonString();
+        Assert.That(json, Is.Not.Empty);
+    }
 
     [Test]
-    public void ToStringTest() { }
+    public void ToStringTest()
+    {
+        string str = TestData.Person1.ToString();
+        Assert.That(str, Is.Not.Empty);
+    }
 }

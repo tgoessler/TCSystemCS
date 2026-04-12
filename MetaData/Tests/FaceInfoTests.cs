@@ -42,7 +42,20 @@ public class FaceInfoTests
     }
 
     [Test]
-    public void FaceInfoTest() { }
+    public void FaceInfoTest()
+    {
+        FaceInfo fi = TestData.FaceInfo1;
+        Assert.That(fi.FileId, Is.EqualTo(1));
+        Assert.That(fi.FaceId, Is.EqualTo(2));
+        Assert.That(fi.PersonId, Is.EqualTo(3));
+        Assert.That(fi.FaceMode, Is.EqualTo(FaceMode.DlibCnn));
+        Assert.That(fi.FaceQuality, Is.EqualTo(FaceQuality.Normal));
+        Assert.That(fi.FaceDescriptor, Is.Not.Null);
+
+        // PersonId == EmptyPersonId should map to InvalidId
+        var fi2 = new FaceInfo(1, 2, Constants.EmptyPersonId, FaceMode.DlibFront, FaceQuality.Good, null);
+        Assert.That(fi2.PersonId, Is.EqualTo(Constants.InvalidId));
+    }
 
     [Test]
     public void FromJsonStringTest()
@@ -70,8 +83,18 @@ public class FaceInfoTests
     }
 
     [Test]
-    public void ToJsonStringArrayTest() { }
+    public void ToJsonStringArrayTest()
+    {
+        var faceInfos = new[] { TestData.FaceInfo1, TestData.FaceInfo2 };
+        string json = FaceInfo.ToJsonStringArray(faceInfos);
+        Assert.That(json, Is.Not.Empty);
+        Assert.That(json, Does.StartWith("["));
+    }
 
     [Test]
-    public void ToJsonStringTest() { }
+    public void ToJsonStringTest()
+    {
+        string json = TestData.FaceInfo1.ToJsonString();
+        Assert.That(json, Is.Not.Empty);
+    }
 }
