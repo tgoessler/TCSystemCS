@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 
 #endregion
@@ -42,10 +43,31 @@ public class FileAndPersonTagTests
     }
 
     [Test]
-    public void FileAndPersonTagTest() { }
+    public void FileAndPersonTagTest()
+    {
+        FileAndPersonTag fpt = TestData.FileAndPersonTag1;
+        Assert.That(fpt.FileName, Is.EqualTo("file1"));
+        Assert.That(fpt.PersonTag, Is.EqualTo(TestData.PersonTag1));
+
+        // null filename defaults to empty string
+        FileAndPersonTag zero = TestData.FileAndPersonTagZero;
+        Assert.That(zero.FileName, Is.EqualTo(string.Empty));
+    }
 
     [Test]
-    public void FromJsonStringArrayTest() { }
+    public void FromJsonStringArrayTest()
+    {
+        var items = new[] { TestData.FileAndPersonTag1, TestData.FileAndPersonTag2 };
+        string json = FileAndPersonTag.ToJsonStringArray(items);
+        var parsed = FileAndPersonTag.FromJsonStringArray(json).ToArray();
+        Assert.That(parsed.Length, Is.EqualTo(2));
+        Assert.That(parsed[0], Is.EqualTo(TestData.FileAndPersonTag1));
+        Assert.That(parsed[1], Is.EqualTo(TestData.FileAndPersonTag2));
+
+        // Empty string returns empty
+        var empty = FileAndPersonTag.FromJsonStringArray("").ToArray();
+        Assert.That(empty.Length, Is.EqualTo(0));
+    }
 
     [Test]
     public void FromJsonStringTest()
@@ -73,11 +95,25 @@ public class FileAndPersonTagTests
     }
 
     [Test]
-    public void ToJsonStringArrayTest() { }
+    public void ToJsonStringArrayTest()
+    {
+        var items = new[] { TestData.FileAndPersonTag1, TestData.FileAndPersonTag2 };
+        string json = FileAndPersonTag.ToJsonStringArray(items);
+        Assert.That(json, Is.Not.Empty);
+        Assert.That(json, Does.StartWith("["));
+    }
 
     [Test]
-    public void ToJsonStringTest() { }
+    public void ToJsonStringTest()
+    {
+        string json = TestData.FileAndPersonTag1.ToJsonString();
+        Assert.That(json, Is.Not.Empty);
+    }
 
     [Test]
-    public void ToStringTest() { }
+    public void ToStringTest()
+    {
+        string str = TestData.FileAndPersonTag1.ToString();
+        Assert.That(str, Is.Not.Empty);
+    }
 }

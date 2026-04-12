@@ -42,7 +42,14 @@ public class RectangleTests
     }
 
     [Test]
-    public void FromFloatTest() { }
+    public void FromFloatTest()
+    {
+        Rectangle r = Rectangle.FromFloat(1.0f, 2.0f, 3.0f, 4.0f);
+        Assert.That(r.X, Is.EqualTo(new FixedPoint32(1.0f)));
+        Assert.That(r.Y, Is.EqualTo(new FixedPoint32(2.0f)));
+        Assert.That(r.W, Is.EqualTo(new FixedPoint32(3.0f)));
+        Assert.That(r.H, Is.EqualTo(new FixedPoint32(4.0f)));
+    }
 
     [Test]
     public void FromJsonStringTest()
@@ -60,7 +67,18 @@ public class RectangleTests
     }
 
     [Test]
-    public void FromRawValuesTest() { }
+    public void FromRawValuesTest()
+    {
+        Rectangle r = Rectangle.FromRawValues(10, 20, 30, 40);
+        Assert.That(r.X, Is.EqualTo(new FixedPoint32(10)));
+        Assert.That(r.Y, Is.EqualTo(new FixedPoint32(20)));
+        Assert.That(r.W, Is.EqualTo(new FixedPoint32(30)));
+        Assert.That(r.H, Is.EqualTo(new FixedPoint32(40)));
+        Assert.That(r.Left, Is.EqualTo(new FixedPoint32(10)));
+        Assert.That(r.Top, Is.EqualTo(new FixedPoint32(20)));
+        Assert.That(r.Right, Is.EqualTo(new FixedPoint32(40)));
+        Assert.That(r.Bottom, Is.EqualTo(new FixedPoint32(60)));
+    }
 
     [Test]
     public void GetHashCodeTest()
@@ -133,8 +151,24 @@ public class RectangleTests
     }
 
     [Test]
-    public void RectangleTest() { }
+    public void RectangleTest()
+    {
+        var r = new Rectangle(new FixedPoint32(1), new FixedPoint32(2), new FixedPoint32(3), new FixedPoint32(4));
+        Assert.That(r.X, Is.EqualTo(new FixedPoint32(1)));
+        Assert.That(r.Y, Is.EqualTo(new FixedPoint32(2)));
+        Assert.That(r.W, Is.EqualTo(new FixedPoint32(3)));
+        Assert.That(r.H, Is.EqualTo(new FixedPoint32(4)));
+        var rCopy = new Rectangle(r.X, r.Y, r.W, r.H);
+        Assert.That(r == rCopy, Is.True);
+        Assert.That(r != TestData.RectangleZero, Is.True);
+    }
 
     [Test]
-    public void ToStringTest() { }
+    public void ToStringTest()
+    {
+        string str = TestData.Rectangle1.ToString();
+        Assert.That(str, Is.Not.Empty);
+        // Format is "{X}, {Y}, {W}, {H}"
+        Assert.That(str, Does.Contain(","));
+    }
 }

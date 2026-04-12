@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 
 #endregion
@@ -42,10 +43,28 @@ public class FaceDistanceInfoTests
     }
 
     [Test]
-    public void FromJsonStringArrayTest() { }
+    public void FromJsonStringArrayTest()
+    {
+        var items = new[] { TestData.FaceDistanceInfo1, TestData.FaceDistanceInfo2 };
+        string json = "[" + string.Join(",", items.Select(i => i.ToJsonString())) + "]";
+        var parsed = FaceDistanceInfo.FromJsonStringArray(json).ToArray();
+        Assert.That(parsed.Length, Is.EqualTo(2));
+        Assert.That(parsed[0], Is.EqualTo(TestData.FaceDistanceInfo1));
+        Assert.That(parsed[1], Is.EqualTo(TestData.FaceDistanceInfo2));
+
+        // Empty/null string returns empty
+        var empty = FaceDistanceInfo.FromJsonStringArray("").ToArray();
+        Assert.That(empty.Length, Is.EqualTo(0));
+    }
 
     [Test]
-    public void FromJsonStringTest() { }
+    public void FromJsonStringTest()
+    {
+        FaceDistanceInfo original = TestData.FaceDistanceInfo1;
+        string json = original.ToJsonString();
+        FaceDistanceInfo parsed = FaceDistanceInfo.FromJsonString(json);
+        Assert.That(parsed, Is.EqualTo(original));
+    }
 
     [Test]
     public void GetHashCodeTest()
