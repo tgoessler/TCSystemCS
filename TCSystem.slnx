@@ -15,6 +15,7 @@
   <Folder Name="/50 Tests/">
     <Project Path="MetaData/Tests/TCSystem.MetaData.Tests.csproj" />
     <Project Path="MetaDataDB/Tests/TCSystem.MetaDataDB.Tests.csproj" />
+    <Project Path="Thread/Tests/TCSystem.Thread.Tests.csproj" />
     <Project Path="Util/Tests/TCSystem.Util.Tests.csproj" />
   </Folder>
   <Folder Name="/99 Build/">
