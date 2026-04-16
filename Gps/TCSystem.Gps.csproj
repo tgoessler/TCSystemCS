@@ -7,7 +7,7 @@
     <Description>Provides Reader/Writer for reading GPS data from Google takeout</Description>
   </PropertyGroup>
 
-  <Import Project="..\Packaging.props"></Import>
+  <Import Project="..\Packaging.props" />
 
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="10.0.5" />

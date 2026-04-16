@@ -23,5 +23,5 @@
     <ProjectReference Include="..\Thread\TCSystem.Thread.csproj" />
   </ItemGroup>
 
-  <Import Project="..\Packaging.props"></Import>
+  <Import Project="..\Packaging.props" />
 </Project>

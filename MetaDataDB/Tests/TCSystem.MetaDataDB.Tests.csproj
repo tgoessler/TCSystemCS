@@ -21,6 +21,6 @@
     <ProjectReference Include="..\TCSystem.MetaDataDB.csproj" />
   </ItemGroup>
 
-  <Import Project="..\..\NoPackaging.props"></Import>
+  <Import Project="..\..\NoPackaging.props" />
 
 </Project>

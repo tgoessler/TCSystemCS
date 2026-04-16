@@ -7,6 +7,6 @@
     <Description>Extension functions for containers, utilities for implementing equals, ...</Description>
   </PropertyGroup>
 
-  <Import Project="..\Packaging.props"></Import>
+  <Import Project="..\Packaging.props" />
 
 </Project>

@@ -11,6 +11,6 @@
     <ProjectReference Include="..\Logging\TCSystem.Logging.csproj" />
   </ItemGroup>
 	
-  <Import Project="..\Packaging.props"></Import>
+  <Import Project="..\Packaging.props" />
 
 </Project>

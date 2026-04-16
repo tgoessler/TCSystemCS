@@ -7,7 +7,7 @@
     <Description>Classes for handling, storing image meta data (e.g.: Serialize as Json)</Description>
   </PropertyGroup>
 
-  <Import Project="..\Packaging.props"></Import>
+  <Import Project="..\Packaging.props" />
 
   <ItemGroup>
     <Compile Remove="Tests\**" />
