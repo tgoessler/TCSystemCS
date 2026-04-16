@@ -22,6 +22,6 @@
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
   </ItemGroup>
 
-  <Import Project="..\Packaging.props"></Import>
+  <Import Project="..\Packaging.props" />
 
 </Project>
