@@ -1,6 +1,6 @@
 # TCSystem — C# Utility Libraries
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThE-TiGeR_TCSystemCS&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ThE-TiGeR_TCSystemCS)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TCSystemCS&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=TCSystemCS)
 
 A collection of reusable .NET libraries for logging, image metadata management, GPS data processing, threading utilities, and more. All libraries are published as NuGet packages and target **netstandard2.1**, **net8.0**, and **net10.0**.
 
