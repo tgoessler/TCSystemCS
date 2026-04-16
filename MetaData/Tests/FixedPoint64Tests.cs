@@ -42,7 +42,28 @@ public class FixedPoint64Tests
     }
 
     [Test]
-    public void FixedPoint64Test() { }
+    public void FixedPoint64Test()
+    {
+        // Constructor from raw long
+        var fp = new FixedPoint64(100L);
+        Assert.That(fp.RawValue, Is.EqualTo(100L));
+
+        // Constructor from double: value * (1L << 32)
+        var fpDouble = new FixedPoint64(1.0);
+        Assert.That(fpDouble.RawValue, Is.EqualTo(1L << 32));
+        Assert.That(fpDouble.Value, Is.EqualTo(1.0).Within(1e-9));
+
+        var fpNeg = new FixedPoint64(-2.0);
+        Assert.That(fpNeg.Value, Is.EqualTo(-2.0).Within(1e-9));
+
+        // Zero
+        Assert.That(TestData.FixedPoint64Zero.Value, Is.EqualTo(0.0));
+
+        // Operators
+        var fp641Copy = new FixedPoint64(TestData.FixedPoint641.RawValue);
+        Assert.That(TestData.FixedPoint641 == fp641Copy, Is.True);
+        Assert.That(TestData.FixedPoint641 != TestData.FixedPoint642, Is.True);
+    }
 
     [Test]
     public void FromJsonStringTest()
@@ -75,5 +96,10 @@ public class FixedPoint64Tests
     }
 
     [Test]
-    public void ToStringTest() { }
+    public void ToStringTest()
+    {
+        string s = new FixedPoint64(1.5).ToString();
+        Assert.That(s, Is.Not.Empty);
+        Assert.That(s, Does.Contain("."));
+    }
 }

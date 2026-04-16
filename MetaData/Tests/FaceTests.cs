@@ -42,7 +42,37 @@ public class FaceTests
     }
 
     [Test]
-    public void FaceTest() { }
+    public void FaceTest()
+    {
+        Face face = TestData.Face1;
+        Assert.That(face.Id, Is.EqualTo(1));
+        Assert.That(face.FaceMode, Is.EqualTo(FaceMode.DlibFront));
+        Assert.That(face.FaceQuality, Is.EqualTo(FaceQuality.Good));
+        Assert.That(face.Visible, Is.True);
+        Assert.That(face.IsFrontFace, Is.True);
+        Assert.That(face.HasFaceDescriptor, Is.True);
+        Assert.That(face.FaceDescriptor.Count, Is.EqualTo(128));
+
+        Face zero = TestData.FaceZero;
+        Assert.That(zero.IsFrontFace, Is.False);
+        Assert.That(zero.HasFaceDescriptor, Is.False);
+
+        // Face descriptor with wrong length is discarded
+        var wrongDesc = new FixedPoint64[5];
+        var faceWithWrongDesc = new Face(1, TestData.Rectangle1, FaceMode.DlibFront, FaceQuality.Normal, true, wrongDesc);
+        Assert.That(faceWithWrongDesc.HasFaceDescriptor, Is.False);
+    }
+
+    [Test]
+    public void InvalidateIdTest()
+    {
+        Face invalidated = TestData.Face1.InvalidateId();
+        Assert.That(invalidated.Id, Is.EqualTo(Constants.InvalidId));
+        Assert.That(invalidated.Rectangle, Is.EqualTo(TestData.Face1.Rectangle));
+        Assert.That(invalidated.FaceMode, Is.EqualTo(TestData.Face1.FaceMode));
+        Assert.That(invalidated.FaceQuality, Is.EqualTo(TestData.Face1.FaceQuality));
+        Assert.That(invalidated.Visible, Is.EqualTo(TestData.Face1.Visible));
+    }
 
     [Test]
     public void FromJsonStringTest()
@@ -68,7 +98,4 @@ public class FaceTests
         TestUtil.GetHashCodeTest(TestData.FaceZero, TestData.Face1,
             TestData.Face2, copyOfData1);
     }
-
-    [Test]
-    public void InvalidateIdTest() { }
 }

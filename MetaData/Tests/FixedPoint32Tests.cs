@@ -42,7 +42,32 @@ public class FixedPoint32Tests
     }
 
     [Test]
-    public void FixedPoint32Test() { }
+    public void FixedPoint32Test()
+    {
+        // Constructor from raw int
+        var fp = new FixedPoint32(100);
+        Assert.That(fp.RawValue, Is.EqualTo(100));
+
+        // Constructor from float: value * (1 << 16)
+        var fpFloat = new FixedPoint32(1.0f);
+        Assert.That(fpFloat.RawValue, Is.EqualTo(1 << 16));
+        Assert.That(fpFloat.Value, Is.EqualTo(1.0f).Within(1e-4f));
+
+        var fpNeg = new FixedPoint32(-2.0f);
+        Assert.That(fpNeg.Value, Is.EqualTo(-2.0f).Within(1e-4f));
+
+        // Zero
+        Assert.That(TestData.FixedPoint32Zero.Value, Is.EqualTo(0.0f));
+
+        // Comparison operators
+        Assert.That(TestData.FixedPoint321 < TestData.FixedPoint322, Is.True);
+        Assert.That(TestData.FixedPoint322 > TestData.FixedPoint321, Is.True);
+        var fp1Copy = new FixedPoint32(TestData.FixedPoint321.RawValue);
+        Assert.That(TestData.FixedPoint321 <= fp1Copy, Is.True);
+        Assert.That(TestData.FixedPoint321 >= fp1Copy, Is.True);
+        Assert.That(TestData.FixedPoint321 == fp1Copy, Is.True);
+        Assert.That(TestData.FixedPoint321 != TestData.FixedPoint322, Is.True);
+    }
 
     [Test]
     public void FromJsonStringTest()
@@ -74,5 +99,11 @@ public class FixedPoint32Tests
     }
 
     [Test]
-    public void ToStringTest() { }
+    public void ToStringTest()
+    {
+        string s = new FixedPoint32(1.5f).ToString();
+        Assert.That(s, Is.Not.Empty);
+        // Should use invariant culture (dot as decimal separator)
+        Assert.That(s, Does.Contain("."));
+    }
 }

@@ -67,11 +67,26 @@ public class PersonTagTests
     }
 
     [Test]
-    public void InvalidateIdsTest() { }
+    public void InvalidateIdsTest()
+    {
+        PersonTag invalidated = TestData.PersonTag1.InvalidateId();
+        Assert.That(invalidated.Person.Id, Is.EqualTo(Constants.InvalidId));
+        Assert.That(invalidated.Face.Id, Is.EqualTo(Constants.InvalidId));
+        Assert.That(invalidated.Person.Name, Is.EqualTo(TestData.PersonTag1.Person.Name));
+    }
 
     [Test]
-    public void PersonTagTest() { }
+    public void PersonTagTest()
+    {
+        PersonTag tag = TestData.PersonTag1;
+        Assert.That(tag.Person, Is.EqualTo(TestData.Person1));
+        Assert.That(tag.Face, Is.EqualTo(TestData.Face1));
+    }
 
     [Test]
-    public void ToStringTest() { }
+    public void ToStringTest()
+    {
+        string str = TestData.PersonTag1.ToString();
+        Assert.That(str, Is.Not.Empty);
+    }
 }
