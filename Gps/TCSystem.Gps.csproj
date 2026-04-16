@@ -4,7 +4,7 @@
     <AssemblyName>TCSystem.Gps</AssemblyName>
     <RootNamespace>TCSystem.Gps</RootNamespace>
     <PackageTags>C#, Gps Utilities</PackageTags>
-    <Description>Provides Reader/Writer for reading GPS data from Google takout</Description>
+    <Description>Provides Reader/Writer for reading GPS data from Google takeout</Description>
   </PropertyGroup>
 
   <Import Project="..\Packaging.props"></Import>
