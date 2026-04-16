@@ -8,6 +8,7 @@
     <Project Path="Util/TCSystem.Util.csproj" />
   </Folder>
   <Folder Name="/10 Tools/">
+    <File Path="Tools/Directory.Build.props" />
     <File Path="Tools/Directory.Build.targets" />
     <Project Path="Tools/DBConverter/TCSystem.Tools.DBConverter.csproj" />
     <Project Path="Tools/TakoutReader/TCSystem.Tools.TakeoutReader.csproj" />
