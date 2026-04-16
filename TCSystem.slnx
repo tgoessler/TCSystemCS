@@ -11,7 +11,7 @@
     <File Path="Tools/Directory.Build.props" />
     <File Path="Tools/Directory.Build.targets" />
     <Project Path="Tools/DBConverter/TCSystem.Tools.DBConverter.csproj" />
-    <Project Path="Tools/TakoutReader/TCSystem.Tools.TakeoutReader.csproj" />
+    <Project Path="Tools/TakeoutReader/TCSystem.Tools.TakeoutReader.csproj" />
   </Folder>
   <Folder Name="/50 Tests/">
     <Project Path="MetaData/Tests/TCSystem.MetaData.Tests.csproj" />

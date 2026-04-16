@@ -11,11 +11,11 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.5" />
   </ItemGroup>
 
-	<ItemGroup>
-		<Compile Remove="Tests\**" />
-		<EmbeddedResource Remove="Tests\**" />
-		<None Remove="Tests\**" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Logging\TCSystem.Logging.csproj" />

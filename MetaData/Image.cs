@@ -175,7 +175,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
 
     public static Image ChangePerson(Image image, Person person)
     {
-        if (image.GetPersonTag(person.Name) is var pt)
+        if (image.GetPersonTag(person.Name) is { } pt)
         {
             List<PersonTag> pts = image._personTags.ToList();
             pts.Remove(pt);
