@@ -10,7 +10,7 @@
   <Import Project="..\Packaging.props" />
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="10.0.5" />
+    <PackageReference Include="System.Text.Json" Version="10.0.6" />
   </ItemGroup>
 
   <ItemGroup>
