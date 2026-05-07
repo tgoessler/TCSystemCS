@@ -13,11 +13,7 @@
 		<IsCiBuild Condition="'$(IsCiBuild)'==''">true</IsCiBuild>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<VSTestResultsDirectory>$(SolutionDir)</VSTestResultsDirectory>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>

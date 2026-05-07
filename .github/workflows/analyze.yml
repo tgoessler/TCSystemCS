@@ -32,6 +32,6 @@ jobs:
         shell: powershell
         run: |
           dotnet sonarscanner begin /k:"TCSystemCS" /o:"tgoessler" /d:sonar.verbose=true /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.net8.0.opencover.xml" /d:sonar.host.url="https://sonarcloud.io" /v:"5.0.0"
-          dotnet build -c Debug --no-restore
-          dotnet test  -c Debug --no-build --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+          dotnet build -c Release --no-restore
+          dotnet test  -c Release --no-build --no-restore --verbosity normal --framework net8.0 /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
