@@ -59,8 +59,8 @@ public class EqualsUtilTests
         Assert.That(EqualsUtil.Equals(obj1, obj2, other => other.Value == obj1.Value), Is.False);
     }
 
-    private sealed class TestClass(string value)
+    private sealed class TestClass(string _value)
     {
-        public string Value { get; } = value;
+        public string Value { get; } = _value;
     }
 }

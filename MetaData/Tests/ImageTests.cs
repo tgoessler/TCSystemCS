@@ -48,7 +48,7 @@ public class ImageTests
         Assert.That(updated2.PersonTags.Count, Is.EqualTo(2));
 
         // Adding an invalid person (empty name) is always allowed
-        var invalidPersonTag = new PersonTag(new Person(Constants.InvalidId, "", "", "", ""), TestData.FaceZero);
+        var invalidPersonTag = new PersonTag(new(Constants.InvalidId, "", "", "", ""), TestData.FaceZero);
         Image updated3 = Image.AddPersonTag(image, invalidPersonTag);
         Assert.That(updated3.PersonTags.Count, Is.EqualTo(2));
     }
@@ -77,7 +77,8 @@ public class ImageTests
     public void ChangeDateTakenTest()
     {
         Image image = CreateTestImage();
-        var newDate = new DateTimeOffset(2022, 6, 15, 10, 30, 0, TimeSpan.Zero);
+        
+        var newDate = new DateTimeOffset(new(2022, 6, 15, 10, 30, 0, DateTimeKind.Local));
         Image updated = Image.ChangeDateTaken(image, newDate);
         Assert.That(updated.DateTaken.ToUnixTimeSeconds(), Is.EqualTo(newDate.ToUnixTimeSeconds()));
         Assert.That(updated.FileName, Is.EqualTo(image.FileName));
@@ -169,9 +170,9 @@ public class ImageTests
         Image image = CreateTestImage();
 
         string ToJson(Image d) => d.ToJsonString();
-        Image fromJson(string s) => Image.FromJsonString(s);
+        Image FromJson(string s) => Image.FromJsonString(s);
 
-        TestUtil.FromJsonStringTest(image, ToJson, fromJson);
+        TestUtil.FromJsonStringTest(image, ToJson, FromJson);
     }
 
     [Test]
@@ -312,7 +313,7 @@ public class ImageTests
     {
         return new(42, @"C:\photos\test.jpg", ProcessingInfos.None,
             1920, 1080, OrientationMode.Normal,
-            new DateTimeOffset(2021, 5, 1, 12, 0, 0, TimeSpan.Zero),
+            new(2021, 5, 1, 12, 0, 0, TimeSpan.Zero),
             null,
             TestData.Location1,
             new[] { TestData.PersonTag1 },
