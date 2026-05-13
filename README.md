@@ -6,17 +6,14 @@ A collection of reusable .NET libraries for logging, image metadata management, 
 
 ## Libraries
 
-### [TCSystem.Util](Util/README.md)
-
-### [TCSystem.Logging](Logging/README.md)
-
-### [TCSystem.MetaData](MetaData/README.md)
-
-### [TCSystem.MetaDataDB](MetaDataDB/README.md)
-
-### [TCSystem.Gps](Gps/README.md)
-
-### [TCSystem.Thread](Thread/README.md)
+| Package | NuGet |
+|---------|-------|
+| [TCSystem.Util](Util/README.md) | [![NuGet](https://img.shields.io/nuget/v/TCSystem.Util.svg)](https://www.nuget.org/packages/TCSystem.Util/) |
+| [TCSystem.Logging](Logging/README.md) | [![NuGet](https://img.shields.io/nuget/v/TCSystem.Logging.svg)](https://www.nuget.org/packages/TCSystem.Logging/) |
+| [TCSystem.MetaData](MetaData/README.md) | [![NuGet](https://img.shields.io/nuget/v/TCSystem.MetaData.svg)](https://www.nuget.org/packages/TCSystem.MetaData/) |
+| [TCSystem.MetaDataDB](MetaDataDB/README.md) | [![NuGet](https://img.shields.io/nuget/v/TCSystem.MetaDataDB.svg)](https://www.nuget.org/packages/TCSystem.MetaDataDB/) |
+| [TCSystem.Gps](Gps/README.md) | [![NuGet](https://img.shields.io/nuget/v/TCSystem.Gps.svg)](https://www.nuget.org/packages/TCSystem.Gps/) |
+| [TCSystem.Thread](Thread/README.md) | [![NuGet](https://img.shields.io/nuget/v/TCSystem.Thread.svg)](https://www.nuget.org/packages/TCSystem.Thread/) |
 
 
 ## Tools

@@ -1,6 +1,14 @@
 # TCSystem.MetaDataDB
 
+[![NuGet](https://img.shields.io/nuget/v/TCSystem.MetaDataDB.svg)](https://www.nuget.org/packages/TCSystem.MetaDataDB/)
+
 SQLite database abstraction for storing, querying, and filtering image metadata. Provides thread-safe access through an instance-pooling pattern.
+
+## Installation
+
+```bash
+dotnet add package TCSystem.MetaDataDB
+```
 
 ## Features
 
