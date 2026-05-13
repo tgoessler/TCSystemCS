@@ -1,6 +1,14 @@
 # TCSystem.Util
 
+[![NuGet](https://img.shields.io/nuget/v/TCSystem.Util.svg)](https://www.nuget.org/packages/TCSystem.Util/)
+
 Lightweight extension methods for containers, enumerables, and common patterns such as null-safe equality comparisons.
+
+## Installation
+
+```bash
+dotnet add package TCSystem.Util
+```
 
 ## Features
 

@@ -1,6 +1,14 @@
 # TCSystem.Logging
 
+[![NuGet](https://img.shields.io/nuget/v/TCSystem.Logging.svg)](https://www.nuget.org/packages/TCSystem.Logging/)
+
 Wraps [Serilog](https://serilog.net/) behind an abstract `Logger` class where debug logging is **not compiled** into your code when building in Release mode (using `[Conditional("DEBUG")]`).
+
+## Installation
+
+```bash
+dotnet add package TCSystem.Logging
+```
 
 ## Features
 

@@ -15,7 +15,9 @@ TCSystemCS is a collection of reusable .NET libraries written in **C# 14** targe
 ├── MetaDataDB/       → TCSystem.MetaDataDB (SQLite metadata storage)
 │   └── Tests/        → TCSystem.MetaDataDB.Tests (NUnit)
 ├── Thread/           → TCSystem.Thread (worker thread, async helpers)
+│   └── Tests/        → TCSystem.Thread.Tests (NUnit)
 ├── Util/             → TCSystem.Util (extension methods, utilities)
+│   └── Tests/        → TCSystem.Util.Tests (NUnit)
 └── Tools/
     ├── DBConverter/  → Console app – database schema converter
     └── TakeoutReader/→ Console app – Google Takeout importer

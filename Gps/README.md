@@ -1,6 +1,14 @@
 # TCSystem.Gps
 
+[![NuGet](https://img.shields.io/nuget/v/TCSystem.Gps.svg)](https://www.nuget.org/packages/TCSystem.Gps/)
+
 Reader for GPS data from Google Takeout location history files (`records.json`). Uses `System.Text.Json` with async streaming for efficient processing of large files.
+
+## Installation
+
+```bash
+dotnet add package TCSystem.Gps
+```
 
 ## Features
 

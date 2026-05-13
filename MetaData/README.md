@@ -1,6 +1,14 @@
 # TCSystem.MetaData
 
+[![NuGet](https://img.shields.io/nuget/v/TCSystem.MetaData.svg)](https://www.nuget.org/packages/TCSystem.MetaData/)
+
 Classes for handling and storing image metadata including date/time, GPS location, and face/person tags. Supports JSON serialization via Newtonsoft.Json.
+
+## Installation
+
+```bash
+dotnet add package TCSystem.MetaData
+```
 
 ## Features
 
