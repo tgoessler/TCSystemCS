@@ -349,7 +349,8 @@ internal sealed class DB2Persons(DB2Instance _instance) : DB2Constants
                 $"FROM {TableFileFaces} " +
                 $"    INNER JOIN {TablePersons} ON {TablePersons}.{IdPersonId}={TableFileFaces}.{IdPersonId} " +
                 $"    INNER JOIN {TableFiles} ON {TableFiles}.{IdFileId}={TableFileFaces}.{IdFileId} " +
-                $"WHERE {IdFaceDescriptor} != \"\"{AddVisibleWhere(visibleOnly)};";
+                $"WHERE {IdFaceDescriptor} != @{IdFaceDescriptor}{AddVisibleWhere(visibleOnly)};";
+            command.Parameters.AddWithValue($"@{IdFaceDescriptor}", string.Empty);
             command.Parameters.AddWithValue($"@{IdVisible}", visibleOnly ? 1 : 0);
             using (SqliteDataReader reader = command.ExecuteReader())
             {

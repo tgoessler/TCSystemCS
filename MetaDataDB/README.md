@@ -19,6 +19,7 @@ dotnet add package TCSystem.MetaDataDB
 ## Dependencies
 
 - Microsoft.Data.Sqlite
+- SQLitePCLRaw.lib.e_sqlite3 (explicit native SQLite dependency to keep patched runtime binaries)
 - TCSystem.Logging
 - TCSystem.MetaData
 - TCSystem.Thread

@@ -29,7 +29,7 @@ A collection of reusable .NET libraries for logging, image metadata management, 
 TCSystem.Util
   └─► TCSystem.MetaData ─► Newtonsoft.Json
         ├─► TCSystem.Gps ─► System.Text.Json
-        └─► TCSystem.MetaDataDB ─► Microsoft.Data.Sqlite
+        └─► TCSystem.MetaDataDB ─► Microsoft.Data.Sqlite / SQLitePCLRaw.lib.e_sqlite3
               ├─► TCSystem.Logging ─► Serilog
               └─► TCSystem.Thread
                     └─► TCSystem.Logging
@@ -57,6 +57,12 @@ dotnet test
 ```
 
 Tests use [NUnit](https://nunit.org/) with code coverage via [Coverlet](https://github.com/coverlet-coverage/coverlet).
+
+### Security Audit
+
+```bash
+dotnet list TCSystem.slnx package --vulnerable --include-transitive
+```
 
 ### NuGet Packages
 

@@ -15,6 +15,7 @@ dotnet add package TCSystem.Gps
 - Async streaming reader for Google Takeout `records.json`
 - Efficient memory usage via `System.Text.Json` streaming APIs
 - Integration with `TCSystem.MetaData` GPS coordinate types
+- Phone/tablet/desktop filtering with timestamp-ordered nearest-location lookup
 
 ## Dependencies
 

@@ -40,6 +40,11 @@ public class TakeoutRecords
 
     public static TakeoutLocation FindNearestLocation(TakeoutLocation[] locations, DateTime timestamp)
     {
+        if (locations.Length == 0)
+        {
+            throw new ArgumentException("At least one location is required.", nameof(locations));
+        }
+
         var left = 0;
         int right = locations.Length - 1;
 
@@ -84,7 +89,10 @@ public class TakeoutRecords
 
     public TakeoutLocation[] GetFilteredLocations(string formFactor)
     {
-        return _locations.Where(l => l.FormFactor.Length == 0 || l.FormFactor.Equals(formFactor)).ToArray();
+        return _locations
+            .Where(l => l.FormFactor.Length == 0 || l.FormFactor.Equals(formFactor))
+            .OrderBy(l => l.Timestamp)
+            .ToArray();
     }
 
     public IReadOnlyList<TakeoutLocation> Locations => _locations;
