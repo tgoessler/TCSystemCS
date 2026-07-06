@@ -64,6 +64,10 @@ Tests use [NUnit](https://nunit.org/) with code coverage via [Coverlet](https://
 dotnet list TCSystem.slnx package --vulnerable --include-transitive
 ```
 
+### Coding Style
+
+See [CodingStyle.md](CodingStyle.md) for the C# style guide derived from ReSharper settings and existing code.
+
 ### NuGet Packages
 
 All library projects produce NuGet packages on build. Packages are published to [nuget.org](https://www.nuget.org/) via the `nuget_deploy` GitHub Actions workflow.

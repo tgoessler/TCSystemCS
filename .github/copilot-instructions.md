@@ -37,41 +37,9 @@ dotnet test
 
 ## Coding Conventions
 
-### Language & Compiler Settings
+See [`CodingStyle.md`](../CodingStyle.md) for the authoritative C# style guide.
 
-- **C# 14** (`LangVersion 14`) — use the latest language features available.
-- **All warnings are errors** (`TreatWarningsAsErrors`). Code must compile warning-free.
-- **.NET analyzers** are enabled at the `latest` analysis level with code-style enforcement at build time (`EnforceCodeStyleInBuild`).
-- Analyzer rule **CA2000** (dispose objects before losing scope) is treated as an error.
-
-### File Layout
-
-- Every source file starts with the standard TCSystem copyright header (ASCII art logo, GitHub URL, copyright 2003–2026 Thomas Goessler, legal notice).
-- Use **file-scoped namespaces** (`namespace TCSystem.Feature;`).
-- Group `using` directives inside a `#region Usings` block, ordered: System → third-party → project references.
-- Organize members into `#region Public` and `#region Private` blocks.
-
-### Design Patterns
-
-- **Immutable data models** — domain types (e.g., `Image`, `PersonTag`) use primary constructors and return new instances from static factory methods instead of mutating state.
-- **Abstract Logger with conditional compilation** — debug-level logging uses `[Conditional("DEBUG")]` so calls are eliminated from Release builds.
-- **Namespace-scoped logging** — each namespace has its own `Log.cs` with a static `Logger` instance obtained from `Factory.GetLogger(typeof(Log))`.
-- **Instance pooling / using pattern** — database access (e.g., `DB2`) uses `InstanceAcquire` with `using` statements for thread-safe resource management.
-- **Sealed classes** where polymorphism is not required.
-
-### Performance
-
-- Use `[MethodImpl(MethodImplOptions.AggressiveInlining)]` for small, hot utility methods.
-- Prefer `ValueTask` over `Task` for async methods that often complete synchronously.
-- Use `ReferenceEquals` checks before expensive equality comparisons.
-
-### Testing
-
-- Test framework: **NUnit 4.x** with `NUnit3TestAdapter`.
-- Test projects live in `{Project}/Tests/` directories and use `NoPackaging.props`.
-- Code coverage is collected in **opencover** format and reported to SonarCloud.
-
-### NuGet Packaging
+## NuGet Packaging
 
 - Library projects import `Packaging.props` and produce NuGet packages on build.
 - Tool/test projects import `NoPackaging.props` to disable packaging.
