@@ -14,6 +14,7 @@
     <Project Path="Tools/TakeoutReader/TCSystem.Tools.TakeoutReader.csproj" />
   </Folder>
   <Folder Name="/50 Tests/">
+    <Project Path="Gps/Tests/TCSystem.Gps.Tests.csproj" />
     <Project Path="MetaData/Tests/TCSystem.MetaData.Tests.csproj" />
     <Project Path="MetaDataDB/Tests/TCSystem.MetaDataDB.Tests.csproj" />
     <Project Path="Thread/Tests/TCSystem.Thread.Tests.csproj" />

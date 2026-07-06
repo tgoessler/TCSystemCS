@@ -9,6 +9,7 @@ TCSystemCS is a collection of reusable .NET libraries written in **C# 14** targe
 ```
 /
 ├── Gps/              → TCSystem.Gps (Google Takeout GPS reader)
+│   └── Tests/        → TCSystem.Gps.Tests (NUnit)
 ├── Logging/          → TCSystem.Logging (Serilog wrapper with conditional debug)
 ├── MetaData/         → TCSystem.MetaData (image metadata classes)
 │   └── Tests/        → TCSystem.MetaData.Tests (NUnit)

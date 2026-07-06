@@ -9,6 +9,7 @@ When working with this repository, always read and follow the rules specified in
 - `MetaData/README.md` — TCSystem.MetaData project details.
 - `MetaDataDB/README.md` — TCSystem.MetaDataDB project details.
 - `Gps/README.md` — TCSystem.Gps project details.
+- `Gps/Tests/README.md` — Gps test project details.
 - `Thread/README.md` — TCSystem.Thread project details.
 - `Tools/DBConverter/README.md` — DBConverter tool details.
 - `Tools/TakeoutReader/README.md` — TakeoutReader tool details.
