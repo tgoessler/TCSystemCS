@@ -1,22 +1,12 @@
 # Agent Instructions
 
-When working with this repository, always read and follow the rules specified in:
+All coding agents working in this repository must read and follow [`.github/copilot-instructions.md`](.github/copilot-instructions.md).
 
-- [`.github/copilot-instructions.md`](.github/copilot-instructions.md) — Primary coding conventions, patterns, and project guidelines.
-- [`CodingStyle.md`](CodingStyle.md) — Detailed C# coding style derived from ReSharper settings and existing code.
-- [`README.md`](README.md) — Repository overview, structure, build/test instructions, and CI/CD details.
-- [`Logging/README.md`](Logging/README.md) — TCSystem.Logging project details.
-- [`Util/README.md`](Util/README.md) — TCSystem.Util project details.
-- [`MetaData/README.md`](MetaData/README.md) — TCSystem.MetaData project details.
-- [`MetaDataDB/README.md`](MetaDataDB/README.md) — TCSystem.MetaDataDB project details.
-- [`Gps/README.md`](Gps/README.md) — TCSystem.Gps project details.
-- [`Gps/Tests/README.md`](Gps/Tests/README.md) — Gps test project details.
-- [`Thread/README.md`](Thread/README.md) — TCSystem.Thread project details.
-- [`Tools/DBConverter/README.md`](Tools/DBConverter/README.md) — DBConverter tool details.
-- [`Tools/TakeoutReader/README.md`](Tools/TakeoutReader/README.md) — TakeoutReader tool details.
-- [`MetaData/Tests/README.md`](MetaData/Tests/README.md) — MetaData test project details.
-- [`MetaDataDB/Tests/README.md`](MetaDataDB/Tests/README.md) — MetaDataDB test project details.
-- [`Thread/Tests/README.md`](Thread/Tests/README.md) — Thread test project details.
-- [`Util/Tests/README.md`](Util/Tests/README.md) — Util test project details.
+That file defines the repository workflow and links to the canonical documentation for:
 
-These files contain the authoritative coding standards, architecture decisions, and conventions for this project. Always apply them when generating or modifying code.
+- project structure and build/test commands;
+- C# coding and test conventions;
+- project-specific behavior and dependencies;
+- security procedures.
+
+Read the canonical documents required for the files being changed. Do not copy their contents into this file; update the source document and reference it instead.

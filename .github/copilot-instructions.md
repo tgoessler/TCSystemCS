@@ -1,59 +1,23 @@
 # Copilot Instructions for TCSystemCS
 
-## Project Overview
+## Canonical Documentation
 
-TCSystemCS is a collection of reusable .NET libraries written in **C# 14** targeting **netstandard2.1**, **net8.0**, and **net10.0**. The solution is organized into library projects, console tool projects, and test projects.
+Use these documents as the source of truth instead of duplicating their content:
 
-## Solution Structure
+- [`README.md`](../README.md) — solution structure, frameworks, dependencies, prerequisites, build/test/coverage commands, packaging, and CI/CD.
+- [`CodingStyle.md`](../CodingStyle.md) — C# formatting, naming, analyzers, architecture patterns, resource handling, logging, threading, and NUnit conventions.
+- Project-specific READMEs linked from [`README.md`](../README.md#projects) — APIs, tool behavior, dependencies, and targeted-test guidance.
+- [`SECURITY.md`](../SECURITY.md) — vulnerability checks and reporting.
 
-```
-/
-├── Gps/              → TCSystem.Gps (Google Takeout GPS reader)
-│   └── Tests/        → TCSystem.Gps.Tests (NUnit)
-├── Logging/          → TCSystem.Logging (Serilog wrapper with conditional debug)
-├── MetaData/         → TCSystem.MetaData (image metadata classes)
-│   └── Tests/        → TCSystem.MetaData.Tests (NUnit)
-├── MetaDataDB/       → TCSystem.MetaDataDB (SQLite metadata storage)
-│   └── Tests/        → TCSystem.MetaDataDB.Tests (NUnit)
-├── Thread/           → TCSystem.Thread (worker thread, async helpers)
-│   └── Tests/        → TCSystem.Thread.Tests (NUnit)
-├── Util/             → TCSystem.Util (extension methods, utilities)
-│   └── Tests/        → TCSystem.Util.Tests (NUnit)
-└── Tools/
-    ├── DBConverter/  → Console app – database schema converter
-    └── TakeoutReader/→ Console app – Google Takeout importer
-```
+Read the root README and coding style before editing, followed by the README for every affected project and test project.
 
-## Build & Test
+## Repository Workflow
 
-```bash
-dotnet restore
-dotnet build -c Release
-dotnet test
-```
-
-- Tests use **NUnit 4.x** with **Coverlet** for code coverage.
-- CI runs on **windows-latest** using .NET 10 SDK.
-
-## Coding Conventions
-
-See [`CodingStyle.md`](../CodingStyle.md) for the authoritative C# style guide.
-
-## NuGet Packaging
-
-- Library projects import `Packaging.props` and produce NuGet packages on build.
-- Tool/test projects import `NoPackaging.props` to disable packaging.
-- Symbol packages (`.snupkg`) are generated for all library packages.
-- Version is defined in `Version.props` (currently **5.0.0**); CI builds append a `-ci.{timestamp}` suffix.
-
-## Dependency Guidelines
-
-- Keep external dependencies minimal.
-- Current key dependencies: **Serilog** (logging), **Newtonsoft.Json** (metadata serialization), **System.Text.Json** (GPS), **Microsoft.Data.Sqlite** (database).
-- Dependabot runs weekly against the `develop` branch for both NuGet and GitHub Actions updates.
-
-## Branching
-
-- Main development happens on the `develop` branch.
-- Dependabot targets `develop` for pull requests.
-- The `main` branch receives merges for releases.
+- Inspect `git status` before editing and preserve unrelated working-tree changes.
+- Keep external dependencies minimal and preserve the project-reference direction documented in the root README.
+- Use existing TCSystem logging, database factory/lifecycle, immutable model, and threading patterns defined in [`CodingStyle.md`](../CodingStyle.md#project-design-patterns).
+- Add or update matching NUnit tests for behavior changes.
+- Run affected tests during development and use the validation commands in [`README.md`](../README.md#run-unit-tests) before finishing when practical.
+- Do not use `--no-build` unless the same configuration and target framework have already been built.
+- Do not edit or commit generated `bin/`, `obj/`, `.sonarqube/`, coverage XML, IDE, or ReSharper cache files.
+- When behavior or project configuration changes, update its canonical document and link to it elsewhere rather than copying it.

@@ -9,10 +9,10 @@
 
 ## Dependency Vulnerability Checks
 
-Run the following before releasing packages:
+After restoring the solution with the .NET 10 SDK, run the following before releasing packages:
 
 ```bash
-dotnet list TCSystem.slnx package --vulnerable --include-transitive
+dotnet package list --project TCSystem.slnx --vulnerable --include-transitive --no-restore
 ```
 
 ## Reporting a Vulnerability

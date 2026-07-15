@@ -1,14 +1,38 @@
 # TCSystem.Thread.Tests
 
-NUnit test project for `TCSystem.Thread`.
+NUnit tests for `TCSystem.Thread`, targeting `net8.0` and `net10.0`.
 
-## Running Tests
+## Prerequisites
+
+See the repository [build and test prerequisites](../../README.md#prerequisites). Run the commands below from the repository root.
+
+## Run Tests
+
+Run both target frameworks, restoring and building as needed:
 
 ```bash
-dotnet test Thread/Tests/TCSystem.Thread.Tests.csproj
+dotnet test Thread/Tests/TCSystem.Thread.Tests.csproj --configuration Release
 ```
 
-## Framework
+Run only one framework:
 
-- NUnit 4.x
-- Coverlet for code coverage
+```bash
+dotnet test Thread/Tests/TCSystem.Thread.Tests.csproj --configuration Release --framework net10.0
+```
+
+After the complete solution has already been built in Release, add `--no-build --no-restore` for a faster repeat run.
+
+## Coverage
+
+```bash
+dotnet test Thread/Tests/TCSystem.Thread.Tests.csproj --configuration Release --framework net8.0 -p:CollectCoverage=true -p:CoverletOutputFormat=opencover
+```
+
+The generated `Thread/Tests/coverage.net8.0.opencover.xml` file is ignored by Git.
+
+## Test Stack
+
+- NUnit 4
+- NUnit3TestAdapter
+- Microsoft.NET.Test.Sdk
+- Coverlet MSBuild

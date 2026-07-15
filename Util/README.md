@@ -2,7 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/TCSystem.Util.svg)](https://www.nuget.org/packages/TCSystem.Util/)
 
-Lightweight extension methods for containers, enumerables, and common patterns such as null-safe equality comparisons.
+Lightweight helpers and extension methods used by the other TCSystem libraries.
 
 ## Installation
 
@@ -12,9 +12,10 @@ dotnet add package TCSystem.Util
 
 ## Features
 
-- Extension methods for collections and enumerables
-- Utilities for implementing `Equals` and `GetHashCode`
-- Null-safe comparison helpers
+- Sequential asynchronous `ForEachAsync` for enumerables
+- Randomized enumerable ordering
+- Null-safe equality implementation helper
+- Integer next-power-of-two calculation
 
 ## Targets
 
@@ -25,3 +26,7 @@ dotnet add package TCSystem.Util
 ## Dependencies
 
 None.
+
+## Development
+
+See the repository [build instructions](../README.md#build-from-source) and the [TCSystem.Util.Tests instructions](Tests/README.md).

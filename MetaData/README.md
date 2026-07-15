@@ -2,7 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/TCSystem.MetaData.svg)](https://www.nuget.org/packages/TCSystem.MetaData/)
 
-Classes for handling and storing image metadata including date/time, GPS location, and face/person tags. Supports JSON serialization via Newtonsoft.Json.
+Domain types for image metadata, including timestamps, orientation, GPS/location data, processing state, people, faces, and tags. Models use return-new-instance change helpers rather than in-place mutation and support Newtonsoft.Json serialization.
 
 ## Installation
 
@@ -12,10 +12,12 @@ dotnet add package TCSystem.MetaData
 
 ## Features
 
-- Immutable data models for image metadata
-- Person/face tag support
-- GPS coordinate storage
-- JSON serialization and deserialization
+- Image metadata and processing-information models
+- GPS points, positions, addresses, and locations
+- Person, face, and person-tag models
+- Fixed-point coordinate and rectangle types
+- JSON serialization and deserialization helpers
+- Immutable-style `ImageExt` change operations
 
 ## Dependencies
 
@@ -27,3 +29,7 @@ dotnet add package TCSystem.MetaData
 - netstandard2.1
 - net8.0
 - net10.0
+
+## Development
+
+See the repository [build instructions](../README.md#build-from-source) and the [TCSystem.MetaData.Tests instructions](Tests/README.md).
