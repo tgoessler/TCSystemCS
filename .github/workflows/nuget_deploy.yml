@@ -22,31 +22,31 @@ jobs:
     needs: setup_timestamp
 
     steps:
-    - name: Print timestamp
-      run: echo "The timestamp is ${{ needs.setup_timestamp.outputs.timestamp }}"
+      - name: Print timestamp
+        run: echo "The timestamp is ${{ needs.setup_timestamp.outputs.timestamp }}"
 
-    - name: Checkout
-      uses: actions/checkout@v7
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: 10
-    
-    - name: Setup NuGet
-      uses: nuget/setup-nuget@v4
-      with:
-        nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-        nuget-version: '5.x'
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build -c Release --no-restore
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10
 
-    - name: Tests
-      run: dotnet test -c Release --no-restore
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v4
+        with:
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+          nuget-version: '5.x'
 
-    - name: Deploy
-      run: dotnet msbuild TCSystem.slnx -t:Pack,NugetPush -p:Configuration=Release,DevelopmentVersionSuffix=-ci.${{ needs.setup_timestamp.outputs.timestamp }},IsCiBuild=${{ github.event.inputs.IsCiBuild }}
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Tests
+        run: dotnet test -c Release --no-restore
+
+      - name: Deploy
+        run: dotnet msbuild TCSystem.slnx -t:Pack,NugetPush -p:Configuration=Release,DevelopmentVersionSuffix=-ci.${{ needs.setup_timestamp.outputs.timestamp }},IsCiBuild=${{ github.event.inputs.IsCiBuild }}

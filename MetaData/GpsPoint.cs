@@ -32,6 +32,9 @@ namespace TCSystem.MetaData;
 /// <summary>
 ///     Represents a GPS point with latitude, longitude, and optional altitude.
 /// </summary>
+/// <param name="_latitude">The optional latitude.</param>
+/// <param name="_longitude">The optional longitude.</param>
+/// <param name="_altitude">The optional altitude in meters.</param>
 public sealed class GpsPoint(GpsPosition? _latitude = null, GpsPosition? _longitude = null, FixedPoint32? _altitude = null) : IEquatable<GpsPoint>
 {
 #region Public

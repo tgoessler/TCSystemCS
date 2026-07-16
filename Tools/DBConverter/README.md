@@ -1,10 +1,12 @@
 # TCSystem.Tools.DBConverter
 
-A `net10.0` console application that copies an existing metadata database through the current schema converter and validates the converted data.
+A `net10.0` console application that copies an existing metadata database through the current schema converter and
+validates the converted data.
 
 ## Prerequisites
 
-Install the .NET 10 SDK and build from the repository root. See the main [build instructions](../../README.md#build-from-source).
+Install the .NET 10 SDK and build from the repository root. See the
+main [build instructions](../../README.md#build-from-source).
 
 ## Build
 

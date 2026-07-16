@@ -380,14 +380,14 @@ internal sealed class DB2Locations(DB2Instance _instance) : DB2Constants
     private static GpsPoint ReadGpsPoint(SqliteDataReader reader, int startIndex)
     {
         FixedPoint32? altitude = null;
-        if (reader.GetString(startIndex+2).Length > 0)
+        if (reader.GetString(startIndex + 2).Length > 0)
         {
-            altitude = new FixedPoint32(reader.GetInt32(startIndex+2));
+            altitude = new FixedPoint32(reader.GetInt32(startIndex + 2));
         }
 
         return new(
-            GpsPosition.FromString(reader.GetString(startIndex+0)),
-            GpsPosition.FromString(reader.GetString(startIndex+1)),
+            GpsPosition.FromString(reader.GetString(startIndex + 0)),
+            GpsPosition.FromString(reader.GetString(startIndex + 1)),
             altitude);
     }
 

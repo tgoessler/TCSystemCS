@@ -27,10 +27,12 @@ using System.Linq;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Provides identifier-related operations for immutable metadata models.</summary>
 public static class ImageExt
 {
 #region Public
 
+    /// <summary>Returns an image whose file, person, and face identifiers are invalidated.</summary>
     public static Image InvalidateId(this Image image)
     {
         PersonTag[] personTags = image.PersonTags.Select(InvalidateId).ToArray();
@@ -40,21 +42,26 @@ public static class ImageExt
             personTags, image.Tags);
     }
 
+    /// <summary>Returns a person whose identifier is invalidated.</summary>
     public static Person InvalidateId(this Person person)
     {
         return new(Constants.InvalidId, person.Name, person.EmailDigest, person.LiveId, person.SourceId);
     }
 
+    /// <summary>Returns a face whose identifier is invalidated.</summary>
     public static Face InvalidateId(this Face face)
     {
         return new(Constants.InvalidId, face.Rectangle, face.FaceMode, face.FaceQuality, face.Visible, face.FaceDescriptor);
     }
 
+    /// <summary>Returns a person tag whose person and face identifiers are invalidated.</summary>
     public static PersonTag InvalidateId(this PersonTag personTag)
     {
         return new(personTag.Person.InvalidateId(), personTag.Face.InvalidateId());
     }
 
+    /// <summary>Finds a face by identifier in a sequence of person tags.</summary>
+    /// <returns>The matching face, or <see langword="null" /> when no match exists or the identifier is invalid.</returns>
     public static Face GetFace(this IEnumerable<PersonTag> personTags, long faceId)
     {
         if (personTags != null && faceId != Constants.InvalidId)

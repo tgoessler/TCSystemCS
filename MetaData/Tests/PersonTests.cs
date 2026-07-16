@@ -104,7 +104,7 @@ public class PersonTests
     [Test]
     public void ToStringTest()
     {
-        string str = TestData.Person1.ToString();
+        var str = TestData.Person1.ToString();
         Assert.That(str, Is.Not.Empty);
     }
 }

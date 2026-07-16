@@ -28,10 +28,15 @@ using System.Threading.Tasks;
 
 namespace TCSystem.Util;
 
+/// <summary>Provides asynchronous operations for enumerable sequences.</summary>
 public static class AsyncExt
 {
 #region Public
 
+    /// <summary>Asynchronously invokes an action for each item in sequence.</summary>
+    /// <typeparam name="T">The item type.</typeparam>
+    /// <param name="source">The items to process.</param>
+    /// <param name="action">The asynchronous action to invoke for each item.</param>
     public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
     {
         foreach (T item in source)

@@ -59,10 +59,10 @@ internal sealed class DB2Tags(DB2Instance _instance) : DB2Constants
             command.Connection = _instance.Connection;
             // create a query which select all IdTag and order them by date of the last file with this tag
             command.CommandText = $"SELECT DISTINCT {IdTag} FROM {TableTags} " +
-                      $"    INNER JOIN {TableFileTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
-                      $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId} " +
-                      $"{filterCommand} " +
-                      $"ORDER by {TableFileData}.{IdDateTaken} ASC;";
+                                  $"    INNER JOIN {TableFileTags} ON {TableTags}.{IdTagId}={TableFileTags}.{IdTagId} " +
+                                  $"    INNER JOIN {TableFileData} ON {TableFileData}.{IdFileId}={TableFileTags}.{IdFileId} " +
+                                  $"{filterCommand} " +
+                                  $"ORDER by {TableFileData}.{IdDateTaken} ASC;";
 
             command.Parameters.AddWithValue("@Filter", filter);
             using (SqliteDataReader reader = command.ExecuteReader())

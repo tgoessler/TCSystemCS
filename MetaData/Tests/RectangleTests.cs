@@ -148,12 +148,15 @@ public class RectangleTests
 
         rect = Rectangle.FromRawValues(10, 5, 30, 40);
         Assert.That(rect.Diameter, Is.EqualTo(new FixedPoint32(50)));
+
+        rect = Rectangle.FromFloat(0, 0, 1, 1);
+        Assert.That(rect.Diameter.Value, Is.EqualTo(Math.Sqrt(2)).Within(0.0001));
     }
 
     [Test]
     public void RectangleTest()
     {
-        var r = new Rectangle(new FixedPoint32(1), new FixedPoint32(2), new FixedPoint32(3), new FixedPoint32(4));
+        var r = new Rectangle(new(1), new(2), new(3), new(4));
         Assert.That(r.X, Is.EqualTo(new FixedPoint32(1)));
         Assert.That(r.Y, Is.EqualTo(new FixedPoint32(2)));
         Assert.That(r.W, Is.EqualTo(new FixedPoint32(3)));
@@ -166,7 +169,7 @@ public class RectangleTests
     [Test]
     public void ToStringTest()
     {
-        string str = TestData.Rectangle1.ToString();
+        var str = TestData.Rectangle1.ToString();
         Assert.That(str, Is.Not.Empty);
         // Format is "{X}, {Y}, {W}, {H}"
         Assert.That(str, Does.Contain(","));

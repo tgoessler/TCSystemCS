@@ -2,7 +2,8 @@
 
 [![NuGet](https://img.shields.io/nuget/v/TCSystem.Thread.svg)](https://www.nuget.org/packages/TCSystem.Thread/)
 
-Concurrency helpers for queued worker execution, bounded parallel work, asynchronous update coordination, semaphore scopes, and wait handles.
+Concurrency helpers for queued worker execution, bounded parallel work, asynchronous update coordination, semaphore
+scopes, and wait handles.
 
 ## Installation
 
@@ -33,4 +34,5 @@ Create the main abstractions through `TCSystem.Thread.Factory` rather than const
 
 ## Development
 
-See the repository [build instructions](../README.md#build-from-source) and the [TCSystem.Thread.Tests instructions](Tests/README.md).
+See the repository [build instructions](../README.md#build-from-source) and
+the [TCSystem.Thread.Tests instructions](Tests/README.md).

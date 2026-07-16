@@ -60,10 +60,12 @@ internal sealed class EmptyLastComparer : IComparer<PersonTag>
 #endregion
 }
 
+/// <summary>Provides general helpers for image metadata.</summary>
 public static class Util
 {
 #region Public
 
+    /// <summary>Determines whether a path has a supported image extension and is outside the recycle bin.</summary>
     public static bool IsSupportedFileType(string fileName)
     {
         string ext = Path.GetExtension(fileName)?.ToLower(CultureInfo.InvariantCulture);
@@ -75,6 +77,7 @@ public static class Util
                _sExtensions.FirstOrDefault(x => x.Equals(ext, StringComparison.InvariantCulture)) != default;
     }
 
+    /// <summary>Sorts person tags by ordinal person name, placing empty names last.</summary>
     public static IEnumerable<PersonTag> SortPersonTags(IEnumerable<PersonTag> personTags)
     {
         List<PersonTag> sortedPersonTags = personTags.ToList();
@@ -82,16 +85,19 @@ public static class Util
         return sortedPersonTags;
     }
 
+    /// <summary>Gets a dictionary value or a caller-supplied default when the key is absent.</summary>
     public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
     {
         return dictionary.TryGetValue(key, out TValue value) ? value : defaultValue;
     }
 
+    /// <summary>Trims a local date-time value down to the nearest multiple of a tick interval.</summary>
     public static DateTimeOffset Trim(this DateTimeOffset date, long ticks)
     {
         return new DateTime(date.Ticks - date.Ticks % ticks, DateTimeKind.Local);
     }
 
+    /// <summary>Gets the supported lowercase image file extensions.</summary>
     public static IEnumerable<string> SupportedFileTypes => _sExtensions;
 
 #endregion

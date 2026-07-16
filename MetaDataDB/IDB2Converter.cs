@@ -20,10 +20,14 @@
 
 namespace TCSystem.MetaDataDB;
 
+/// <summary>Copies and upgrades metadata between database instances.</summary>
 public interface IDB2Converter
 {
 #region Public
 
+    /// <summary>Copies all metadata from a source database to a destination database.</summary>
+    /// <param name="from">The source database.</param>
+    /// <param name="to">The destination database.</param>
     void Convert(IDB2Read from, IDB2 to);
 
 #endregion

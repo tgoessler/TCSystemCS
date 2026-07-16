@@ -2,7 +2,8 @@
 
 [![NuGet](https://img.shields.io/nuget/v/TCSystem.Gps.svg)](https://www.nuget.org/packages/TCSystem.Gps/)
 
-Reader and lookup helpers for Google Takeout location-history `records.json` files. JSON is deserialized asynchronously with `System.Text.Json` into `TakeoutRecords`, which can filter records and find the timestamp-nearest location.
+Reader and lookup helpers for Google Takeout location-history `records.json` files. JSON is deserialized asynchronously
+with `System.Text.Json` into `TakeoutRecords`, which can filter records and find the timestamp-nearest location.
 
 ## Installation
 
@@ -18,7 +19,8 @@ dotnet add package TCSystem.Gps
 - Timestamp ordering and binary-search nearest-location lookup
 - Integration with `TCSystem.MetaData.GpsPoint`
 
-The complete location collection is held in memory after deserialization; size memory capacity appropriately for large Takeout exports.
+The complete location collection is held in memory after deserialization; size memory capacity appropriately for large
+Takeout exports.
 
 ## Dependencies
 
@@ -33,4 +35,5 @@ The complete location collection is held in memory after deserialization; size m
 
 ## Development
 
-See the repository [build instructions](../README.md#build-from-source) and the [TCSystem.Gps.Tests instructions](Tests/README.md).
+See the repository [build instructions](../README.md#build-from-source) and
+the [TCSystem.Gps.Tests instructions](Tests/README.md).

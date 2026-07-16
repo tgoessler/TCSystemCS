@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <AssemblyName>TCSystem.Tools.DBConverter</AssemblyName>
-    <RootNamespace>TCSystem.Tools.DBConverter</RootNamespace>
-    <Description>Converts an existing Meta Data Database file to a new one</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <AssemblyName>TCSystem.Tools.DBConverter</AssemblyName>
+        <RootNamespace>TCSystem.Tools.DBConverter</RootNamespace>
+        <Description>Converts an existing Meta Data Database file to a new one</Description>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\MetaDataDB\TCSystem.MetaDataDB.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\MetaDataDB\TCSystem.MetaDataDB.csproj"/>
+    </ItemGroup>
 
 </Project>

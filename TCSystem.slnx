@@ -1,42 +1,42 @@
 <Solution>
-  <Folder Name="/01 Libs/">
-    <Project Path="Gps/TCSystem.Gps.csproj" />
-    <Project Path="Logging/TCSystem.Logging.csproj" />
-    <Project Path="MetaData/TCSystem.MetaData.csproj" />
-    <Project Path="MetaDataDB/TCSystem.MetaDataDB.csproj" />
-    <Project Path="Thread/TCSystem.Thread.csproj" />
-    <Project Path="Util/TCSystem.Util.csproj" />
-  </Folder>
-  <Folder Name="/10 Tools/">
-    <File Path="Tools/Directory.Build.props" />
-    <File Path="Tools/Directory.Build.targets" />
-    <Project Path="Tools/DBConverter/TCSystem.Tools.DBConverter.csproj" />
-    <Project Path="Tools/TakeoutReader/TCSystem.Tools.TakeoutReader.csproj" />
-  </Folder>
-  <Folder Name="/50 Tests/">
-    <Project Path="Gps/Tests/TCSystem.Gps.Tests.csproj" />
-    <Project Path="MetaData/Tests/TCSystem.MetaData.Tests.csproj" />
-    <Project Path="MetaDataDB/Tests/TCSystem.MetaDataDB.Tests.csproj" />
-    <Project Path="Thread/Tests/TCSystem.Thread.Tests.csproj" />
-    <Project Path="Util/Tests/TCSystem.Util.Tests.csproj" />
-  </Folder>
-  <Folder Name="/99 Build/">
-    <File Path=".editorconfig" />
-    <File Path=".github/dependabot.yml" />
-    <File Path=".gitignore" />
-    <File Path="deploy.bat" />
-    <File Path="deploy_local.bat" />
-    <File Path="Directory.Build.props" />
-    <File Path="Directory.Build.targets" />
-    <File Path="LICENSE" />
-    <File Path="NoPackaging.props" />
-    <File Path="Packaging.props" />
-    <File Path="README.md" />
-    <File Path="Version.props" />
-  </Folder>
-  <Folder Name="/99 Build/Workflow/">
-    <File Path=".github/workflows/analyze.yml" />
-    <File Path=".github/workflows/dotnet.yml" />
-    <File Path=".github/workflows/nuget_deploy.yml" />
-  </Folder>
+    <Folder Name="/01 Libs/">
+        <Project Path="Gps/TCSystem.Gps.csproj"/>
+        <Project Path="Logging/TCSystem.Logging.csproj"/>
+        <Project Path="MetaData/TCSystem.MetaData.csproj"/>
+        <Project Path="MetaDataDB/TCSystem.MetaDataDB.csproj"/>
+        <Project Path="Thread/TCSystem.Thread.csproj"/>
+        <Project Path="Util/TCSystem.Util.csproj"/>
+    </Folder>
+    <Folder Name="/10 Tools/">
+        <File Path="Tools/Directory.Build.props"/>
+        <File Path="Tools/Directory.Build.targets"/>
+        <Project Path="Tools/DBConverter/TCSystem.Tools.DBConverter.csproj"/>
+        <Project Path="Tools/TakeoutReader/TCSystem.Tools.TakeoutReader.csproj"/>
+    </Folder>
+    <Folder Name="/50 Tests/">
+        <Project Path="Gps/Tests/TCSystem.Gps.Tests.csproj"/>
+        <Project Path="MetaData/Tests/TCSystem.MetaData.Tests.csproj"/>
+        <Project Path="MetaDataDB/Tests/TCSystem.MetaDataDB.Tests.csproj"/>
+        <Project Path="Thread/Tests/TCSystem.Thread.Tests.csproj"/>
+        <Project Path="Util/Tests/TCSystem.Util.Tests.csproj"/>
+    </Folder>
+    <Folder Name="/99 Build/">
+        <File Path=".editorconfig"/>
+        <File Path=".github/dependabot.yml"/>
+        <File Path=".gitignore"/>
+        <File Path="deploy.bat"/>
+        <File Path="deploy_local.bat"/>
+        <File Path="Directory.Build.props"/>
+        <File Path="Directory.Build.targets"/>
+        <File Path="LICENSE"/>
+        <File Path="NoPackaging.props"/>
+        <File Path="Packaging.props"/>
+        <File Path="README.md"/>
+        <File Path="Version.props"/>
+    </Folder>
+    <Folder Name="/99 Build/Workflow/">
+        <File Path=".github/workflows/analyze.yml"/>
+        <File Path=".github/workflows/dotnet.yml"/>
+        <File Path=".github/workflows/nuget_deploy.yml"/>
+    </Folder>
 </Solution>

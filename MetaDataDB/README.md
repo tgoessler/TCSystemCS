@@ -2,7 +2,8 @@
 
 [![NuGet](https://img.shields.io/nuget/v/TCSystem.MetaDataDB.svg)](https://www.nuget.org/packages/TCSystem.MetaDataDB/)
 
-SQLite persistence for `TCSystem.MetaData` images, locations, tags, people, faces, and processing state. Database operations acquire pooled SQLite instances internally to serialize access safely.
+SQLite persistence for `TCSystem.MetaData` images, locations, tags, people, faces, and processing state. Database
+operations acquire pooled SQLite instances internally to serialize access safely.
 
 ## Installation
 
@@ -20,7 +21,8 @@ dotnet add package TCSystem.MetaDataDB
 
 ## Lifecycle
 
-Create database interfaces through `TCSystem.MetaDataDB.Factory` and always release them with the matching `Destroy` overload:
+Create database interfaces through `TCSystem.MetaDataDB.Factory` and always release them with the matching `Destroy`
+overload:
 
 ```csharp
 IDB2 db = null;
@@ -35,7 +37,8 @@ finally
 }
 ```
 
-`CreateReadWrite` creates a database when the path does not exist. `CreateRead` opens an existing database in read-only mode.
+`CreateReadWrite` creates a database when the path does not exist. `CreateRead` opens an existing database in read-only
+mode.
 
 ## Dependencies
 
@@ -53,4 +56,6 @@ finally
 
 ## Development
 
-See the repository [build instructions](../README.md#build-from-source) and the [TCSystem.MetaDataDB.Tests instructions](Tests/README.md). Tests use temporary SQLite files; optional legacy converter fixtures are described in the test README.
+See the repository [build instructions](../README.md#build-from-source) and
+the [TCSystem.MetaDataDB.Tests instructions](Tests/README.md). Tests use temporary SQLite files; optional legacy
+converter fixtures are described in the test README.

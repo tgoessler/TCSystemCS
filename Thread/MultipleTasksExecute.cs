@@ -52,9 +52,25 @@ internal sealed class MultipleTasksExecute(int _maxNumberOfTasks) : IMultipleTas
         WaitAllDoneInternal(token);
     }
 
-    #endregion
+#endregion
 
-    #region Private
+#region Private
+
+    private void WaitAllDoneInternal(CancellationToken? token)
+    {
+        while (_semaphore.CurrentCount != _maxNumberOfTasks)
+        {
+            if (token.HasValue)
+            {
+                Task.Delay(100).Wait(token.Value);
+            }
+            else
+            {
+                Task.Delay(100).Wait();
+            }
+        }
+    }
+
     private void ExecuteCommandInternal(Action action, CancellationToken? token)
     {
         if (token.HasValue)
@@ -77,22 +93,6 @@ internal sealed class MultipleTasksExecute(int _maxNumberOfTasks) : IMultipleTas
                 _semaphore.Release();
             }
         });
-    }
-
-    public void WaitAllDoneInternal(CancellationToken? token)
-    {
-        while(_semaphore.CurrentCount != _maxNumberOfTasks)
-        {   
-            if (token.HasValue)
-            {
-                Task.Delay(100).Wait(token.Value);
-            }
-            else
-            {
-                Task.Delay(100).Wait();
-            }
-            
-        }
     }
 
     private readonly SemaphoreSlim _semaphore = new(_maxNumberOfTasks, _maxNumberOfTasks);

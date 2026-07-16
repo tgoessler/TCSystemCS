@@ -28,16 +28,19 @@ using System.Threading.Tasks;
 
 namespace TCSystem.Thread;
 
+/// <summary>Provides disposable lock scopes for <see cref="SemaphoreSlim" />.</summary>
 public static class SemaphoreSlimExt
 {
 #region Public
 
+    /// <summary>Waits for the semaphore and returns a scope that releases it when disposed.</summary>
     public static IDisposable Lock(this SemaphoreSlim semaphore)
     {
         semaphore.Wait();
         return new SemaphoreSlimLock(semaphore);
     }
 
+    /// <summary>Asynchronously waits for the semaphore and returns a scope that releases it when disposed.</summary>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphore)
     {
         await semaphore.WaitAsync();

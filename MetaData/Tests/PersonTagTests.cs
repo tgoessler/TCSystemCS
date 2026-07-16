@@ -86,7 +86,7 @@ public class PersonTagTests
     [Test]
     public void ToStringTest()
     {
-        string str = TestData.PersonTag1.ToString();
+        var str = TestData.PersonTag1.ToString();
         Assert.That(str, Is.Not.Empty);
     }
 }

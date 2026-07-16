@@ -31,14 +31,6 @@ namespace TCSystem.Thread.Tests;
 public class FactoryTests
 {
     [Test]
-    public void CreateWorkerThread_ReturnsNonNull()
-    {
-        IWorkerThread worker = Factory.CreateWorkerThread("TestThread", ThreadPriority.Normal);
-        Assert.That(worker, Is.Not.Null);
-        worker.StopThread();
-    }
-
-    [Test]
     public void CreateAsyncUpdateHelper_ReturnsNonNull()
     {
         IAsyncUpdateHelper helper = Factory.CreateAsyncUpdateHelper();
@@ -50,5 +42,13 @@ public class FactoryTests
     {
         IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(2);
         Assert.That(executor, Is.Not.Null);
+    }
+
+    [Test]
+    public void CreateWorkerThread_ReturnsNonNull()
+    {
+        IWorkerThread worker = Factory.CreateWorkerThread("TestThread", ThreadPriority.Normal);
+        Assert.That(worker, Is.Not.Null);
+        worker.StopThread();
     }
 }

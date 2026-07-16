@@ -98,7 +98,7 @@ public class FixedPoint64Tests
     [Test]
     public void ToStringTest()
     {
-        string s = new FixedPoint64(1.5).ToString();
+        var s = new FixedPoint64(1.5).ToString();
         Assert.That(s, Is.Not.Empty);
         Assert.That(s, Does.Contain("."));
     }

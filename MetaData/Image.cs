@@ -31,32 +31,50 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Represents the immutable metadata associated with an image file.</summary>
+/// <param name="_fileId">The persistent file identifier.</param>
+/// <param name="_fileName">The full file name.</param>
+/// <param name="_processingInfos">The completed processing operations.</param>
+/// <param name="_width">The image width in pixels.</param>
+/// <param name="_height">The image height in pixels.</param>
+/// <param name="_orientation">The stored image orientation.</param>
+/// <param name="_dateTaken">The date and time the image was taken.</param>
+/// <param name="_title">The image title.</param>
+/// <param name="_location">The optional image location.</param>
+/// <param name="_personsTags">The associated person tags.</param>
+/// <param name="_tags">The associated text tags.</param>
 public sealed class Image(long _fileId, string _fileName, ProcessingInfos _processingInfos, int _width,
                           int _height, OrientationMode _orientation, DateTimeOffset _dateTaken, string _title,
                           Location _location, IReadOnlyList<PersonTag> _personsTags, IReadOnlyList<string> _tags) : IEquatable<Image>
 {
 #region Public
 
+    /// <summary>Determines whether the image has a person with the specified name.</summary>
     public bool HasPerson(string name)
     {
         return GetPersonTag(name) != null;
     }
 
+    /// <summary>Determines whether the image contains an equal person tag.</summary>
     public bool HasPersonTag(PersonTag personTag)
     {
         return _personTags.FirstOrDefault(p => p.Equals(personTag)) != null;
     }
 
+    /// <summary>Gets the first person tag with the specified name.</summary>
+    /// <returns>The matching tag, or <see langword="null" />.</returns>
     public PersonTag GetPersonTag(string name)
     {
         return _personTags.FirstOrDefault(pt => pt.Person.Name == name);
     }
 
+    /// <summary>Determines whether the image contains the specified text tag.</summary>
     public bool HasTag(string t)
     {
         return _tags.FirstOrDefault(x => x == t) != null;
     }
 
+    /// <summary>Returns a copy with a different file name.</summary>
     public static Image ChangeFileName(Image image, string fileName)
     {
         return new(image.Id, fileName, image.ProcessingInfos,
@@ -65,6 +83,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
             image._personTags, image._tags);
     }
 
+    /// <summary>Returns a copy with a different date taken.</summary>
     public static Image ChangeDateTaken(Image image, DateTimeOffset dateTaken)
     {
         return new(image.Id, image.FileName, image.ProcessingInfos,
@@ -73,6 +92,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
             image._personTags, image._tags);
     }
 
+    /// <summary>Returns a copy with different processing information.</summary>
     public static Image ChangeProcessingInfo(Image image, ProcessingInfos processingInfos)
     {
         return new(image.Id, image.FileName, processingInfos,
@@ -81,6 +101,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
             image._personTags, image._tags);
     }
 
+    /// <summary>Returns a copy with a different location.</summary>
     public static Image ChangeLocation(Image image, Location location)
     {
         return new(image.Id, image.FileName, image.ProcessingInfos,
@@ -89,6 +110,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
             image._personTags, image._tags);
     }
 
+    /// <summary>Returns a copy with the supplied person tags.</summary>
     public static Image ChangePersonTags(Image image, IEnumerable<PersonTag> personTags)
     {
         return new(image.Id, image.FileName, image.ProcessingInfos,
@@ -97,6 +119,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
             personTags.ToArray(), image._tags);
     }
 
+    /// <summary>Returns a copy with the supplied text tags.</summary>
     public static Image ChangeTags(Image image, IEnumerable<string> tagsIn)
     {
         return new(image.Id, image.FileName, image.ProcessingInfos,
@@ -105,6 +128,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
             image._personTags, tagsIn.ToArray());
     }
 
+    /// <summary>Returns a copy containing the person tag, unless a valid person with the same name already exists.</summary>
     public static Image AddPersonTag(Image image, PersonTag pt)
     {
         if (!pt.Person.IsValid || image._personTags.FirstOrDefault(x => x.Person.Name == pt.Person.Name) == null)
@@ -121,6 +145,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         return image;
     }
 
+    /// <summary>Returns a copy without the person tag, or the original image when it is absent.</summary>
     public static Image RemovePersonTag(Image image, PersonTag pt)
     {
         if (image.HasPersonTag(pt))
@@ -137,6 +162,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         return image;
     }
 
+    /// <summary>Returns a copy with a person tag's face visibility changed.</summary>
     public static Image ChangePersonTagVisible(Image image, PersonTag pt, bool visible)
     {
         if (image.HasPersonTag(pt))
@@ -155,6 +181,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         return image;
     }
 
+    /// <summary>Returns a copy with a person tag's face quality changed.</summary>
     public static Image ChangePersonTagFaceQuality(Image image, PersonTag pt, FaceQuality quality)
     {
         if (image.HasPersonTag(pt))
@@ -173,6 +200,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         return image;
     }
 
+    /// <summary>Returns a copy in which the person with the same name is replaced.</summary>
     public static Image ChangePerson(Image image, Person person)
     {
         if (image.GetPersonTag(person.Name) is { } pt)
@@ -191,6 +219,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         return image;
     }
 
+    /// <summary>Returns a copy without the person having the specified name.</summary>
     public static Image RemovePersonWithName(Image image, string name)
     {
         PersonTag person = image.GetPersonTag(name);
@@ -208,6 +237,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         return image;
     }
 
+    /// <summary>Returns a copy containing the non-empty text tag, or the original image if it already exists.</summary>
     public static Image AddTag(Image image, string t)
     {
         if (t.Length > 0 && !image.HasTag(t))
@@ -224,6 +254,7 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         return image;
     }
 
+    /// <summary>Returns a copy without the text tag, or the original image when it is absent.</summary>
     public static Image RemoveTag(Image image, string t)
     {
         if (image.HasTag(t))
@@ -240,16 +271,19 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         return image;
     }
 
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         return EqualsUtil.Equals(this, obj as Image, EqualsImp);
     }
 
+    /// <inheritdoc />
     public bool Equals(Image other)
     {
         return EqualsUtil.Equals(this, other, EqualsImp);
     }
 
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         unchecked
@@ -269,38 +303,70 @@ public sealed class Image(long _fileId, string _fileName, ProcessingInfos _proce
         }
     }
 
+    /// <summary>Serializes the image metadata to indented JSON.</summary>
+    /// <returns>The formatted JSON.</returns>
     public override string ToString()
     {
         return ToJson().ToString(Formatting.Indented);
     }
 
+    /// <summary>Serializes the image metadata to compact JSON.</summary>
+    /// <returns>The serialized metadata.</returns>
     public string ToJsonString()
     {
         return ToJson().ToString(Formatting.None);
     }
 
+    /// <summary>Deserializes image metadata from JSON.</summary>
+    /// <returns>The image metadata, or <see langword="null" /> for null or empty input.</returns>
     public static Image FromJsonString(string jsonString)
     {
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
+    /// <summary>Gets the persistent file identifier.</summary>
     public long Id => _fileId;
+
+    /// <summary>Gets the final component of the Windows-style file name.</summary>
     public string Name => FileName.Substring(FileName.LastIndexOf('\\') + 1);
+
+    /// <summary>Gets the full file name.</summary>
     public string FileName => _fileName;
+
+    /// <summary>Gets the completed processing operations.</summary>
     public ProcessingInfos ProcessingInfos => _processingInfos;
+
+    /// <summary>Gets the image width in pixels.</summary>
     public int Width => _width;
+
+    /// <summary>Gets the image height in pixels.</summary>
     public int Height => _height;
+
+    /// <summary>Gets the stored image orientation.</summary>
     public OrientationMode Orientation => _orientation;
+
+    /// <summary>Gets the date taken, trimmed to whole seconds.</summary>
     public DateTimeOffset DateTaken => _dateTaken.Trim(TimeSpan.TicksPerSecond);
+
+    /// <summary>Gets whether a date taken has been set.</summary>
     public bool IsDateTimeSet => DateTaken != InvalidDateTaken;
+
+    /// <summary>Gets the sentinel value representing an unset date taken.</summary>
     public static DateTimeOffset InvalidDateTaken => DateTimeOffset.FromUnixTimeSeconds(0).ToLocalTime();
 
+    /// <summary>Gets the image title, or an empty string when undefined.</summary>
     public string Title => _title ?? "";
+
+    /// <summary>Gets the optional image location.</summary>
     public Location Location => _location;
+
+    /// <summary>Gets the associated person tags.</summary>
     public IReadOnlyList<PersonTag> PersonTags => _personTags;
 
+    /// <summary>Gets the number of text tags.</summary>
     public int NumTags => _tags.Count;
 
+    /// <summary>Gets the associated text tags.</summary>
     public IReadOnlyList<string> Tags => _tags;
 
 #endregion

@@ -1,16 +1,16 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<PropertyGroup>
-		<Company>TCSystem</Company>
-		<Authors>Thomas Gößler</Authors>
-		<NamespaceName>at.tcsystem</NamespaceName>
-		<Copyright>Copyright © $(Authors) 2003 - 2026</Copyright>
+    <PropertyGroup>
+        <Company>TCSystem</Company>
+        <Authors>Thomas Gößler</Authors>
+        <NamespaceName>at.tcsystem</NamespaceName>
+        <Copyright>Copyright © $(Authors) 2003 - 2026</Copyright>
 
-		<Timestamp>$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</Timestamp>
-		<DevelopmentVersionSuffix Condition="'$(DevelopmentVersionSuffix)'==''">-ci.$(Timestamp)</DevelopmentVersionSuffix>
+        <Timestamp>$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</Timestamp>
+        <DevelopmentVersionSuffix Condition="'$(DevelopmentVersionSuffix)'==''">-ci.$(Timestamp)</DevelopmentVersionSuffix>
 
-		<Version>5.0.0</Version>
-		<Version Condition="'$(IsCiBuild)'=='true'">$(Version)$(DevelopmentVersionSuffix)</Version>
-	</PropertyGroup>
+        <Version>5.0.0</Version>
+        <Version Condition="'$(IsCiBuild)'=='true'">$(Version)$(DevelopmentVersionSuffix)</Version>
+    </PropertyGroup>
 
 </Project>

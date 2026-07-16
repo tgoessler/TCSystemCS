@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using TCSystem.MetaData;
 using static TCSystem.MetaData.Tests.TestData;
@@ -86,6 +87,23 @@ public sealed class LocationTests : DBSetup
     }
 
     [Test]
+    public void GetAllLocations()
+    {
+        Assert.That(DBReadOnly.GetAllLocations().Count, Is.EqualTo(0));
+
+        Image image1 = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
+        IList<Location> locations = DBReadOnly.GetAllLocations();
+        Assert.That(locations.Count, Is.EqualTo(1));
+        Assert.That(locations[0], Is.EqualTo(image1.Location));
+
+        Image image2 = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
+        locations = DBReadOnly.GetAllLocations();
+        Assert.That(locations.Count, Is.EqualTo(2));
+        Assert.That(locations[0], Is.EqualTo(image1.Location));
+        Assert.That(locations[1], Is.EqualTo(image2.Location));
+    }
+
+    [Test]
     public void GetFilesOfAddress()
     {
         Assert.That(DBReadOnly.GetFilesOfAddress(Address1, true).Count, Is.EqualTo(0));
@@ -133,23 +151,6 @@ public sealed class LocationTests : DBSetup
         DB.RemoveMetaData(TestData.Image11.FileName);
         Assert.That(DBReadOnly.GetFilesOfAddress(Address1, true).Count, Is.EqualTo(0));
         Assert.That(DBReadOnly.GetFilesOfAddress(Address2, true).Count, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void GetAllLocations()
-    {
-        Assert.That(DBReadOnly.GetAllLocations().Count, Is.EqualTo(0));
-
-        Image image1 = DB.AddMetaData(TestData.Image1, DateTimeOffset.Now);
-        var locations = DBReadOnly.GetAllLocations();
-        Assert.That(locations.Count, Is.EqualTo(1));
-        Assert.That(locations[0], Is.EqualTo(image1.Location));
-
-        Image image2 = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
-        locations = DBReadOnly.GetAllLocations();
-        Assert.That(locations.Count, Is.EqualTo(2));
-        Assert.That(locations[0], Is.EqualTo(image1.Location));
-        Assert.That(locations[1], Is.EqualTo(image2.Location));
     }
 
     [Test]

@@ -39,13 +39,6 @@ public class EnumerableExtTests
     }
 
     [Test]
-    public void OrderRandom_SingleElement_ReturnsSameElement()
-    {
-        IEnumerable<int> result = new[] { 42 }.OrderRandom();
-        Assert.That(result.Single(), Is.EqualTo(42));
-    }
-
-    [Test]
     public void OrderRandom_PreservesAllElements()
     {
         int[] source = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -61,6 +54,13 @@ public class EnumerableExtTests
         IEnumerable<int> result = source.OrderRandom();
 
         Assert.That(result.Count(), Is.EqualTo(source.Length));
+    }
+
+    [Test]
+    public void OrderRandom_SingleElement_ReturnsSameElement()
+    {
+        IEnumerable<int> result = new[] { 42 }.OrderRandom();
+        Assert.That(result.Single(), Is.EqualTo(42));
     }
 
     [Test]

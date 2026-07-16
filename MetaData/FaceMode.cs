@@ -20,9 +20,15 @@
 
 namespace TCSystem.MetaData;
 
+/// <summary>Identifies the detector used to find a face.</summary>
 public enum FaceMode
 {
+    /// <summary>No detector is specified.</summary>
     Undefined = 0,
+
+    /// <summary>The Dlib frontal-face detector was used.</summary>
     DlibFront = 1,
+
+    /// <summary>The Dlib convolutional neural network detector was used.</summary>
     DlibCnn = 2
 }

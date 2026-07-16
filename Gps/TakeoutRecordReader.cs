@@ -28,10 +28,18 @@ using System.Threading.Tasks;
 
 namespace TCSystem.Gps;
 
+/// <summary>
+///     Deserializes Google Takeout location-history records.
+/// </summary>
 public static class TakeoutRecordReader
 {
 #region Public
 
+    /// <summary>
+    ///     Asynchronously reads Takeout records from a JSON stream.
+    /// </summary>
+    /// <param name="stream">The readable stream containing a Takeout <c>records.json</c> document.</param>
+    /// <returns>The deserialized records, or <see langword="null" /> when the JSON value is null.</returns>
     public static ValueTask<TakeoutRecords> ReadAsync(Stream stream)
     {
         return JsonSerializer.DeserializeAsync<TakeoutRecords>(stream);

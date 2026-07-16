@@ -37,10 +37,11 @@ public class EqualsUtilTests
     }
 
     [Test]
-    public void Equals_SecondIsNull_ReturnsFalse()
+    public void Equals_DifferentObjectsEqualsReturnsFalse_ReturnsFalse()
     {
-        var obj = new TestClass("test");
-        Assert.That(EqualsUtil.Equals(obj, null, _ => true), Is.False);
+        var obj1 = new TestClass("test1");
+        var obj2 = new TestClass("test2");
+        Assert.That(EqualsUtil.Equals(obj1, obj2, other => other.Value == obj1.Value), Is.False);
     }
 
     [Test]
@@ -52,15 +53,18 @@ public class EqualsUtilTests
     }
 
     [Test]
-    public void Equals_DifferentObjectsEqualsReturnsFalse_ReturnsFalse()
+    public void Equals_SecondIsNull_ReturnsFalse()
     {
-        var obj1 = new TestClass("test1");
-        var obj2 = new TestClass("test2");
-        Assert.That(EqualsUtil.Equals(obj1, obj2, other => other.Value == obj1.Value), Is.False);
+        var obj = new TestClass("test");
+        Assert.That(EqualsUtil.Equals(obj, null, _ => true), Is.False);
     }
 
     private sealed class TestClass(string _value)
     {
+#region Public
+
         public string Value { get; } = _value;
+
+#endregion
     }
 }

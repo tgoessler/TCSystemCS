@@ -2,7 +2,9 @@
 
 [![NuGet](https://img.shields.io/nuget/v/TCSystem.MetaData.svg)](https://www.nuget.org/packages/TCSystem.MetaData/)
 
-Domain types for image metadata, including timestamps, orientation, GPS/location data, processing state, people, faces, and tags. Models use return-new-instance change helpers rather than in-place mutation and support Newtonsoft.Json serialization.
+Domain types for image metadata, including timestamps, orientation, GPS/location data, processing state, people, faces,
+and tags. Models use return-new-instance change helpers rather than in-place mutation and support Newtonsoft.Json
+serialization.
 
 ## Installation
 
@@ -32,4 +34,5 @@ dotnet add package TCSystem.MetaData
 
 ## Development
 
-See the repository [build instructions](../README.md#build-from-source) and the [TCSystem.MetaData.Tests instructions](Tests/README.md).
+See the repository [build instructions](../README.md#build-from-source) and
+the [TCSystem.MetaData.Tests instructions](Tests/README.md).

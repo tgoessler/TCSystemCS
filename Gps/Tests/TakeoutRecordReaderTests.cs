@@ -35,8 +35,6 @@ namespace TCSystem.Gps.Tests;
 [TestFixture]
 public class TakeoutRecordReaderTests
 {
-#region Public
-
     [Test]
     public async Task ReadAsync_ValidRecordsJson_DeserializesLocations()
     {
@@ -52,10 +50,6 @@ public class TakeoutRecordReaderTests
         Assert.That(location.FormFactor, Is.EqualTo(TakeoutRecords.FormFactorPhone));
         AssertGpsPoint(location.GpsPoint, 47.1234567, 15.1234567, 365);
     }
-
-#endregion
-
-#region Private
 
     private const string SingleLocationJson = """
                                               {
@@ -86,6 +80,4 @@ public class TakeoutRecordReaderTests
         Assert.That(gpsPoint.Longitude.Value.ToDouble(), Is.EqualTo(longitude).Within(0.0000001));
         Assert.That(gpsPoint.Altitude.Value.RawValue, Is.EqualTo(altitude));
     }
-
-#endregion
 }

@@ -30,9 +30,29 @@ namespace TCSystem.Util.Tests;
 public class MathExtTests
 {
     [Test]
-    public void ToNextPowerOf2_Zero_ReturnsZero()
+    public void ToNextPowerOf2_LargeValues()
     {
-        Assert.That(0.ToNextPowerOf2(), Is.EqualTo(0));
+        Assert.That(65536.ToNextPowerOf2(), Is.EqualTo(65536));
+        Assert.That(65537.ToNextPowerOf2(), Is.EqualTo(131072));
+    }
+
+    [Test]
+    public void ToNextPowerOf2_NegativeValue_ReturnsZero()
+    {
+        Assert.That((-1).ToNextPowerOf2(), Is.EqualTo(0));
+        Assert.That((-100).ToNextPowerOf2(), Is.EqualTo(0));
+    }
+
+    [Test]
+    public void ToNextPowerOf2_NonPowerOf2_ReturnsNextPower()
+    {
+        Assert.That(3.ToNextPowerOf2(), Is.EqualTo(4));
+        Assert.That(5.ToNextPowerOf2(), Is.EqualTo(8));
+        Assert.That(7.ToNextPowerOf2(), Is.EqualTo(8));
+        Assert.That(9.ToNextPowerOf2(), Is.EqualTo(16));
+        Assert.That(17.ToNextPowerOf2(), Is.EqualTo(32));
+        Assert.That(100.ToNextPowerOf2(), Is.EqualTo(128));
+        Assert.That(1000.ToNextPowerOf2(), Is.EqualTo(1024));
     }
 
     [Test]
@@ -52,28 +72,8 @@ public class MathExtTests
     }
 
     [Test]
-    public void ToNextPowerOf2_NonPowerOf2_ReturnsNextPower()
+    public void ToNextPowerOf2_Zero_ReturnsZero()
     {
-        Assert.That(3.ToNextPowerOf2(), Is.EqualTo(4));
-        Assert.That(5.ToNextPowerOf2(), Is.EqualTo(8));
-        Assert.That(7.ToNextPowerOf2(), Is.EqualTo(8));
-        Assert.That(9.ToNextPowerOf2(), Is.EqualTo(16));
-        Assert.That(17.ToNextPowerOf2(), Is.EqualTo(32));
-        Assert.That(100.ToNextPowerOf2(), Is.EqualTo(128));
-        Assert.That(1000.ToNextPowerOf2(), Is.EqualTo(1024));
-    }
-
-    [Test]
-    public void ToNextPowerOf2_NegativeValue_ReturnsZero()
-    {
-        Assert.That((-1).ToNextPowerOf2(), Is.EqualTo(0));
-        Assert.That((-100).ToNextPowerOf2(), Is.EqualTo(0));
-    }
-
-    [Test]
-    public void ToNextPowerOf2_LargeValues()
-    {
-        Assert.That(65536.ToNextPowerOf2(), Is.EqualTo(65536));
-        Assert.That(65537.ToNextPowerOf2(), Is.EqualTo(131072));
+        Assert.That(0.ToNextPowerOf2(), Is.EqualTo(0));
     }
 }

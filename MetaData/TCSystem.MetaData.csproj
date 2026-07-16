@@ -1,26 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>TCSystem.MetaData</AssemblyName>
-    <RootNamespace>TCSystem.MetaData</RootNamespace>
-    <PackageTags>C#, Image Meta Data</PackageTags>
-    <Description>Classes for handling, storing image meta data (e.g.: Serialize as Json)</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <AssemblyName>TCSystem.MetaData</AssemblyName>
+        <RootNamespace>TCSystem.MetaData</RootNamespace>
+        <PackageTags>C#, Image Meta Data</PackageTags>
+        <Description>Classes for handling, storing image meta data (e.g.: Serialize as Json)</Description>
+    </PropertyGroup>
 
-  <Import Project="..\Packaging.props" />
+    <Import Project="..\Packaging.props"/>
 
-  <ItemGroup>
-    <Compile Remove="Tests\**" />
-    <EmbeddedResource Remove="Tests\**" />
-    <None Remove="Tests\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Tests\**"/>
+        <EmbeddedResource Remove="Tests\**"/>
+        <None Remove="Tests\**"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Util\TCSystem.Util.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Util\TCSystem.Util.csproj"/>
+    </ItemGroup>
 
 </Project>

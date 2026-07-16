@@ -27,6 +27,7 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Provides the internal JSON date-time representation used by metadata serialization.</summary>
 public static class DateTimeHelper
 {
 #region Internal

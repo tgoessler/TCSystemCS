@@ -1,27 +1,27 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<PropertyGroup>
-		<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en-US</DefaultLanguage>
-		<ProduceReferenceAssembly Condition="'$(ProduceReferenceAssembly)'==''">true</ProduceReferenceAssembly>
-		<TargetFrameworks Condition="'$(TargetFrameworks)'==''">netstandard2.1;net8.0;net10.0</TargetFrameworks>
-		<LangVersion Condition="'$(LangVersion)'==''">14</LangVersion>
-		<WarningLevel>9999</WarningLevel>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<AnalysisLevel>latest</AnalysisLevel>
-		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-		<IsCiBuild Condition="'$(IsCiBuild)'==''">true</IsCiBuild>
-	</PropertyGroup>
+    <PropertyGroup>
+        <DefaultLanguage Condition="'$(DefaultLanguage)'==''">en-US</DefaultLanguage>
+        <ProduceReferenceAssembly Condition="'$(ProduceReferenceAssembly)'==''">true</ProduceReferenceAssembly>
+        <TargetFrameworks Condition="'$(TargetFrameworks)'==''">netstandard2.1;net8.0;net10.0</TargetFrameworks>
+        <LangVersion Condition="'$(LangVersion)'==''">14</LangVersion>
+        <WarningLevel>9999</WarningLevel>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <IsCiBuild Condition="'$(IsCiBuild)'==''">true</IsCiBuild>
+    </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<DebugType>portable</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-	</PropertyGroup>
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<DebugType>full</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<DefineConstants>DEBUG</DefineConstants>
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>DEBUG</DefineConstants>
+    </PropertyGroup>
 
 </Project>

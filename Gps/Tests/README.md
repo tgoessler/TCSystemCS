@@ -4,7 +4,8 @@ NUnit tests for `TCSystem.Gps`, targeting `net8.0` and `net10.0`.
 
 ## Prerequisites
 
-See the repository [build and test prerequisites](../../README.md#prerequisites). Run the commands below from the repository root.
+See the repository [build and test prerequisites](../../README.md#prerequisites). Run the commands below from the
+repository root.
 
 ## Run Tests
 

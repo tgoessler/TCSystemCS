@@ -31,10 +31,18 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Represents a detected face and its normalized image rectangle, classification, and optional descriptor.</summary>
 public sealed class Face : IEquatable<Face>
 {
 #region Public
 
+    /// <summary>Initializes a face.</summary>
+    /// <param name="faceId">The persistent face identifier.</param>
+    /// <param name="rectangle">The normalized face rectangle.</param>
+    /// <param name="faceMode">The detector that found the face.</param>
+    /// <param name="faceQuality">The face quality classification.</param>
+    /// <param name="visible">Whether the face is visible to consumers.</param>
+    /// <param name="faceDescriptor">The optional 128-value face descriptor; descriptors of other lengths are discarded.</param>
     public Face(long faceId, Rectangle rectangle, FaceMode faceMode, FaceQuality faceQuality, bool visible, IReadOnlyList<FixedPoint64> faceDescriptor)
     {
         Id = faceId;
@@ -50,16 +58,19 @@ public sealed class Face : IEquatable<Face>
         }
     }
 
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         return EqualsUtil.Equals(this, obj as Face, EqualsImp);
     }
 
+    /// <inheritdoc />
     public bool Equals(Face other)
     {
         return EqualsUtil.Equals(this, other, EqualsImp);
     }
 
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         unchecked
@@ -75,28 +86,50 @@ public sealed class Face : IEquatable<Face>
         }
     }
 
+    /// <summary>Serializes the face to compact JSON.</summary>
+    /// <returns>The serialized face.</returns>
     public string ToJsonString()
     {
         return ToJson().ToString(Formatting.None);
     }
 
+    /// <summary>Serializes the face to indented JSON.</summary>
+    /// <returns>The formatted face JSON.</returns>
     public override string ToString()
     {
         return ToJson().ToString(Formatting.Indented);
     }
 
+    /// <summary>Deserializes a face from JSON.</summary>
+    /// <param name="jsonString">The JSON to deserialize.</param>
+    /// <returns>The face, or <see langword="null" /> for null or empty input.</returns>
     public static Face FromJsonString(string jsonString)
     {
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
+    /// <summary>Gets the persistent face identifier.</summary>
     public long Id { get; }
+
+    /// <summary>Gets the normalized face rectangle.</summary>
     public Rectangle Rectangle { get; }
+
+    /// <summary>Gets the detector that found the face.</summary>
     public FaceMode FaceMode { get; }
+
+    /// <summary>Gets the face quality classification.</summary>
     public FaceQuality FaceQuality { get; }
+
+    /// <summary>Gets whether the face was found by the frontal-face detector.</summary>
     public bool IsFrontFace => FaceMode == FaceMode.DlibFront;
+
+    /// <summary>Gets whether the face is visible to consumers.</summary>
     public bool Visible { get; }
+
+    /// <summary>Gets whether a valid 128-value face descriptor is available.</summary>
     public bool HasFaceDescriptor => _faceDescriptor != null;
+
+    /// <summary>Gets the face descriptor, or <see langword="null" /> when no valid descriptor is available.</summary>
     public IReadOnlyList<FixedPoint64> FaceDescriptor => _faceDescriptor;
 
 #endregion

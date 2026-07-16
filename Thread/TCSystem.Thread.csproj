@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>TCSystem.Thread</AssemblyName>
-    <RootNamespace>TCSystem.Thread</RootNamespace>
-    <PackageTags>C#, Thread Utilities</PackageTags>
-    <Description>Thread helper classes, Worker Thread which runs commands added to his queue</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <AssemblyName>TCSystem.Thread</AssemblyName>
+        <RootNamespace>TCSystem.Thread</RootNamespace>
+        <PackageTags>C#, Thread Utilities</PackageTags>
+        <Description>Thread helper classes, Worker Thread which runs commands added to his queue</Description>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Logging\TCSystem.Logging.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Logging\TCSystem.Logging.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Tests\**" />
-    <EmbeddedResource Remove="Tests\**" />
-    <None Remove="Tests\**" />
-  </ItemGroup>
-	
-  <Import Project="..\Packaging.props" />
+    <ItemGroup>
+        <Compile Remove="Tests\**"/>
+        <EmbeddedResource Remove="Tests\**"/>
+        <None Remove="Tests\**"/>
+    </ItemGroup>
+
+    <Import Project="..\Packaging.props"/>
 
 </Project>

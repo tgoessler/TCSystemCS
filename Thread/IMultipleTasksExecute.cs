@@ -27,13 +27,21 @@ using System.Threading;
 
 namespace TCSystem.Thread;
 
+/// <summary>Executes actions with a bounded degree of concurrency.</summary>
 public interface IMultipleTasksExecute
 {
 #region Public
 
+    /// <summary>Queues an action after a concurrency slot becomes available.</summary>
     void ExecuteCommand(Action action);
+
+    /// <summary>Queues an action after a concurrency slot becomes available, observing cancellation while waiting.</summary>
     void ExecuteCommand(Action action, CancellationToken token);
+
+    /// <summary>Blocks until every queued action has completed.</summary>
     void WaitAllDone();
+
+    /// <summary>Blocks until every queued action has completed or cancellation is requested.</summary>
     void WaitAllDone(CancellationToken token);
 
 #endregion

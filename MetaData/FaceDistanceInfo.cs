@@ -30,15 +30,21 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Associates two face identifiers with their match percentage.</summary>
+/// <param name="_faceId1">The first face identifier.</param>
+/// <param name="_faceId2">The second face identifier.</param>
+/// <param name="_distance">The match percentage.</param>
 public readonly struct FaceDistanceInfo(long _faceId1, long _faceId2, int _distance) : IEquatable<FaceDistanceInfo>
 {
 #region Public
 
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         return obj is FaceDistanceInfo other && Equals(other);
     }
 
+    /// <inheritdoc />
     public bool Equals(FaceDistanceInfo other)
     {
         return FaceId1.Equals(other.FaceId1) &&
@@ -46,6 +52,7 @@ public readonly struct FaceDistanceInfo(long _faceId1, long _faceId2, int _dista
                FaceId2.Equals(other.FaceId2);
     }
 
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         unchecked
@@ -57,21 +64,31 @@ public readonly struct FaceDistanceInfo(long _faceId1, long _faceId2, int _dista
         }
     }
 
+    /// <summary>Serializes the face-distance information to compact JSON.</summary>
+    /// <returns>The serialized value.</returns>
     public string ToJsonString()
     {
         return ToJson().ToString(Formatting.None);
     }
 
+    /// <summary>Serializes the face-distance information to indented JSON.</summary>
+    /// <returns>The formatted JSON.</returns>
     public override string ToString()
     {
         return ToJson().ToString(Formatting.Indented);
     }
 
+    /// <summary>Deserializes face-distance information from JSON.</summary>
+    /// <param name="jsonString">The JSON object to deserialize.</param>
+    /// <returns>The deserialized value.</returns>
     public static FaceDistanceInfo FromJsonString(string jsonString)
     {
         return FromJson(JObject.Parse(jsonString));
     }
 
+    /// <summary>Deserializes an array of face-distance values.</summary>
+    /// <param name="jsonString">The JSON array to deserialize.</param>
+    /// <returns>The values, or an empty sequence for null or empty input.</returns>
     public static IEnumerable<FaceDistanceInfo> FromJsonStringArray(string jsonString)
     {
         if (string.IsNullOrEmpty(jsonString))
@@ -83,22 +100,25 @@ public readonly struct FaceDistanceInfo(long _faceId1, long _faceId2, int _dista
         return array.Select(v => FromJson((JObject)v));
     }
 
+    /// <summary>Determines whether two values are equal.</summary>
     public static bool operator ==(FaceDistanceInfo lhs, FaceDistanceInfo rhs)
     {
         return lhs.Equals(rhs);
     }
 
+    /// <summary>Determines whether two values are not equal.</summary>
     public static bool operator !=(FaceDistanceInfo lhs, FaceDistanceInfo rhs)
     {
         return !lhs.Equals(rhs);
     }
 
+    /// <summary>Gets the first face identifier.</summary>
     public long FaceId1 => _faceId1;
+
+    /// <summary>Gets the second face identifier.</summary>
     public long FaceId2 => _faceId2;
 
-    /// <summary>
-    ///     FaceId1 matches FaceId2 in percent
-    /// </summary>
+    /// <summary>Gets how closely the first face matches the second, in percent.</summary>
     public int Distance => _distance;
 
 #endregion

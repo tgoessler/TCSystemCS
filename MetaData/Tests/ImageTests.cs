@@ -77,7 +77,7 @@ public class ImageTests
     public void ChangeDateTakenTest()
     {
         Image image = CreateTestImage();
-        
+
         var newDate = new DateTimeOffset(new(2022, 6, 15, 10, 30, 0, DateTimeKind.Local));
         Image updated = Image.ChangeDateTaken(image, newDate);
         Assert.That(updated.DateTaken.ToUnixTimeSeconds(), Is.EqualTo(newDate.ToUnixTimeSeconds()));
@@ -169,8 +169,15 @@ public class ImageTests
     {
         Image image = CreateTestImage();
 
-        string ToJson(Image d) => d.ToJsonString();
-        Image FromJson(string s) => Image.FromJsonString(s);
+        string ToJson(Image d)
+        {
+            return d.ToJsonString();
+        }
+
+        Image FromJson(string s)
+        {
+            return Image.FromJsonString(s);
+        }
 
         TestUtil.FromJsonStringTest(image, ToJson, FromJson);
     }
@@ -305,7 +312,7 @@ public class ImageTests
     public void ToStringTest()
     {
         Image image = CreateTestImage();
-        string str = image.ToString();
+        var str = image.ToString();
         Assert.That(str, Is.Not.Empty);
     }
 

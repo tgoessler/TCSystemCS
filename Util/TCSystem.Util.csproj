@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>TCSystem.Util</AssemblyName>
-    <RootNamespace>TCSystem.Util</RootNamespace>
-    <PackageTags>C#, Utilities</PackageTags>
-    <Description>Extension functions for containers, utilities for implementing equals, ...</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <AssemblyName>TCSystem.Util</AssemblyName>
+        <RootNamespace>TCSystem.Util</RootNamespace>
+        <PackageTags>C#, Utilities</PackageTags>
+        <Description>Extension functions for containers, utilities for implementing equals, ...</Description>
+    </PropertyGroup>
 
-  <Import Project="..\Packaging.props" />
+    <Import Project="..\Packaging.props"/>
 
-  <ItemGroup>
-    <Compile Remove="Tests\**" />
-    <EmbeddedResource Remove="Tests\**" />
-    <None Remove="Tests\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Tests\**"/>
+        <EmbeddedResource Remove="Tests\**"/>
+        <None Remove="Tests\**"/>
+    </ItemGroup>
 
 </Project>

@@ -75,12 +75,12 @@ public class PersonTagTests : DBSetup
     }
 
     [Test]
-    public void ChangePersonTagVisible()
+    public void ChangePersonFaceQuality()
     {
         Image data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
 
         PersonTag personTag = data.PersonTags[1];
-        data = Image.ChangePersonTagVisible(data, personTag, true);
+        data = Image.ChangePersonTagFaceQuality(data, personTag, FaceQuality.Normal);
         DB.AddMetaData(data, DateTimeOffset.Now);
 
         Assert.That(DBReadOnly.GetNumFiles(), Is.EqualTo(1));
@@ -88,12 +88,12 @@ public class PersonTagTests : DBSetup
     }
 
     [Test]
-    public void ChangePersonFaceQuality()
+    public void ChangePersonTagVisible()
     {
         Image data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
 
         PersonTag personTag = data.PersonTags[1];
-        data = Image.ChangePersonTagFaceQuality(data, personTag, FaceQuality.Normal);
+        data = Image.ChangePersonTagVisible(data, personTag, true);
         DB.AddMetaData(data, DateTimeOffset.Now);
 
         Assert.That(DBReadOnly.GetNumFiles(), Is.EqualTo(1));

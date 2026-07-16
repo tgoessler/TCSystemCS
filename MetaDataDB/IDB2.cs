@@ -20,4 +20,5 @@
 
 namespace TCSystem.MetaDataDB;
 
+/// <summary>Combines read and write access to a metadata database.</summary>
 public interface IDB2 : IDB2Read, IDB2Write;

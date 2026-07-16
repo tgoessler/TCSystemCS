@@ -20,9 +20,15 @@
 
 namespace TCSystem.MetaData;
 
+/// <summary>Describes the quality assigned to a detected face.</summary>
 public enum FaceQuality
 {
+    /// <summary>The face has normal quality.</summary>
     Normal = 0,
+
+    /// <summary>The face has poor quality.</summary>
     Poor = 1,
+
+    /// <summary>The face has good quality.</summary>
     Good = 2
 }

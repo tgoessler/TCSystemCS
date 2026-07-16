@@ -54,6 +54,18 @@ public class AsyncUpdateHelperExtTests
     }
 
     [Test]
+    public async Task BeginUpdateScopeAsync_UsedWithUsing_ReleasesOnExit()
+    {
+        IDisposable scope = await _helper.BeginUpdateScopeAsync();
+        // Lock held
+        scope.Dispose();
+
+        // Lock released; next acquire must be immediate
+        await _helper.BeginUpdateAsync();
+        _helper.EndUpdate();
+    }
+
+    [Test]
     public async Task WaitScopeAsync_Dispose_ReleasesLock()
     {
         IDisposable scope = await _helper.WaitScopeAsync();
@@ -64,18 +76,6 @@ public class AsyncUpdateHelperExtTests
 
         // After dispose another acquire should succeed immediately
         await _helper.WaitAsync();
-        _helper.EndUpdate();
-    }
-
-    [Test]
-    public async Task BeginUpdateScopeAsync_UsedWithUsing_ReleasesOnExit()
-    {
-        IDisposable scope = await _helper.BeginUpdateScopeAsync();
-        // Lock held
-        scope.Dispose();
-
-        // Lock released; next acquire must be immediate
-        await _helper.BeginUpdateAsync();
         _helper.EndUpdate();
     }
 

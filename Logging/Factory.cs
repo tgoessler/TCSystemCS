@@ -28,34 +28,70 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 namespace TCSystem.Logging;
 
+/// <summary>
+///     Creates loggers and manages the process-wide Serilog configuration.
+/// </summary>
 public static class Factory
 {
 #region Public
 
+    /// <summary>
+    ///     Specifies the sinks enabled by the default logging configuration.
+    /// </summary>
     [Flags]
     public enum LoggingOptions
     {
+        /// <summary>Write log events to a rolling file.</summary>
         File = 1,
+
+        /// <summary>Write log events to the attached debugger.</summary>
         Debugger = 2,
+
+        /// <summary>Write log events to the console.</summary>
         Console = 4,
     }
 
+    /// <summary>
+    ///     Creates a logger whose source context is the supplied type.
+    /// </summary>
+    /// <param name="type">The type used as the source context.</param>
+    /// <returns>A logger for <paramref name="type" />.</returns>
     public static Logger GetLogger(Type type)
     {
         return new LoggerSerilog(type);
     }
 
+    /// <summary>
+    ///     Initializes process-wide logging without a file path.
+    /// </summary>
+    /// <param name="options">The default sinks to enable.</param>
+    /// <param name="configure">An optional callback that can extend the Serilog configuration.</param>
+    /// <returns><see langword="true" /> when initialization succeeds.</returns>
+    /// <remarks>Initialization is reference-counted; balance each call with <see cref="DeInitLogging" />.</remarks>
     public static bool InitLogging(LoggingOptions options, Action<LoggerConfiguration> configure = null)
     {
         return InternalInitLogging(options, null, 0, 0, configure);
     }
 
+    /// <summary>
+    ///     Initializes process-wide logging with rolling-file settings.
+    /// </summary>
+    /// <param name="options">The default sinks to enable.</param>
+    /// <param name="loggingFile">The output path used when <see cref="LoggingOptions.File" /> is enabled.</param>
+    /// <param name="maxFiles">The maximum number of retained rolling files.</param>
+    /// <param name="maxFileSizeKb">The size limit of each file in kilobytes.</param>
+    /// <param name="configure">An optional callback that can extend the Serilog configuration.</param>
+    /// <returns><see langword="true" /> when initialization succeeds.</returns>
+    /// <remarks>Initialization is reference-counted; balance each call with <see cref="DeInitLogging" />.</remarks>
     public static bool InitLogging(LoggingOptions options, string loggingFile, int maxFiles = 2, int maxFileSizeKb = 1024,
                                    Action<LoggerConfiguration> configure = null)
     {
         return InternalInitLogging(options, loggingFile, maxFiles, maxFileSizeKb, configure);
     }
 
+    /// <summary>
+    ///     Releases one logging initialization reference and flushes all sinks when the final reference is released.
+    /// </summary>
     public static void DeInitLogging()
     {
         if (--_initCount == 0)

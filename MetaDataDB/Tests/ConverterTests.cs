@@ -9,7 +9,7 @@
 //     *      ***   ***    *     **   **   **   *   *
 //                         *
 // *******************************************************************************
-//  see https://github.com/ThE-TiGeR/TCSystemCS for details.
+//  see https://github.com/tgoessler/TCSystemCS for details.
 //  Copyright (C) 2003 - 2026 Thomas Goessler. All Rights Reserved.
 // *******************************************************************************
 // 
@@ -190,6 +190,7 @@ public class ConverterTests
             {
                 Assert.That(personTags3.Length, Is.EqualTo(0));
             }
+
             Assert.That(personTags3.Length, Is.EqualTo(0));
         }
     }
@@ -262,6 +263,7 @@ public class ConverterTests
         {
             Assert.Ignore("DB file not available");
         }
+
         File.Copy(fileName, _dbFileName1);
 
         _db1 = Factory.CreateReadWrite(_dbFileName1);

@@ -1,26 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>TCSystem.Gps</AssemblyName>
-    <RootNamespace>TCSystem.Gps</RootNamespace>
-    <PackageTags>C#, Gps Utilities</PackageTags>
-    <Description>Provides Reader/Writer for reading GPS data from Google takeout</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <AssemblyName>TCSystem.Gps</AssemblyName>
+        <RootNamespace>TCSystem.Gps</RootNamespace>
+        <PackageTags>C#, Gps Utilities</PackageTags>
+        <Description>Provides Reader/Writer for reading GPS data from Google takeout</Description>
+    </PropertyGroup>
 
-  <Import Project="..\Packaging.props" />
+    <Import Project="..\Packaging.props"/>
 
-  <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="10.0.9" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="10.0.9"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Tests\**" />
-    <EmbeddedResource Remove="Tests\**" />
-    <None Remove="Tests\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Tests\**"/>
+        <EmbeddedResource Remove="Tests\**"/>
+        <None Remove="Tests\**"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MetaData\TCSystem.MetaData.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\MetaData\TCSystem.MetaData.csproj"/>
+    </ItemGroup>
 
 </Project>

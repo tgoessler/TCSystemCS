@@ -29,4 +29,5 @@ None.
 
 ## Development
 
-See the repository [build instructions](../README.md#build-from-source) and the [TCSystem.Util.Tests instructions](Tests/README.md).
+See the repository [build instructions](../README.md#build-from-source) and
+the [TCSystem.Util.Tests instructions](Tests/README.md).

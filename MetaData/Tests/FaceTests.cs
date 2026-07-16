@@ -64,17 +64,6 @@ public class FaceTests
     }
 
     [Test]
-    public void InvalidateIdTest()
-    {
-        Face invalidated = TestData.Face1.InvalidateId();
-        Assert.That(invalidated.Id, Is.EqualTo(Constants.InvalidId));
-        Assert.That(invalidated.Rectangle, Is.EqualTo(TestData.Face1.Rectangle));
-        Assert.That(invalidated.FaceMode, Is.EqualTo(TestData.Face1.FaceMode));
-        Assert.That(invalidated.FaceQuality, Is.EqualTo(TestData.Face1.FaceQuality));
-        Assert.That(invalidated.Visible, Is.EqualTo(TestData.Face1.Visible));
-    }
-
-    [Test]
     public void FromJsonStringTest()
     {
         string ToJson(Face d)
@@ -97,5 +86,16 @@ public class FaceTests
 
         TestUtil.GetHashCodeTest(TestData.FaceZero, TestData.Face1,
             TestData.Face2, copyOfData1);
+    }
+
+    [Test]
+    public void InvalidateIdTest()
+    {
+        Face invalidated = TestData.Face1.InvalidateId();
+        Assert.That(invalidated.Id, Is.EqualTo(Constants.InvalidId));
+        Assert.That(invalidated.Rectangle, Is.EqualTo(TestData.Face1.Rectangle));
+        Assert.That(invalidated.FaceMode, Is.EqualTo(TestData.Face1.FaceMode));
+        Assert.That(invalidated.FaceQuality, Is.EqualTo(TestData.Face1.FaceQuality));
+        Assert.That(invalidated.Visible, Is.EqualTo(TestData.Face1.Visible));
     }
 }

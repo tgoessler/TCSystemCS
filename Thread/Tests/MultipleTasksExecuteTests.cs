@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+
 // ReSharper disable AccessToDisposedClosure
 
 #endregion
@@ -35,75 +36,19 @@ namespace TCSystem.Thread.Tests;
 public class MultipleTasksExecuteTests
 {
     [Test]
-    public void ExecuteCommand_RunsAction()
-    {
-        IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(2);
-        bool executed = false;
-
-        executor.ExecuteCommand(() => executed = true);
-        executor.WaitAllDone();
-
-        Assert.That(executed, Is.True);
-    }
-
-    [Test]
-    public void ExecuteCommand_WithCancellationToken_RunsAction()
-    {
-        IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(2);
-        bool executed = false;
-        using var cts = new CancellationTokenSource();
-
-        executor.ExecuteCommand(() => executed = true, cts.Token);
-        executor.WaitAllDone();
-
-        Assert.That(executed, Is.True);
-    }
-
-    [Test]
-    public void WaitAllDone_WaitsForAllTasksToComplete()
-    {
-        IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(4);
-        int counter = 0;
-
-        for (int i = 0; i < 8; i++)
-        {
-            executor.ExecuteCommand(() => Interlocked.Increment(ref counter));
-        }
-
-        executor.WaitAllDone();
-        Assert.That(counter, Is.EqualTo(8));
-    }
-
-    [Test]
-    public void WaitAllDone_WithCancellationToken_WaitsForAllTasksToComplete()
-    {
-        IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(3);
-        int counter = 0;
-        using var cts = new CancellationTokenSource();
-
-        for (int i = 0; i < 6; i++)
-        {
-            executor.ExecuteCommand(() => Interlocked.Increment(ref counter));
-        }
-
-        executor.WaitAllDone(cts.Token);
-        Assert.That(counter, Is.EqualTo(6));
-    }
-
-    [Test]
     public void ExecuteCommand_LimitsParallelism()
     {
         const int maxParallel = 2;
         IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(maxParallel);
 
-        int currentlyRunning = 0;
-        int maxObserved = 0;
+        var currentlyRunning = 0;
+        var maxObserved = 0;
         var syncLock = new object();
 
         using var holdEvent = new ManualResetEventSlim(false);
         const int taskCount = 6;
 
-        for (int i = 0; i < taskCount; i++)
+        for (var i = 0; i < taskCount; i++)
         {
             executor.ExecuteCommand(() =>
             {
@@ -135,7 +80,7 @@ public class MultipleTasksExecuteTests
         var results = new List<int>();
         var lockObj = new object();
 
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             int value = i;
             executor.ExecuteCommand(() =>
@@ -150,6 +95,31 @@ public class MultipleTasksExecuteTests
         executor.WaitAllDone();
 
         Assert.That(results.Count, Is.EqualTo(10));
+    }
+
+    [Test]
+    public void ExecuteCommand_RunsAction()
+    {
+        IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(2);
+        var executed = false;
+
+        executor.ExecuteCommand(() => executed = true);
+        executor.WaitAllDone();
+
+        Assert.That(executed, Is.True);
+    }
+
+    [Test]
+    public void ExecuteCommand_WithCancellationToken_RunsAction()
+    {
+        IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(2);
+        var executed = false;
+        using var cts = new CancellationTokenSource();
+
+        executor.ExecuteCommand(() => executed = true, cts.Token);
+        executor.WaitAllDone();
+
+        Assert.That(executed, Is.True);
     }
 
     [Test]
@@ -171,5 +141,36 @@ public class MultipleTasksExecuteTests
 
         holdEvent.Set();
         executor.WaitAllDone();
+    }
+
+    [Test]
+    public void WaitAllDone_WaitsForAllTasksToComplete()
+    {
+        IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(4);
+        var counter = 0;
+
+        for (var i = 0; i < 8; i++)
+        {
+            executor.ExecuteCommand(() => Interlocked.Increment(ref counter));
+        }
+
+        executor.WaitAllDone();
+        Assert.That(counter, Is.EqualTo(8));
+    }
+
+    [Test]
+    public void WaitAllDone_WithCancellationToken_WaitsForAllTasksToComplete()
+    {
+        IMultipleTasksExecute executor = Factory.CreateMultipleTasksExecute(3);
+        var counter = 0;
+        using var cts = new CancellationTokenSource();
+
+        for (var i = 0; i < 6; i++)
+        {
+            executor.ExecuteCommand(() => Interlocked.Increment(ref counter));
+        }
+
+        executor.WaitAllDone(cts.Token);
+        Assert.That(counter, Is.EqualTo(6));
     }
 }

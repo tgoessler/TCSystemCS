@@ -28,10 +28,16 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Represents a normalized image rectangle using 16.16 fixed-point coordinates.</summary>
+/// <param name="_x">The left coordinate.</param>
+/// <param name="_y">The top coordinate.</param>
+/// <param name="_w">The width.</param>
+/// <param name="_h">The height.</param>
 public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 _w, FixedPoint32 _h) : IEquatable<Rectangle>
 {
 #region Public
 
+    /// <summary>Determines whether this rectangle fully contains another rectangle.</summary>
     public bool Contains(Rectangle other)
     {
         return Left <= other.Left &&
@@ -40,6 +46,7 @@ public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 
                Bottom >= other.Bottom;
     }
 
+    /// <summary>Creates a rectangle from floating-point coordinates.</summary>
     public static Rectangle FromFloat(float x, float y, float w, float h)
     {
         return new(new(x),
@@ -49,6 +56,7 @@ public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 
         );
     }
 
+    /// <summary>Creates a rectangle from raw 16.16 fixed-point coordinates.</summary>
     public static Rectangle FromRawValues(int x, int y, int w, int h)
     {
         return new(new(x),
@@ -58,11 +66,13 @@ public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 
         );
     }
 
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         return obj is Rectangle rect && Equals(rect);
     }
 
+    /// <inheritdoc />
     public bool Equals(Rectangle other)
     {
         return X.Equals(other.X) &&
@@ -71,6 +81,7 @@ public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 
                H.Equals(other.H);
     }
 
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         unchecked
@@ -83,31 +94,38 @@ public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 
         }
     }
 
+    /// <summary>Serializes the rectangle to compact JSON.</summary>
+    /// <returns>The serialized rectangle.</returns>
     public string ToJsonString()
     {
         return ToJson().ToString(Formatting.None);
     }
 
+    /// <summary>Formats the rectangle as its X, Y, width, and height values.</summary>
     public override string ToString()
     {
         return $"{X}, {Y}, {W}, {H}";
     }
 
+    /// <summary>Deserializes a rectangle from JSON text.</summary>
     public static Rectangle FromJsonString(string jsonString)
     {
         return FromJson(JObject.Parse(jsonString));
     }
 
+    /// <summary>Determines whether two rectangles are equal.</summary>
     public static bool operator ==(Rectangle lhs, Rectangle rhs)
     {
         return lhs.Equals(rhs);
     }
 
+    /// <summary>Determines whether two rectangles are not equal.</summary>
     public static bool operator !=(Rectangle lhs, Rectangle rhs)
     {
         return !lhs.Equals(rhs);
     }
 
+    /// <summary>Creates a rectangle from a JSON object containing raw fixed-point values.</summary>
     public static Rectangle FromJson(JObject jsonObject)
     {
         return new(
@@ -118,6 +136,7 @@ public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 
         );
     }
 
+    /// <summary>Converts the rectangle to a JSON object containing raw fixed-point values.</summary>
     public JObject ToJson()
     {
         var obj = new JObject
@@ -131,17 +150,34 @@ public readonly struct Rectangle(FixedPoint32 _x, FixedPoint32 _y, FixedPoint32 
         return obj;
     }
 
+    /// <summary>Gets the left coordinate.</summary>
     public FixedPoint32 X => _x;
+
+    /// <summary>Gets the top coordinate.</summary>
     public FixedPoint32 Y => _y;
+
+    /// <summary>Gets the width.</summary>
     public FixedPoint32 W => _w;
+
+    /// <summary>Gets the height.</summary>
     public FixedPoint32 H => _h;
 
+    /// <summary>Gets the left edge.</summary>
     public FixedPoint32 Left => X;
-    public FixedPoint32 Top => Y;
-    public FixedPoint32 Right => new(X.RawValue + W.RawValue);
-    public FixedPoint32 Bottom => new(Y.RawValue + H.RawValue);
-    public FixedPoint32 Diameter => new((int)Math.Sqrt(W.RawValue * W.RawValue + H.RawValue * H.RawValue));
 
+    /// <summary>Gets the top edge.</summary>
+    public FixedPoint32 Top => Y;
+
+    /// <summary>Gets the right edge.</summary>
+    public FixedPoint32 Right => new(X.RawValue + W.RawValue);
+
+    /// <summary>Gets the bottom edge.</summary>
+    public FixedPoint32 Bottom => new(Y.RawValue + H.RawValue);
+
+    /// <summary>Gets the diagonal length of the rectangle.</summary>
+    public FixedPoint32 Diameter => new((int)Math.Sqrt((long)W.RawValue * (long)W.RawValue + (long)H.RawValue * (long)H.RawValue));
+
+    /// <summary>Gets the center point.</summary>
     public (FixedPoint32 x, FixedPoint32 y) Center =>
         (new((Left.RawValue + Right.RawValue) / 2), new((Top.RawValue + Bottom.RawValue) / 2));
 

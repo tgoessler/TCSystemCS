@@ -37,18 +37,6 @@ public class AsyncUpdateHelperTests
     }
 
     [Test]
-    public void InitialState_ShouldStop_IsFalse()
-    {
-        Assert.That(_helper.ShouldStop, Is.False);
-    }
-
-    [Test]
-    public void InitialState_IsUpdatePending_IsFalse()
-    {
-        Assert.That(_helper.IsUpdatePending, Is.False);
-    }
-
-    [Test]
     public async Task BeginUpdateAsync_ThenEndUpdate_Succeeds()
     {
         await _helper.BeginUpdateAsync();
@@ -58,12 +46,45 @@ public class AsyncUpdateHelperTests
     }
 
     [Test]
-    public async Task WaitAsync_ThenEndUpdate_Succeeds()
+    public void InitialState_IsUpdatePending_IsFalse()
     {
-        await _helper.WaitAsync();
+        Assert.That(_helper.IsUpdatePending, Is.False);
+    }
+
+    [Test]
+    public void InitialState_ShouldStop_IsFalse()
+    {
         Assert.That(_helper.ShouldStop, Is.False);
+    }
+
+    [Test]
+    public async Task IsUpdatePending_TrueWhileSecondWaitPending()
+    {
+        // Acquire the lock so that WaitAsync will block.
+        await _helper.BeginUpdateAsync();
+
+        Task waitTask = _helper.WaitAsync();
+
+        await Task.Delay(50);
+        Assert.That(_helper.IsUpdatePending, Is.True);
+
+        _helper.EndUpdate();
+        await waitTask;
         Assert.That(_helper.IsUpdatePending, Is.False);
         _helper.EndUpdate();
+    }
+
+    [Test]
+    public async Task SequentialBeginEndUpdate_WorksMultipleTimes()
+    {
+        for (var i = 0; i < 5; i++)
+        {
+            await _helper.BeginUpdateAsync();
+            _helper.EndUpdate();
+        }
+
+        Assert.That(_helper.ShouldStop, Is.False);
+        Assert.That(_helper.IsUpdatePending, Is.False);
     }
 
     [Test]
@@ -89,33 +110,12 @@ public class AsyncUpdateHelperTests
     }
 
     [Test]
-    public async Task IsUpdatePending_TrueWhileSecondWaitPending()
+    public async Task WaitAsync_ThenEndUpdate_Succeeds()
     {
-        // Acquire the lock so that WaitAsync will block.
-        await _helper.BeginUpdateAsync();
-
-        Task waitTask = _helper.WaitAsync();
-
-        await Task.Delay(50);
-        Assert.That(_helper.IsUpdatePending, Is.True);
-
-        _helper.EndUpdate();
-        await waitTask;
-        Assert.That(_helper.IsUpdatePending, Is.False);
-        _helper.EndUpdate();
-    }
-
-    [Test]
-    public async Task SequentialBeginEndUpdate_WorksMultipleTimes()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            await _helper.BeginUpdateAsync();
-            _helper.EndUpdate();
-        }
-
+        await _helper.WaitAsync();
         Assert.That(_helper.ShouldStop, Is.False);
         Assert.That(_helper.IsUpdatePending, Is.False);
+        _helper.EndUpdate();
     }
 
     private IAsyncUpdateHelper _helper;

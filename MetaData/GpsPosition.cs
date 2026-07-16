@@ -28,11 +28,19 @@ using Newtonsoft.Json.Linq;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Represents a signed geographic coordinate in degrees, minutes, seconds, and ten-thousandths of a second.</summary>
+/// <param name="_degrees">The absolute whole degrees.</param>
+/// <param name="_minutes">The whole minutes.</param>
+/// <param name="_seconds">The whole seconds.</param>
+/// <param name="_subSeconds">The ten-thousandths of a second.</param>
+/// <param name="_negative">Whether the coordinate is negative.</param>
 public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int _subSeconds,
                                    bool _negative) : IEquatable<GpsPosition>
 {
 #region Public
 
+    /// <summary>Converts the coordinate to signed decimal degrees.</summary>
+    /// <returns>The coordinate in decimal degrees.</returns>
     public double ToDouble()
     {
         return (Degrees +
@@ -41,11 +49,13 @@ public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int
                 SubSeconds / (3600d * SubSecondsUnit)) * (Negative ? -1 : 1);
     }
 
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         return obj is GpsPosition pos && Equals(pos);
     }
 
+    /// <inheritdoc />
     public bool Equals(GpsPosition other)
     {
         return Degrees == other.Degrees &&
@@ -55,6 +65,7 @@ public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int
                Negative == other.Negative;
     }
 
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         unchecked
@@ -68,12 +79,17 @@ public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int
         }
     }
 
+    /// <summary>Formats the coordinate as degrees, minutes, seconds, and subseconds separated by periods.</summary>
+    /// <returns>The formatted coordinate.</returns>
     public override string ToString()
     {
         string sign = Negative ? "-" : "";
         return $"{sign}{Degrees}.{Minutes}.{Seconds}.{SubSeconds}";
     }
 
+    /// <summary>Parses the period-delimited representation returned by <see cref="ToString" />.</summary>
+    /// <param name="val">The coordinate text.</param>
+    /// <returns>The parsed coordinate, or <see langword="null" /> when the format is not recognized.</returns>
     public static GpsPosition? FromString(string val)
     {
         if (!string.IsNullOrWhiteSpace(val))
@@ -93,6 +109,9 @@ public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int
         return null;
     }
 
+    /// <summary>Creates a coordinate from signed decimal degrees.</summary>
+    /// <param name="coordinate">The coordinate in decimal degrees.</param>
+    /// <returns>The converted coordinate.</returns>
     public static GpsPosition FromDoublePosition(double coordinate)
     {
         double sec = Math.Abs(coordinate) * 3600d;
@@ -109,26 +128,32 @@ public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int
             coordinate < 0);
     }
 
+    /// <summary>Deserializes a coordinate from JSON.</summary>
+    /// <param name="jsonString">The JSON object to deserialize.</param>
+    /// <returns>The coordinate, or <see langword="null" /> for null or empty input.</returns>
     public static GpsPosition? FromJsonString(string jsonString)
     {
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
+    /// <summary>Determines whether two coordinates are equal.</summary>
     public static bool operator ==(GpsPosition lhs, GpsPosition rhs)
     {
         return lhs.Equals(rhs);
     }
 
+    /// <summary>Determines whether two coordinates are not equal.</summary>
     public static bool operator !=(GpsPosition lhs, GpsPosition rhs)
     {
         return !lhs.Equals(rhs);
     }
 
-    public static GpsPosition operator+(GpsPosition pos1, GpsPosition pos2)
+    /// <summary>Adds two coordinates in decimal-degree space.</summary>
+    public static GpsPosition operator +(GpsPosition pos1, GpsPosition pos2)
     {
         // Convert both positions to their double representation
-        double pos1Value = pos1.ToDouble();
-        double pos2Value = pos2.ToDouble();
+        var pos1Value = pos1.ToDouble();
+        var pos2Value = pos2.ToDouble();
 
         // Subtract the second position from the first
         double resultValue = pos1Value + pos2Value;
@@ -137,11 +162,12 @@ public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int
         return FromDoublePosition(resultValue);
     }
 
-    public static GpsPosition operator-(GpsPosition pos1, GpsPosition pos2)
+    /// <summary>Subtracts the second coordinate from the first in decimal-degree space.</summary>
+    public static GpsPosition operator -(GpsPosition pos1, GpsPosition pos2)
     {
         // Convert both positions to their double representation
-        double pos1Value = pos1.ToDouble();
-        double pos2Value = pos2.ToDouble();
+        var pos1Value = pos1.ToDouble();
+        var pos2Value = pos2.ToDouble();
 
         // Subtract the second position from the first
         double resultValue = pos1Value - pos2Value;
@@ -150,10 +176,19 @@ public readonly struct GpsPosition(int _degrees, int _minutes, int _seconds, int
         return FromDoublePosition(resultValue);
     }
 
+    /// <summary>Gets the absolute whole degrees.</summary>
     public int Degrees => _degrees;
+
+    /// <summary>Gets the whole minutes.</summary>
     public int Minutes => _minutes;
+
+    /// <summary>Gets the whole seconds.</summary>
     public int Seconds => _seconds;
+
+    /// <summary>Gets the ten-thousandths of a second.</summary>
     public int SubSeconds => _subSeconds;
+
+    /// <summary>Gets whether the coordinate is negative.</summary>
     public bool Negative => _negative;
 
 #endregion

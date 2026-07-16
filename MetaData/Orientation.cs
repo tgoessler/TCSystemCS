@@ -26,23 +26,44 @@ using System;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Describes the EXIF orientation transform applied to an image.</summary>
 public enum OrientationMode
 {
+    /// <summary>The orientation is unknown.</summary>
     Undefined = 0,
+
+    /// <summary>No transform is required.</summary>
     Normal = 1,
+
+    /// <summary>Mirror horizontally.</summary>
     MirrorHorizontal = 2,
+
+    /// <summary>Rotate by 180 degrees.</summary>
     Rotate180 = 3,
+
+    /// <summary>Mirror vertically.</summary>
     MirrorVertical = 4,
+
+    /// <summary>Mirror horizontally and rotate clockwise by 270 degrees.</summary>
     MirrorHorizontalRotateCw270 = 5,
+
+    /// <summary>Rotate clockwise by 90 degrees.</summary>
     RotateCw90 = 6,
+
+    /// <summary>Mirror vertically and rotate clockwise by 90 degrees.</summary>
     MirrorVerticalRotateCw90 = 7,
+
+    /// <summary>Rotate clockwise by 270 degrees.</summary>
     RotateCw270 = 8
 }
 
+/// <summary>Transforms normalized rectangles and faces according to image orientation.</summary>
 public static class Orientation
 {
 #region Public
 
+    /// <summary>Gets the rotation angle represented by an orientation mode.</summary>
+    /// <returns>The rotation in degrees.</returns>
     public static double Orientation2Degree(OrientationMode mode)
     {
         switch (mode)
@@ -65,6 +86,7 @@ public static class Orientation
         }
     }
 
+    /// <summary>Transforms a normalized rectangle into the displayed orientation.</summary>
     public static Rectangle Orientate(Rectangle rectangle, OrientationMode mode)
     {
         switch (mode)
@@ -91,11 +113,13 @@ public static class Orientation
         }
     }
 
+    /// <summary>Returns a face whose rectangle is transformed into the displayed orientation.</summary>
     public static Face Orientate(Face face, OrientationMode mode)
     {
         return new(face.Id, Orientate(face.Rectangle, mode), face.FaceMode, face.FaceQuality, face.Visible, face.FaceDescriptor);
     }
 
+    /// <summary>Transforms a normalized rectangle from the displayed orientation back to stored coordinates.</summary>
     public static Rectangle OrientateBack(Rectangle rectangle, OrientationMode mode)
     {
         switch (mode)
@@ -122,6 +146,7 @@ public static class Orientation
         }
     }
 
+    /// <summary>Returns a face whose rectangle is transformed back to stored coordinates.</summary>
     public static Face OrientateBack(Face face, OrientationMode mode)
     {
         return new(face.Id, OrientateBack(face.Rectangle, mode), face.FaceMode, face.FaceQuality, face.Visible, face.FaceDescriptor);

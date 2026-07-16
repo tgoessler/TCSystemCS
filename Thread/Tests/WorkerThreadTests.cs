@@ -24,6 +24,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+
 // ReSharper disable AccessToDisposedClosure
 
 #endregion
@@ -46,67 +47,11 @@ public class WorkerThreadTests
     }
 
     [Test]
-    public void ExecuteCommand_RunsAction()
+    public void CancellationToken_IsValid()
     {
-        bool executed = false;
-        using var done = new ManualResetEventSlim(false);
-
-        _worker.ExecuteCommand(() =>
-        {
-            executed = true;
-            done.Set();
-        });
-
-        Assert.That(done.Wait(TimeSpan.FromSeconds(5)), Is.True, "Action did not execute in time");
-        Assert.That(executed, Is.True);
-    }
-
-    [Test]
-    public void ExecuteCommand_WithMessage_RunsAction()
-    {
-        bool executed = false;
-        using var done = new ManualResetEventSlim(false);
-
-        _worker.ExecuteCommand(() =>
-        {
-            executed = true;
-            done.Set();
-        }, "TestMessage");
-
-        Assert.That(done.Wait(TimeSpan.FromSeconds(5)), Is.True);
-        Assert.That(executed, Is.True);
-    }
-
-    [Test]
-    public async Task ExecuteCommandAsync_RunsAction()
-    {
-        bool executed = false;
-        using var done = new ManualResetEventSlim(false);
-
-        await _worker.ExecuteCommandAsync(() =>
-        {
-            executed = true;
-            done.Set();
-        });
-
-        Assert.That(done.Wait(TimeSpan.FromSeconds(5)), Is.True);
-        Assert.That(executed, Is.True);
-    }
-
-    [Test]
-    public async Task ExecuteCommandAsync_WithMessage_RunsAction()
-    {
-        bool executed = false;
-        using var done = new ManualResetEventSlim(false);
-
-        await _worker.ExecuteCommandAsync(() =>
-        {
-            executed = true;
-            done.Set();
-        }, "TestMessageAsync");
-
-        Assert.That(done.Wait(TimeSpan.FromSeconds(5)), Is.True);
-        Assert.That(executed, Is.True);
+        CancellationToken token = _worker.CancellationToken;
+        Assert.That(token.CanBeCanceled, Is.True);
+        Assert.That(token.IsCancellationRequested, Is.False);
     }
 
     [Test]
@@ -161,6 +106,109 @@ public class WorkerThreadTests
     }
 
     [Test]
+    public void ExecuteCommand_RunsAction()
+    {
+        var executed = false;
+        using var done = new ManualResetEventSlim(false);
+
+        _worker.ExecuteCommand(() =>
+        {
+            executed = true;
+            done.Set();
+        });
+
+        Assert.That(done.Wait(TimeSpan.FromSeconds(5)), Is.True, "Action did not execute in time");
+        Assert.That(executed, Is.True);
+    }
+
+    [Test]
+    public void ExecuteCommand_WithMessage_RunsAction()
+    {
+        var executed = false;
+        using var done = new ManualResetEventSlim(false);
+
+        _worker.ExecuteCommand(() =>
+        {
+            executed = true;
+            done.Set();
+        }, "TestMessage");
+
+        Assert.That(done.Wait(TimeSpan.FromSeconds(5)), Is.True);
+        Assert.That(executed, Is.True);
+    }
+
+    [Test]
+    public async Task ExecuteCommandAsync_RunsAction()
+    {
+        var executed = false;
+        using var done = new ManualResetEventSlim(false);
+
+        await _worker.ExecuteCommandAsync(() =>
+        {
+            executed = true;
+            done.Set();
+        });
+
+        Assert.That(done.Wait(TimeSpan.FromSeconds(5)), Is.True);
+        Assert.That(executed, Is.True);
+    }
+
+    [Test]
+    public async Task ExecuteCommandAsync_WithMessage_RunsAction()
+    {
+        var executed = false;
+        using var done = new ManualResetEventSlim(false);
+
+        await _worker.ExecuteCommandAsync(() =>
+        {
+            executed = true;
+            done.Set();
+        }, "TestMessageAsync");
+
+        Assert.That(done.Wait(TimeSpan.FromSeconds(5)), Is.True);
+        Assert.That(executed, Is.True);
+    }
+
+    [Test]
+    public void IdleEvent_FiredWhenWorkerBecomesIdle()
+    {
+        var idleFired = false;
+        using var idleEvent = new ManualResetEventSlim(false);
+
+        _worker.IdleEvent += idle =>
+        {
+            if (idle)
+            {
+                idleFired = true;
+                idleEvent.Set();
+            }
+        };
+
+        _worker.ExecuteCommand(() => { });
+
+        Assert.That(idleEvent.Wait(TimeSpan.FromSeconds(5)), Is.True);
+        Assert.That(idleFired, Is.True);
+    }
+
+    [Test]
+    public void IsBusy_TrueWhileExecuting()
+    {
+        using var holdEvent = new ManualResetEventSlim(false);
+        using var workerBusy = new ManualResetEventSlim(false);
+
+        _worker.ExecuteCommand(() =>
+        {
+            workerBusy.Set();
+            holdEvent.Wait(TimeSpan.FromSeconds(5));
+        });
+
+        workerBusy.Wait(TimeSpan.FromSeconds(5));
+        Assert.That(_worker.IsBusy, Is.True);
+
+        holdEvent.Set();
+    }
+
+    [Test]
     public void NumOpenActions_ReturnsCorrectCount()
     {
         // Block the worker thread so actions accumulate in the queue
@@ -183,40 +231,9 @@ public class WorkerThreadTests
     }
 
     [Test]
-    public void IsBusy_TrueWhileExecuting()
-    {
-        using var holdEvent = new ManualResetEventSlim(false);
-        using var workerBusy = new ManualResetEventSlim(false);
-
-        _worker.ExecuteCommand(() =>
-        {
-            workerBusy.Set();
-            holdEvent.Wait(TimeSpan.FromSeconds(5));
-        });
-
-        workerBusy.Wait(TimeSpan.FromSeconds(5));
-        Assert.That(_worker.IsBusy, Is.True);
-
-        holdEvent.Set();
-    }
-
-    [Test]
-    public void OnInitThread_CalledBeforeFirstAction()
-    {
-        bool initCalled = false;
-        using var done = new ManualResetEventSlim(false);
-
-        _worker.OnInitThread += () => initCalled = true;
-        _worker.ExecuteCommand(() => done.Set());
-
-        done.Wait(TimeSpan.FromSeconds(5));
-        Assert.That(initCalled, Is.True);
-    }
-
-    [Test]
     public void OnDeInitThread_CalledAfterStop()
     {
-        bool deinitCalled = false;
+        var deinitCalled = false;
         using var done = new ManualResetEventSlim(false);
 
         _worker.OnDeInitThread += () =>
@@ -237,17 +254,22 @@ public class WorkerThreadTests
     }
 
     [Test]
-    public void CancellationToken_IsValid()
+    public void OnInitThread_CalledBeforeFirstAction()
     {
-        CancellationToken token = _worker.CancellationToken;
-        Assert.That(token.CanBeCanceled, Is.True);
-        Assert.That(token.IsCancellationRequested, Is.False);
+        var initCalled = false;
+        using var done = new ManualResetEventSlim(false);
+
+        _worker.OnInitThread += () => initCalled = true;
+        _worker.ExecuteCommand(() => done.Set());
+
+        done.Wait(TimeSpan.FromSeconds(5));
+        Assert.That(initCalled, Is.True);
     }
 
     [Test]
     public void StopThread_StopsExecution()
     {
-        int count = 0;
+        var count = 0;
         using var done = new ManualResetEventSlim(false);
 
         _worker.ExecuteCommand(() =>
@@ -261,27 +283,6 @@ public class WorkerThreadTests
 
         // After stop no further actions should run — verify count stays at 1
         Assert.That(count, Is.EqualTo(1));
-    }
-
-    [Test]
-    public void IdleEvent_FiredWhenWorkerBecomesIdle()
-    {
-        bool idleFired = false;
-        using var idleEvent = new ManualResetEventSlim(false);
-
-        _worker.IdleEvent += idle =>
-        {
-            if (idle)
-            {
-                idleFired = true;
-                idleEvent.Set();
-            }
-        };
-
-        _worker.ExecuteCommand(() => { });
-
-        Assert.That(idleEvent.Wait(TimeSpan.FromSeconds(5)), Is.True);
-        Assert.That(idleFired, Is.True);
     }
 
     private IWorkerThread _worker;

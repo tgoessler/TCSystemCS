@@ -27,10 +27,17 @@ using System.Runtime.CompilerServices;
 
 namespace TCSystem.Util;
 
+/// <summary>Provides a common null-safe equality pattern for reference-type models.</summary>
 public static class EqualsUtil
 {
 #region Public
 
+    /// <summary>Compares references first, then invokes a value-comparison callback when required.</summary>
+    /// <typeparam name="TData">The reference type being compared.</typeparam>
+    /// <param name="d1">The current object.</param>
+    /// <param name="d2">The other object.</param>
+    /// <param name="equals">The callback that compares <paramref name="d1" /> with <paramref name="d2" />.</param>
+    /// <returns><see langword="true" /> when the references or values are equal.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Equals<TData>(TData d1, TData d2, Func<TData, bool> equals) where TData : class
     {

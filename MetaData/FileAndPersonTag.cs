@@ -31,20 +31,26 @@ using TCSystem.Util;
 
 namespace TCSystem.MetaData;
 
+/// <summary>Associates an image file name with a person tag.</summary>
+/// <param name="_fileName">The image file name.</param>
+/// <param name="_personTag">The associated person tag.</param>
 public sealed class FileAndPersonTag(string _fileName, PersonTag _personTag) : IEquatable<FileAndPersonTag>
 {
 #region Public
 
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         return EqualsUtil.Equals(this, obj as FileAndPersonTag, EqualsImp);
     }
 
+    /// <inheritdoc />
     public bool Equals(FileAndPersonTag other)
     {
         return EqualsUtil.Equals(this, other, EqualsImp);
     }
 
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         unchecked
@@ -55,27 +61,40 @@ public sealed class FileAndPersonTag(string _fileName, PersonTag _personTag) : I
         }
     }
 
+    /// <summary>Serializes the association to compact JSON.</summary>
+    /// <returns>The serialized association.</returns>
     public string ToJsonString()
     {
         return ToJson().ToString(Formatting.None);
     }
 
+    /// <summary>Serializes the association to indented JSON.</summary>
+    /// <returns>The formatted JSON.</returns>
     public override string ToString()
     {
         return ToJson().ToString(Formatting.Indented);
     }
 
+    /// <summary>Deserializes an association from JSON.</summary>
+    /// <param name="jsonString">The JSON to deserialize.</param>
+    /// <returns>The association, or <see langword="null" /> for null or empty input.</returns>
     public static FileAndPersonTag FromJsonString(string jsonString)
     {
         return string.IsNullOrEmpty(jsonString) ? null : FromJson(JObject.Parse(jsonString));
     }
 
+    /// <summary>Serializes associations to a compact JSON array.</summary>
+    /// <param name="fileAndPersonTags">The associations to serialize.</param>
+    /// <returns>The serialized array.</returns>
     public static string ToJsonStringArray(IEnumerable<FileAndPersonTag> fileAndPersonTags)
     {
         var array = new JArray(fileAndPersonTags.Select(fpt => fpt.ToJson()));
         return array.ToString(Formatting.None);
     }
 
+    /// <summary>Deserializes associations from a JSON array.</summary>
+    /// <param name="jsonString">The JSON array to deserialize.</param>
+    /// <returns>The associations, or an empty sequence for null or empty input.</returns>
     public static IEnumerable<FileAndPersonTag> FromJsonStringArray(string jsonString)
     {
         if (string.IsNullOrEmpty(jsonString))
@@ -87,7 +106,10 @@ public sealed class FileAndPersonTag(string _fileName, PersonTag _personTag) : I
         return array.Select(v => FromJson((JObject)v));
     }
 
+    /// <summary>Gets the image file name, or an empty string when undefined.</summary>
     public string FileName => _fileName ?? string.Empty;
+
+    /// <summary>Gets the associated person tag.</summary>
     public PersonTag PersonTag => _personTag;
 
 #endregion

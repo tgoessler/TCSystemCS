@@ -30,28 +30,6 @@ namespace TCSystem.MetaData.Tests;
 public class ProcessingInfosExtTests
 {
     [Test]
-    public void AreAllFaceDetectionsDone_None_ReturnsFalse()
-    {
-        Assert.That(ProcessingInfos.None.AreAllFaceDetectionsDone(), Is.False);
-    }
-
-    [Test]
-    public void AreAllFaceDetectionsDone_OnlyFrontal_ReturnsFalse()
-    {
-        const ProcessingInfos infos = ProcessingInfos.DlibFrontalFaceDetection2000 |
-                                      ProcessingInfos.DlibFrontalFaceDetection3000;
-        Assert.That(infos.AreAllFaceDetectionsDone(), Is.False);
-    }
-
-    [Test]
-    public void AreAllFaceDetectionsDone_OnlyCnn_ReturnsFalse()
-    {
-        const ProcessingInfos infos = ProcessingInfos.DlibCnnFaceDetection1000 |
-                                      ProcessingInfos.DlibCnnFaceDetection2000;
-        Assert.That(infos.AreAllFaceDetectionsDone(), Is.False);
-    }
-
-    [Test]
     public void AreAllFaceDetectionsDone_AllSet_ReturnsTrue()
     {
         const ProcessingInfos infos = ProcessingInfos.DlibFrontalFaceDetection2000 |
@@ -73,6 +51,36 @@ public class ProcessingInfosExtTests
     }
 
     [Test]
+    public void AreAllFaceDetectionsDone_None_ReturnsFalse()
+    {
+        Assert.That(ProcessingInfos.None.AreAllFaceDetectionsDone(), Is.False);
+    }
+
+    [Test]
+    public void AreAllFaceDetectionsDone_OnlyCnn_ReturnsFalse()
+    {
+        const ProcessingInfos infos = ProcessingInfos.DlibCnnFaceDetection1000 |
+                                      ProcessingInfos.DlibCnnFaceDetection2000;
+        Assert.That(infos.AreAllFaceDetectionsDone(), Is.False);
+    }
+
+    [Test]
+    public void AreAllFaceDetectionsDone_OnlyFrontal_ReturnsFalse()
+    {
+        const ProcessingInfos infos = ProcessingInfos.DlibFrontalFaceDetection2000 |
+                                      ProcessingInfos.DlibFrontalFaceDetection3000;
+        Assert.That(infos.AreAllFaceDetectionsDone(), Is.False);
+    }
+
+    [Test]
+    public void AreAllFrontalFaceDetectionsDone_BothSet_ReturnsTrue()
+    {
+        const ProcessingInfos infos = ProcessingInfos.DlibFrontalFaceDetection2000 |
+                                      ProcessingInfos.DlibFrontalFaceDetection3000;
+        Assert.That(infos.AreAllFrontalFaceDetectionsDone(), Is.True);
+    }
+
+    [Test]
     public void AreAllFrontalFaceDetectionsDone_None_ReturnsFalse()
     {
         Assert.That(ProcessingInfos.None.AreAllFrontalFaceDetectionsDone(), Is.False);
@@ -86,41 +94,9 @@ public class ProcessingInfosExtTests
     }
 
     [Test]
-    public void AreAllFrontalFaceDetectionsDone_BothSet_ReturnsTrue()
+    public void IsCnnFaceDetection_ClassificationOnly_ReturnsFalse()
     {
-        const ProcessingInfos infos = ProcessingInfos.DlibFrontalFaceDetection2000 |
-                                      ProcessingInfos.DlibFrontalFaceDetection3000;
-        Assert.That(infos.AreAllFrontalFaceDetectionsDone(), Is.True);
-    }
-
-    [Test]
-    public void IsFrontalFaceDetection_None_ReturnsFalse()
-    {
-        Assert.That(ProcessingInfos.None.IsFrontalFaceDetection(), Is.False);
-    }
-
-    [Test]
-    public void IsFrontalFaceDetection_Frontal2000_ReturnsTrue()
-    {
-        Assert.That(ProcessingInfos.DlibFrontalFaceDetection2000.IsFrontalFaceDetection(), Is.True);
-    }
-
-    [Test]
-    public void IsFrontalFaceDetection_Frontal3000_ReturnsTrue()
-    {
-        Assert.That(ProcessingInfos.DlibFrontalFaceDetection3000.IsFrontalFaceDetection(), Is.True);
-    }
-
-    [Test]
-    public void IsFrontalFaceDetection_CnnOnly_ReturnsFalse()
-    {
-        Assert.That(ProcessingInfos.DlibCnnFaceDetection1000.IsFrontalFaceDetection(), Is.False);
-    }
-
-    [Test]
-    public void IsCnnFaceDetection_None_ReturnsFalse()
-    {
-        Assert.That(ProcessingInfos.None.IsCnnFaceDetection(), Is.False);
+        Assert.That(ProcessingInfos.DlibImageClassification600.IsCnnFaceDetection(), Is.False);
     }
 
     [Test]
@@ -142,8 +118,32 @@ public class ProcessingInfosExtTests
     }
 
     [Test]
-    public void IsCnnFaceDetection_ClassificationOnly_ReturnsFalse()
+    public void IsCnnFaceDetection_None_ReturnsFalse()
     {
-        Assert.That(ProcessingInfos.DlibImageClassification600.IsCnnFaceDetection(), Is.False);
+        Assert.That(ProcessingInfos.None.IsCnnFaceDetection(), Is.False);
+    }
+
+    [Test]
+    public void IsFrontalFaceDetection_CnnOnly_ReturnsFalse()
+    {
+        Assert.That(ProcessingInfos.DlibCnnFaceDetection1000.IsFrontalFaceDetection(), Is.False);
+    }
+
+    [Test]
+    public void IsFrontalFaceDetection_Frontal2000_ReturnsTrue()
+    {
+        Assert.That(ProcessingInfos.DlibFrontalFaceDetection2000.IsFrontalFaceDetection(), Is.True);
+    }
+
+    [Test]
+    public void IsFrontalFaceDetection_Frontal3000_ReturnsTrue()
+    {
+        Assert.That(ProcessingInfos.DlibFrontalFaceDetection3000.IsFrontalFaceDetection(), Is.True);
+    }
+
+    [Test]
+    public void IsFrontalFaceDetection_None_ReturnsFalse()
+    {
+        Assert.That(ProcessingInfos.None.IsFrontalFaceDetection(), Is.False);
     }
 }

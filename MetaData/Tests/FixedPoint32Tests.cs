@@ -101,7 +101,7 @@ public class FixedPoint32Tests
     [Test]
     public void ToStringTest()
     {
-        string s = new FixedPoint32(1.5f).ToString();
+        var s = new FixedPoint32(1.5f).ToString();
         Assert.That(s, Is.Not.Empty);
         // Should use invariant culture (dot as decimal separator)
         Assert.That(s, Does.Contain("."));
