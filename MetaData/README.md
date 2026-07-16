@@ -21,18 +21,7 @@ dotnet add package TCSystem.MetaData
 - JSON serialization and deserialization helpers
 - Immutable-style `ImageExt` change operations
 
-## Dependencies
+## Repository Development
 
-- Newtonsoft.Json
-- TCSystem.Util
-
-## Targets
-
-- netstandard2.1
-- net8.0
-- net10.0
-
-## Development
-
-See the repository [build instructions](../README.md#build-from-source) and
-the [TCSystem.MetaData.Tests instructions](Tests/README.md).
+Repository-wide prerequisites, target frameworks, dependencies, build, test, coverage, and API-documentation instructions
+are maintained in the [main README](../README.md).

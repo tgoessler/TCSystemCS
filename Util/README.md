@@ -17,17 +17,7 @@ dotnet add package TCSystem.Util
 - Null-safe equality implementation helper
 - Integer next-power-of-two calculation
 
-## Targets
+## Repository Development
 
-- netstandard2.1
-- net8.0
-- net10.0
-
-## Dependencies
-
-None.
-
-## Development
-
-See the repository [build instructions](../README.md#build-from-source) and
-the [TCSystem.Util.Tests instructions](Tests/README.md).
+Repository-wide prerequisites, target frameworks, dependencies, build, test, coverage, and API-documentation instructions
+are maintained in the [main README](../README.md).

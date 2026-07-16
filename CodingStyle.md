@@ -2,13 +2,11 @@
 
 This document summarizes the coding style used in this repository.
 
-## Tooling Baseline
+## C# Tooling Baseline
 
 - Language version: **C# 14**.
-- Target frameworks for libraries: `netstandard2.1`, `net8.0`, `net10.0`.
-- Warnings are errors (`TreatWarningsAsErrors=true`).
 - .NET analyzers are enabled at the latest analysis level.
-- `.editorconfig` currently enforces `CA2000` as an error: dispose objects before losing scope.
+- `.editorconfig` enforces `CA2000` as an error: dispose objects before losing scope.
 - ReSharper cleanup profile: `PickBash: Full Cleanup`.
 
 ## File Header
@@ -294,10 +292,7 @@ internal static class Log
 
 ## Tests
 
-- Test framework: NUnit 4.x.
-- Test projects live in `{Project}/Tests/`.
-- Test projects target `net8.0;net10.0` and import `NoPackaging.props`.
-- Test source files follow the same header, namespace, using, and formatting rules.
+- NUnit test source follows the same header, namespace, using, and formatting rules.
 - Use descriptive test names following `MethodOrScenario_Condition_ExpectedResult` where practical.
 - Use `Assert.That(...)` syntax.
 

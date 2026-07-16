@@ -40,22 +40,7 @@ finally
 `CreateReadWrite` creates a database when the path does not exist. `CreateRead` opens an existing database in read-only
 mode.
 
-## Dependencies
+## Repository Development
 
-- Microsoft.Data.Sqlite
-- SQLitePCLRaw.lib.e_sqlite3 (explicit native SQLite dependency)
-- TCSystem.Logging
-- TCSystem.MetaData
-- TCSystem.Thread
-
-## Targets
-
-- netstandard2.1
-- net8.0
-- net10.0
-
-## Development
-
-See the repository [build instructions](../README.md#build-from-source) and
-the [TCSystem.MetaDataDB.Tests instructions](Tests/README.md). Tests use temporary SQLite files; optional legacy
-converter fixtures are described in the test README.
+Repository-wide prerequisites, target frameworks, dependencies, build, test, coverage, fixture, and API-documentation
+instructions are maintained in the [main README](../README.md).

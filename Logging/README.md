@@ -53,22 +53,7 @@ Factory.DeInitLogging();
 Repeated initialization is reference-counted; each successful initialization must have a matching `DeInitLogging()`
 call.
 
-## Dependencies
+## Repository Development
 
-- Serilog
-- Serilog.Enrichers.Thread
-- Serilog.Sinks.Async
-- Serilog.Sinks.Console
-- Serilog.Sinks.Debug
-- Serilog.Sinks.File
-
-## Targets
-
-- netstandard2.1
-- net8.0
-- net10.0
-
-## Development
-
-See the repository [build and test instructions](../README.md#build-from-source). There is currently no dedicated
-Logging test project; the complete solution tests exercise logging through dependent projects.
+Repository-wide prerequisites, target frameworks, dependencies, build, test, coverage, and API-documentation instructions
+are maintained in the [main README](../README.md).

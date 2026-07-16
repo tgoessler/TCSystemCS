@@ -1,18 +1,7 @@
 # TCSystem.Tools.DBConverter
 
-A `net10.0` console application that copies an existing metadata database through the current schema converter and
-validates the converted data.
-
-## Prerequisites
-
-Install the .NET 10 SDK and build from the repository root. See the
-main [build instructions](../../README.md#build-from-source).
-
-## Build
-
-```bash
-dotnet build Tools/DBConverter/TCSystem.Tools.DBConverter.csproj --configuration Release
-```
+Console application that copies an existing metadata database through the current schema converter and validates the
+converted data.
 
 ## Usage
 
@@ -26,8 +15,6 @@ Quote paths containing spaces, for example:
 dotnet run --project Tools/DBConverter/TCSystem.Tools.DBConverter.csproj --configuration Release -- "D:\Data\metadata-old.db" "D:\Data\metadata-new.db"
 ```
 
-If the Release build already exists, add `--no-build` before `--`.
-
 ## Data Safety
 
 - The source database is copied to a temporary file and is not converted in place.
@@ -35,6 +22,7 @@ If the Release build already exists, add `--no-build` before `--`.
 - Source data is compared with the converted database after conversion.
 - Back up important databases and do not use an existing file as the target unless overwriting it is intended.
 
-## Dependencies
+## Repository Development
 
-- TCSystem.MetaDataDB
+Repository-wide prerequisites, targets, dependencies, and build instructions are maintained in the
+[main README](../../README.md).

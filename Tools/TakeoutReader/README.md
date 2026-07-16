@@ -12,12 +12,7 @@ dotnet run --project Tools/TakeoutReader/TCSystem.Tools.TakeoutReader.csproj -- 
 The tool opens the database read/write, leaves existing metadata locations unchanged, and fills only files whose
 timestamp is within one hour of the nearest phone location record. Back up the database before running bulk imports.
 
-## Dependencies
+## Repository Development
 
-- TCSystem.Gps
-- TCSystem.Logging
-- TCSystem.MetaDataDB
-
-## Target
-
-- net8.0
+Repository-wide prerequisites, targets, dependencies, and build instructions are maintained in the
+[main README](../../README.md).

@@ -44,12 +44,13 @@ All test projects target both `net8.0` and `net10.0`. There is currently no dedi
 ## Dependency Overview
 
 - `TCSystem.Util` has no external dependencies.
-- `TCSystem.Logging` wraps Serilog and its configured sinks/enrichers.
+- `TCSystem.Logging` depends on Serilog, Serilog.Enrichers.Thread, Serilog.Sinks.Async, Serilog.Sinks.Console,
+  Serilog.Sinks.Debug, and Serilog.Sinks.File.
 - `TCSystem.MetaData` depends on `TCSystem.Util` and Newtonsoft.Json.
 - `TCSystem.Thread` depends on `TCSystem.Logging`.
 - `TCSystem.Gps` depends on `TCSystem.MetaData` and System.Text.Json.
 - `TCSystem.MetaDataDB` depends on `TCSystem.Logging`, `TCSystem.MetaData`, `TCSystem.Thread`, Microsoft.Data.Sqlite,
-  and the native SQLite bundle.
+  and SQLitePCLRaw.lib.e_sqlite3 for the native SQLite bundle.
 - The tools compose these libraries through project references.
 
 ## Build from Source
@@ -83,6 +84,14 @@ For an ordinary development build, omit `--configuration Release` (the default c
 
 ```bash
 dotnet build TCSystem.slnx
+```
+
+### Build One Project
+
+Pass a project path when only one library, tool, or test project needs to be built. For example:
+
+```bash
+dotnet build Tools/DBConverter/TCSystem.Tools.DBConverter.csproj --configuration Release
 ```
 
 ## Build API Documentation
@@ -143,9 +152,26 @@ dotnet test Thread/Tests/TCSystem.Thread.Tests.csproj --configuration Release
 dotnet test Util/Tests/TCSystem.Util.Tests.csproj --configuration Release
 ```
 
-See the linked test-project READMEs for single-framework and coverage examples. Some `MetaDataDB` converter tests are
-reported as skipped when optional legacy database fixtures are not present; the regular database tests create temporary
-SQLite databases and require no setup.
+Append `--framework net10.0` to any project command to run only one target framework. After the same configuration and
+target framework have already been built, append `--no-build --no-restore` for a faster repeat run.
+
+### Test Infrastructure
+
+All test projects use NUnit 4, NUnit3TestAdapter, Microsoft.NET.Test.Sdk, and Coverlet MSBuild. They target `net8.0` and
+`net10.0`; test source and naming conventions are defined in [CodingStyle.md](CodingStyle.md#tests).
+
+The regular `MetaDataDB` tests create isolated SQLite databases in the operating system's temporary directory and clean
+them up after each test. They require neither an external SQLite installation nor a database server.
+
+### Optional MetaDataDB Converter Fixtures
+
+`ConverterTests` looks for the following legacy databases in `MetaDataDB/Tests/TestData/`:
+
+- `MetaData2-v11.db`
+- `MetaData2-v12.db`
+
+These files are not stored in the repository. Converter cases are reported as skipped with `DB file not available` when
+the fixtures are absent; this is not a test failure.
 
 ### Code Coverage
 
@@ -156,7 +182,8 @@ Release and then run:
 dotnet test TCSystem.slnx --configuration Release --no-build --no-restore --framework net8.0 -p:CollectCoverage=true -p:CoverletOutputFormat=opencover
 ```
 
-The generated, ignored reports are named `coverage.net8.0.opencover.xml` in the test project directories.
+To collect coverage for one test project, replace `TCSystem.slnx` with one of the test-project paths listed above. The
+generated, ignored reports are named `coverage.net8.0.opencover.xml` in the test project directories.
 
 ## Run the Tools
 
@@ -169,13 +196,8 @@ Each tool README documents its arguments and data-safety considerations:
 
 ### Dependency Vulnerability Audit
 
-After restore, with the .NET 10 SDK:
-
-```bash
-dotnet package list --project TCSystem.slnx --vulnerable --include-transitive --no-restore
-```
-
-See [SECURITY.md](SECURITY.md) for the security policy.
+See [SECURITY.md](SECURITY.md#dependency-vulnerability-checks) for the canonical vulnerability-audit command and
+security policy.
 
 ### Clean Generated Build Output
 
@@ -190,7 +212,7 @@ If a local SonarScanner run was interrupted and later builds reference missing a
 
 - [CodingStyle.md](CodingStyle.md) defines the C# style and analyzer expectations.
 - [AGENTS.md](AGENTS.md) defines repository instructions for coding agents.
-- [`.github/copilot-instructions.md`](.github/copilot-instructions.md) summarizes project patterns.
+- [`.github/copilot-instructions.md`](.github/copilot-instructions.md) defines repository workflow rules for coding agents.
 
 ## NuGet Packaging
 
