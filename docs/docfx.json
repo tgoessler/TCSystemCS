@@ -1,0 +1,58 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "..",
+          "files": [
+            "Gps/TCSystem.Gps.csproj",
+            "Logging/TCSystem.Logging.csproj",
+            "MetaData/TCSystem.MetaData.csproj",
+            "MetaDataDB/TCSystem.MetaDataDB.csproj",
+            "Thread/TCSystem.Thread.csproj",
+            "Util/TCSystem.Util.csproj"
+          ]
+        }
+      ],
+      "dest": "api",
+      "properties": {
+        "Configuration": "Release",
+        "TargetFramework": "net10.0"
+      }
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**/*.{md,yml}"
+        ],
+        "exclude": [
+          "_site/**",
+          "root-namespace/**"
+        ]
+      },
+      {
+        "src": "root-namespace",
+        "files": [
+          "TCSystem.md"
+        ],
+        "dest": "api"
+      }
+    ],
+    "output": "_site",
+    "template": [
+      "default",
+      "modern"
+    ],
+    "sitemap": {
+      "baseUrl": "https://tgoessler.github.io/TCSystemCS/"
+    },
+    "globalMetadata": {
+      "_appName": "TCSystem API Documentation",
+      "_appTitle": "TCSystem API Documentation",
+      "_enableSearch": true,
+      "_appFooter": "TCSystem — Copyright © 2003–2026 Thomas Gößler"
+    }
+  }
+}

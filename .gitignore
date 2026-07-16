@@ -358,3 +358,7 @@ coverage.*opencover.xml
 
 # sonar
 .sonarqube
+
+# DocFX generated output
+/docs/api/
+/docs/_site/

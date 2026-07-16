@@ -2,6 +2,8 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TCSystemCS&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=TCSystemCS)
 
+[API documentation](https://tgoessler.github.io/TCSystemCS/)
+
 TCSystemCS is a collection of reusable .NET libraries for logging, image metadata, GPS data, SQLite metadata storage,
 threading, and general utilities. The repository also contains two command-line tools and NUnit test projects.
 
@@ -82,6 +84,27 @@ For an ordinary development build, omit `--configuration Release` (the default c
 ```bash
 dotnet build TCSystem.slnx
 ```
+
+## Build API Documentation
+
+[DocFX](https://dotnet.github.io/docfx/) generates a searchable static site from the library projects and their XML
+comments:
+
+```bash
+dotnet tool restore
+dotnet restore TCSystem.slnx
+dotnet docfx docs/docfx.json --warningsAsErrors
+```
+
+The generated site is written to the ignored `docs/_site` directory. To build and preview it locally, use:
+
+```bash
+dotnet docfx docs/docfx.json --serve
+```
+
+The `docs.yml` workflow builds and deploys this site when changes reach `main`, and it can also be run manually. In the
+GitHub repository settings, select **GitHub Actions** as the Pages source. The published project site is
+`https://tgoessler.github.io/TCSystemCS/`.
 
 ## Run Unit Tests
 
@@ -183,6 +206,7 @@ CI version. Do not invoke `NugetPush` for an ordinary local build.
 | Workflow           | Trigger                             | Purpose                                                                      |
 |--------------------|-------------------------------------|------------------------------------------------------------------------------|
 | `analyze.yml`      | Push to `develop` or `main`; manual | Release build, `net8.0` tests with OpenCover output, and SonarCloud analysis |
+| `docs.yml`         | Push to `main`; manual              | Build the DocFX site and deploy it to GitHub Pages                           |
 | `dotnet.yml`       | Manual                              | Release restore and build validation                                         |
 | `nuget_deploy.yml` | Manual                              | Release build, full test matrix, package, and NuGet publish                  |
 

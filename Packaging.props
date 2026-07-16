@@ -1,6 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
     <PropertyGroup>
+        <GenerateDocumentationFile Condition="'$(GenerateDocumentationFile)' == ''">true</GenerateDocumentationFile>
         <GeneratePackageOnBuild Condition="'$(GeneratePackageOnBuild)' == ''">true</GeneratePackageOnBuild>
         <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/tgoessler/TCSystemCS</PackageProjectUrl>
         <RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/tgoessler/TCSystemCS</RepositoryUrl>
