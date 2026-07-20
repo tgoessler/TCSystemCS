@@ -74,17 +74,21 @@ public class PersonTagTests : DBSetup
         AssertImageDataNotEqual(data, DBReadOnly.GetMetaData(TestData.Image2.FileName));
     }
 
-    [Test]
-    public void ChangePersonFaceQuality()
+    [TestCase(FaceQuality.Unusable)]
+    [TestCase(FaceQuality.Excellent)]
+    public void ChangePersonFaceQuality(FaceQuality faceQuality)
     {
         Image data = DB.AddMetaData(TestData.Image2, DateTimeOffset.Now);
 
         PersonTag personTag = data.PersonTags[1];
-        data = Image.ChangePersonTagFaceQuality(data, personTag, FaceQuality.Normal);
+        data = Image.ChangePersonTagFaceQuality(data, personTag, faceQuality);
         DB.AddMetaData(data, DateTimeOffset.Now);
 
         Assert.That(DBReadOnly.GetNumFiles(), Is.EqualTo(1));
-        AssertImageDataNotEqual(data, DBReadOnly.GetMetaData(TestData.Image2.FileName));
+        Image readBack = DBReadOnly.GetMetaData(TestData.Image2.FileName);
+        AssertImageDataNotEqual(data, readBack);
+        PersonTag readBackPersonTag = readBack.PersonTags.Single(pt => pt.Face.Id == personTag.Face.Id);
+        Assert.That(readBackPersonTag.Face.FaceQuality, Is.EqualTo(faceQuality));
     }
 
     [Test]

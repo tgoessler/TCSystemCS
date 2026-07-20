@@ -69,6 +69,13 @@ public class FaceInfoTests
 
         TestUtil.FromJsonStringTest(TestData.FaceInfo1, ToJson, fromJson);
         TestUtil.FromJsonStringTest(TestData.FaceInfo2, ToJson, fromJson);
+
+        foreach (FaceQuality faceQuality in new[] { FaceQuality.Unusable, FaceQuality.Excellent })
+        {
+            var faceInfo = new FaceInfo(TestData.FaceInfoZero.FileId, TestData.FaceInfoZero.FaceId,
+                TestData.FaceInfoZero.PersonId, TestData.FaceInfoZero.FaceMode, faceQuality, TestData.FaceInfoZero.FaceDescriptor);
+            TestUtil.FromJsonStringTest(faceInfo, ToJson, fromJson);
+        }
     }
 
     [Test]

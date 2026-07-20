@@ -76,6 +76,13 @@ public class FaceTests
         TestUtil.FromJsonStringTest(TestData.Face1, ToJson, fromJson);
         TestUtil.FromJsonStringTest(TestData.Face2, ToJson, fromJson);
         TestUtil.FromJsonStringTest(TestData.FaceZero, ToJson, fromJson);
+
+        foreach (FaceQuality faceQuality in new[] { FaceQuality.Unusable, FaceQuality.Excellent })
+        {
+            var face = new Face(TestData.FaceZero.Id, TestData.FaceZero.Rectangle, TestData.FaceZero.FaceMode, faceQuality,
+                TestData.FaceZero.Visible, TestData.FaceZero.FaceDescriptor);
+            TestUtil.FromJsonStringTest(face, ToJson, fromJson);
+        }
     }
 
     [Test]
