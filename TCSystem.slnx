@@ -24,6 +24,8 @@
         <File Path=".editorconfig" />
         <File Path=".github/dependabot.yml" />
         <File Path=".gitignore" />
+        <File Path="AGENTS.md" />
+        <File Path="CodingStyle.md" />
         <File Path="deploy.bat" />
         <File Path="deploy_local.bat" />
         <File Path="Directory.Build.props" />
@@ -32,6 +34,8 @@
         <File Path="NoPackaging.props" />
         <File Path="Packaging.props" />
         <File Path="README.md" />
+        <File Path="SECURITY.md" />
+        <File Path="STATISTICS.md" />
         <File Path="Version.props" />
     </Folder>
     <Folder Name="/99 Build/Workflow/">
